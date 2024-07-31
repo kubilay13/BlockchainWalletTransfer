@@ -75,7 +75,7 @@ namespace TronWalletApi.Services.TronWalletService
 
             try
             {
-                // Tüm cüzdanları veritabanından al
+
                 var wallets = await _applicationDbContext.TronWalletModels.ToListAsync();
 
                 if (wallets != null)
@@ -84,11 +84,11 @@ namespace TronWalletApi.Services.TronWalletService
                     {
                         try
                         {
-                            // Cüzdan bakiyesini almak için Tron servisini kullan
+
                             var balance = await _tronService.GetBalanceAsync(wallet.WalletAddress!);
                             wallet.TrxAmount = balance;
 
-                            // NetworkFee güncellemeleri yapılacak yer
+
                             var transferHistories = await _applicationDbContext.TransferHistoryModels
                                 .Where(th => th.NetworkFee == 0)
                                 .ToListAsync();

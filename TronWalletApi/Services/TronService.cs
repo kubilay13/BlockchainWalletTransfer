@@ -5,21 +5,12 @@ using Microsoft.EntityFrameworkCore;
 using TronNet;
 using HDWallet.Core;
 using TronNet.Crypto;
-using TronNet.Protocol;
-using TronWalletApi.Enums;
 using Newtonsoft.Json;
-using System.Security.Cryptography;
 using Google.Protobuf;
 using TronWalletApi.BackgroundServices;
 using TronWalletApi.Models.TransactionModel;
 using TronNet.Contracts;
-using NBitcoin.Secp256k1;
-using Nethereum.BlockchainProcessing.BlockStorage.Entities;
-using Nethereum.Signer;
-using static TronNet.Protocol.Transaction.Types;
-using Microsoft.AspNetCore.Mvc;
 using Transaction = TronNet.Protocol.Transaction;
-using Nethereum.Hex.HexTypes;
 using Nethereum.Util;
 public class TronService : ITronService
 {
@@ -299,8 +290,6 @@ public class TronService : ITronService
             throw new ApplicationException("Bilinmeyen bir hata oluştu.");
         }
     }
-
-
     public async Task UsdtTransfer(TransferRequest request)
     {
         var senderprivatekey = await GetPrivateKeyFromDatabase(request.SenderAddress);
@@ -311,109 +300,114 @@ public class TronService : ITronService
         decimal commission = request.Amount * commissionPercentage;
         var contractClient = _contractClientFactory.CreateClient(ContractProtocol.TRC20);
         var wallet = await _applicationDbContext.TronWalletModels.FirstOrDefaultAsync(q => q.WalletAddress == request.SenderAddress);
-       
-        if (wallet.TrxAmount >= commission)
+
+        if (wallet.UsdtAmount < request.Amount && wallet.UsdtAmount==0)
         {
-            var transferResult = await contractClient.TransferAsync(
-           _usdtContractAddress,
-           account,
-           request.ReceiverAddress,
-           request.Amount - commission,
-           string.Empty,
-           feeAmount
-           );
+          
+        }else
+        {
+            if (wallet.TrxAmount >= commission)
+            {
+                var transferResult = await contractClient.TransferAsync(
+               _usdtContractAddress,
+               account,
+               request.ReceiverAddress,
+               request.Amount - commission,
+               string.Empty,
+               feeAmount
+               );
 
-            if (transferResult == null)
-            {
+                if (transferResult == null)
+                {
 
-                var successError = new TransactionErrorHistoryModel
-                {
-                    SendingAddress = request.SenderAddress,
-                    ReceivedAddress = request.ReceiverAddress,
-                    CoinType = "USDT",
-                    TransactionNetwork = "TRC20",
-                    TransactionAmount = request.Amount,
-                    TransactionDate = DateTime.UtcNow,
-                    TransactionDateTime = DateTime.Now.ToString("HH:mm:ss"),
-                    TransferFee = commissionPercentage,
-                    NetworkFee = 0,
-                    SenderTransactionUrl = $"https://nile.tronscan.org/#/address/{request.SenderAddress}",
-                    ReceiverTransactionUrl = $"https://nile.tronscan.org/#/address/{request.ReceiverAddress}",
-                    TransactionUrl = $"https://nile.tronscan.org/#/transaction/{null}",
-                    TransactionStatus = false,
-                    TransactionType = request.TransactionType,
-                    TransactionHash = null,
-                };
-                _applicationDbContext.TransactionErrorHistoryModels.Add(successError);
-                var historyModel = new TransferHistoryModel
-                {
-                    SendingAddress = request.SenderAddress,
-                    ReceivedAddress = request.ReceiverAddress,
-                    CoinType = "USDT",
-                    TransactionNetwork = "TRC20",
-                    TransactionAmount = request.Amount,
-                    TransactionDate = DateTime.UtcNow,
-                    TransactionDateTime = DateTime.Now.ToString("HH:mm:ss"),
-                    Commission = commissionPercentage,
-                    NetworkFee = 0,
-                    SenderTransactionUrl = $"https://nile.tronscan.org/#/address/{request.SenderAddress}",
-                    ReceiverTransactionUrl = $"https://nile.tronscan.org/#/address/{request.ReceiverAddress}",
-                    TransactionUrl = $"https://nile.tronscan.org/#/transaction/{null}",
-                    TransactionStatus = false,
-                    TransactionType = request.TransactionType,
-                    TransactionHash = null,
-                };
-                _applicationDbContext.TransferHistoryModels.Add(historyModel);
-                await _applicationDbContext.SaveChangesAsync();
-               
-            }
-            else
-            {
-                var commissionResult = await contractClient.TransferAsync(
-                 _usdtContractAddress,
-                 account,
-                 commissionAddress,
-                 commission,
-                 string.Empty,
-                 feeAmount
-                 );
-                var historyModel = new TransferHistoryModel
-                {
-                    SendingAddress = request.SenderAddress,
-                    ReceivedAddress = request.ReceiverAddress,
-                    CoinType = "USDT",
-                    TransactionNetwork = "TRC20",
-                    TransactionAmount = request.Amount,
-                    TransactionDate = DateTime.UtcNow,
-                    TransactionDateTime = DateTime.Now.ToString("HH:mm:ss"),
-                    Commission = commissionPercentage,
-                    NetworkFee = 0,
-                    SenderTransactionUrl = $"https://nile.tronscan.org/#/address/{request.SenderAddress}",
-                    ReceiverTransactionUrl = $"https://nile.tronscan.org/#/address/{request.ReceiverAddress}",
-                    TransactionUrl = $"https://nile.tronscan.org/#/transaction/{transferResult}",
-                    TransactionStatus = true,
-                    TransactionType = request.TransactionType,
-                    TransactionHash = transferResult,
-                };
-                _applicationDbContext.TransferHistoryModels.Add(historyModel);
-                await _applicationDbContext.SaveChangesAsync();
-            }
-            if (transferResult != null)
-            {
-                var senderAddress = await _applicationDbContext.TronWalletModels.FirstOrDefaultAsync(w => w.WalletAddress == request.SenderAddress);
-                senderAddress.UsdtAmount -= request.Amount;
-                _applicationDbContext.TronWalletModels.Update(senderAddress);
-                var receiverAddress = await _applicationDbContext.TronWalletModels.FirstOrDefaultAsync(w => w.WalletAddress == request.ReceiverAddress);
-                if (receiverAddress != null)
-                {
-                    receiverAddress.TrxAmount += request.Amount;
-                    _applicationDbContext.TronWalletModels.Update(receiverAddress);
+                    var successError = new TransactionErrorHistoryModel
+                    {
+                        SendingAddress = request.SenderAddress,
+                        ReceivedAddress = request.ReceiverAddress,
+                        CoinType = "USDT",
+                        TransactionNetwork = "TRC20",
+                        TransactionAmount = request.Amount,
+                        TransactionDate = DateTime.UtcNow,
+                        TransactionDateTime = DateTime.Now.ToString("HH:mm:ss"),
+                        TransferFee = commissionPercentage,
+                        NetworkFee = 0,
+                        SenderTransactionUrl = $"https://nile.tronscan.org/#/address/{request.SenderAddress}",
+                        ReceiverTransactionUrl = $"https://nile.tronscan.org/#/address/{request.ReceiverAddress}",
+                        TransactionUrl = $"https://nile.tronscan.org/#/transaction/{null}",
+                        TransactionStatus = false,
+                        TransactionType = request.TransactionType,
+                        TransactionHash = null,
+                    };
+                    _applicationDbContext.TransactionErrorHistoryModels.Add(successError);
+                    var historyModel = new TransferHistoryModel
+                    {
+                        SendingAddress = request.SenderAddress,
+                        ReceivedAddress = request.ReceiverAddress,
+                        CoinType = "USDT",
+                        TransactionNetwork = "TRC20",
+                        TransactionAmount = request.Amount,
+                        TransactionDate = DateTime.UtcNow,
+                        TransactionDateTime = DateTime.Now.ToString("HH:mm:ss"),
+                        Commission = commissionPercentage,
+                        NetworkFee = 0,
+                        SenderTransactionUrl = $"https://nile.tronscan.org/#/address/{request.SenderAddress}",
+                        ReceiverTransactionUrl = $"https://nile.tronscan.org/#/address/{request.ReceiverAddress}",
+                        TransactionUrl = $"https://nile.tronscan.org/#/transaction/{null}",
+                        TransactionStatus = false,
+                        TransactionType = request.TransactionType,
+                        TransactionHash = null,
+                    };
+                    _applicationDbContext.TransferHistoryModels.Add(historyModel);
+                    await _applicationDbContext.SaveChangesAsync();
+
                 }
-                await _applicationDbContext.SaveChangesAsync();
+                else
+                {
+                    var commissionResult = await contractClient.TransferAsync(
+                     _usdtContractAddress,
+                     account,
+                     commissionAddress,
+                     commission,
+                     string.Empty,
+                     feeAmount
+                     );
+                    var historyModel = new TransferHistoryModel
+                    {
+                        SendingAddress = request.SenderAddress,
+                        ReceivedAddress = request.ReceiverAddress,
+                        CoinType = "USDT",
+                        TransactionNetwork = "TRC20",
+                        TransactionAmount = request.Amount,
+                        TransactionDate = DateTime.UtcNow,
+                        TransactionDateTime = DateTime.Now.ToString("HH:mm:ss"),
+                        Commission = commissionPercentage,
+                        NetworkFee = 0,
+                        SenderTransactionUrl = $"https://nile.tronscan.org/#/address/{request.SenderAddress}",
+                        ReceiverTransactionUrl = $"https://nile.tronscan.org/#/address/{request.ReceiverAddress}",
+                        TransactionUrl = $"https://nile.tronscan.org/#/transaction/{transferResult}",
+                        TransactionStatus = true,
+                        TransactionType = request.TransactionType,
+                        TransactionHash = transferResult,
+                    };
+                    _applicationDbContext.TransferHistoryModels.Add(historyModel);
+                    await _applicationDbContext.SaveChangesAsync();
+                }
+                if (transferResult != null)
+                {
+                    var senderAddress = await _applicationDbContext.TronWalletModels.FirstOrDefaultAsync(w => w.WalletAddress == request.SenderAddress);
+                    senderAddress.UsdtAmount -= request.Amount;
+                    _applicationDbContext.TronWalletModels.Update(senderAddress);
+                    var receiverAddress = await _applicationDbContext.TronWalletModels.FirstOrDefaultAsync(w => w.WalletAddress == request.ReceiverAddress);
+                    if (receiverAddress != null)
+                    {
+                        receiverAddress.TrxAmount += request.Amount;
+                        _applicationDbContext.TronWalletModels.Update(receiverAddress);
+                    }
+                    await _applicationDbContext.SaveChangesAsync();
+                  
+                }
             }
         }
-
-
     }
     private async Task<string> GetPrivateKeyFromDatabase(string senderadress)
     {
