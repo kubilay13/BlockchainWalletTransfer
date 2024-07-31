@@ -1,0 +1,6 @@
+@TronWalletApi_HostAddress = http://localhost:5243
+
+GET {{TronWalletApi_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
