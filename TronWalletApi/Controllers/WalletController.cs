@@ -12,9 +12,6 @@ public class TransferRequest
     public decimal Amount { get; set; }
     public string? CoinName { get; set; }
     public TransactionType TransactionType { get; set; }
-
-
-
 }
 
 [ApiController]
@@ -71,7 +68,7 @@ public class WalletController : ControllerBase
             return StatusCode(500, $"Sunucu hatası: {ex.Message}");
         }
     }
-    [HttpPost("TransferTrx")]
+    [HttpPost("Transfer(TRX,USDT)")]
     public async Task<IActionResult> Transfer([FromBody] TransferRequest request)
     {
         if (request == null || string.IsNullOrEmpty(request.SenderAddress) || string.IsNullOrEmpty(request.ReceiverAddress) || request.Amount <= 0)

@@ -87,7 +87,7 @@ namespace TronWalletApi.Services.TronWalletService
 
                             var balance = await _tronService.GetBalanceAsync(wallet.WalletAddress!);
                             wallet.TrxAmount = balance;
-
+                            wallet.UsdtAmount = balance;
 
                             var transferHistories = await _applicationDbContext.TransferHistoryModels
                                 .Where(th => th.NetworkFee == 0)
