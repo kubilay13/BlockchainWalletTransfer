@@ -30,6 +30,9 @@ namespace TronWalletApi.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<string>("AdminWallet")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<decimal>("Commission")
                         .HasColumnType("decimal(18,8)");
 

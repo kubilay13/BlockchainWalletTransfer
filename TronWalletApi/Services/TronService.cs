@@ -12,6 +12,9 @@ using TronWalletApi.Models.TransactionModel;
 using TronNet.Contracts;
 using Transaction = TronNet.Protocol.Transaction;
 using Nethereum.Util;
+using TronNet.Protocol;
+using Network = TronWalletApi.Models.Network;
+using TronWalletApi.Enums;
 public class TronService : ITronService
 {
     private readonly HttpClient _client;
@@ -146,6 +149,29 @@ public class TronService : ITronService
             throw new ApplicationException("API ile iletişim sırasında bir hata oluştu.", ex);
         }
     }
+    public async Task<decimal> GetBalanceAsyncUsdt(string UsdtBalance,string privatekey)
+    {
+        try
+        {
+            var account = _walletClient.GetAccount(privatekey);
+            var protocol = _contractClientFactory.CreateClient(ContractProtocol.TRC20);
+            var usdtbalance = await protocol.BalanceOfAsync(_usdtContractAddress, account);
+           
+            if (usdtbalance!=null)
+            {
+                return usdtbalance ;
+            }
+            else
+            {
+                throw new ApplicationException("API'den beklenen 'balance' özelliği bulunamadı veya geçerli bir değer değil.");
+            }
+        }
+        catch (HttpRequestException ex)
+        {
+            throw new ApplicationException("API ile iletişim sırasında bir hata oluştu.", ex);
+        }
+    }
+
     public async Task<decimal> GetBalance(string address)
     {
 
@@ -235,6 +261,7 @@ public class TronService : ITronService
                         NetworkFee = 0,
                         SenderTransactionUrl = $"https://nile.tronscan.org/#/address/{request.SenderAddress}",
                         ReceiverTransactionUrl = $"https://nile.tronscan.org/#/address/{request.ReceiverAddress}",
+                        TransactionUrl= $"https://nile.tronscan.org/#/transaction/{transactionHash}",
                         TransactionStatus = true,
                         TransactionType = request.TransactionType,
                         TransactionHash = transactionHash,
@@ -257,6 +284,7 @@ public class TronService : ITronService
                         NetworkFee = 0,
                         SenderTransactionUrl = $"https://nile.tronscan.org/#/address/{request.SenderAddress}",
                         ReceiverTransactionUrl = $"https://nile.tronscan.org/#/address/{request.ReceiverAddress}",
+                        TransactionUrl = $"https://nile.tronscan.org/#/transaction/{transactionHash}",
                         TransactionStatus = false,
                         TransactionType = request.TransactionType,
                         TransactionHash = null,
@@ -292,14 +320,18 @@ public class TronService : ITronService
     }
     public async Task UsdtTransfer(TransferRequest request)
     {
+        var network = await _applicationDbContext.Networks.FirstOrDefaultAsync(n => n.Type == NetworkType.Network);
+        string adminAddress = network.AdminWallet;
         var senderprivatekey = await GetPrivateKeyFromDatabase(request.SenderAddress);
         var account = _walletClient.GetAccount(senderprivatekey);
         var feeAmount = 5 * 1000000L;
-        string commissionAddress = "TEWJWLwFL3dbMjXtj2smNfto9sXdWquF4N";
         decimal commissionPercentage = 0.15m;
         decimal commission = request.Amount * commissionPercentage;
         var contractClient = _contractClientFactory.CreateClient(ContractProtocol.TRC20);
         var wallet = await _applicationDbContext.TronWalletModels.FirstOrDefaultAsync(q => q.WalletAddress == request.SenderAddress);
+
+
+    
 
         if (wallet.UsdtAmount < request.Amount && wallet.UsdtAmount==0)
         {
@@ -366,7 +398,7 @@ public class TronService : ITronService
                     var commissionResult = await contractClient.TransferAsync(
                      _usdtContractAddress,
                      account,
-                     commissionAddress,
+                     adminAddress,
                      commission,
                      string.Empty,
                      feeAmount
@@ -527,9 +559,6 @@ public class TronService : ITronService
         }
     }
 
-    //public async Task<string> SendUsdt(string senderAddress, string receiveAddress, decimal amount, bool isDeposit)
-    //{
-    //}
 }
 
 

@@ -3,6 +3,7 @@ using Microsoft.Extensions.Logging;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
+using TronNet.Protocol;
 using TronWalletApi.Context;
 using TronWalletApi.Models;
 
@@ -87,7 +88,10 @@ namespace TronWalletApi.Services.TronWalletService
 
                             var balance = await _tronService.GetBalanceAsync(wallet.WalletAddress!);
                             wallet.TrxAmount = balance;
-                            wallet.UsdtAmount = balance;
+
+                            var UsdtBalance = await _tronService.GetBalanceAsyncUsdt(wallet.WalletAddress, wallet.PrivateKey);
+                            wallet.UsdtAmount = UsdtBalance;
+
 
                             var transferHistories = await _applicationDbContext.TransferHistoryModels
                                 .Where(th => th.NetworkFee == 0)
@@ -95,42 +99,37 @@ namespace TronWalletApi.Services.TronWalletService
 
                             foreach (var transferHistory in transferHistories)
                             {
-                                bool feeUpdated = false;
 
-                                while (!feeUpdated)
+                                try
                                 {
-                                    try
+                                    var transactionFee = await _tronService.GetTransactionFeeAsync(transferHistory.TransactionHash!);
+
+                                    if (transactionFee.Receipt != null)
                                     {
-                                        var transactionFee = await _tronService.GetTransactionFeeAsync(transferHistory.TransactionHash!);
-
-                                        if (transactionFee.Receipt != null)
+                                        if (transactionFee?.Fee != null)
                                         {
-                                            if (transactionFee?.Fee != null)
-                                            {
-                                                transferHistory.NetworkFee = transactionFee.Fee / 1000000;
+                                            transferHistory.NetworkFee = transactionFee.Fee / 1000000;
+                                            await _applicationDbContext.SaveChangesAsync();
 
-                                                _applicationDbContext.TransferHistoryModels.Update(transferHistory);
-                                                await _applicationDbContext.SaveChangesAsync();
-                                                feeUpdated = true;
-                                                _logger.LogInformation("Transfer Ücreti Güncellendi");
-                                            }
-                                            else
-                                            {
-                                                _logger.LogWarning($"NetUsage is non-positive: {transactionFee.Receipt.NetUsage}");
-                                            }
+                                            _logger.LogInformation("Transfer Ücreti Güncellendi");
                                         }
                                         else
                                         {
-                                            _logger.LogWarning("Receipt is null in transactionFee.");
+                                            _logger.LogWarning($"NetUsage is non-positive: {transactionFee.Receipt.NetUsage}");
                                         }
                                     }
-                                    catch (Exception ex)
+                                    else
                                     {
-                                        _logger.LogError($"İşlem ücreti güncellenirken bir hata oluştu. TransactionHash: {transferHistory.TransactionHash}, Hata: {ex.Message}");
-                                        await Task.Delay(TimeSpan.FromSeconds(10));
+                                        _logger.LogWarning("Receipt is null in transactionFee.");
                                     }
                                 }
+                                catch (Exception ex)
+                                {
+                                    _logger.LogError($"İşlem ücreti güncellenirken bir hata oluştu. TransactionHash: {transferHistory.TransactionHash}, Hata: {ex.Message}");
+                                    await Task.Delay(TimeSpan.FromSeconds(10));
+                                }
                             }
+
 
                             _applicationDbContext.TronWalletModels.Update(wallet);
                             await _applicationDbContext.SaveChangesAsync();

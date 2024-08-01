@@ -33,9 +33,7 @@ namespace TronWalletApi.BackgroundServices
 
                     try
                     {
-
                         await tronWalletService.UpdateWalletAmountsAsync();
-                        //await Task.Delay(TimeSpan.FromSeconds(10), stoppingToken);
                         await tronWalletService.GetNetworkFee();
                         _logger.LogInformation("Cüzdan bakiyeleri güncellendi 10 saniye sonra tekrarlanacak.");
                     }

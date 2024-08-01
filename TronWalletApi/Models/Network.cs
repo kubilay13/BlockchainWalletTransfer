@@ -19,7 +19,8 @@ namespace TronWalletApi.Models
         [Column(TypeName = "decimal(18,8)")]
         public decimal Commission { get; set; }
 
-       
+        public  string? AdminWallet { get; set; }
+
 
     }
 }

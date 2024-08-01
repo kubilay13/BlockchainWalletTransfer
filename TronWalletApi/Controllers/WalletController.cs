@@ -25,10 +25,7 @@ public class WalletController : ControllerBase
     {
         _tronService = tronService;
         _applicationDbContext = applicationDbContext;
-
-
     }
-
     [HttpGet("createwallet")]
     public async Task<IActionResult> CreateWallet(string walletName)
     {
@@ -49,7 +46,6 @@ public class WalletController : ControllerBase
         {
             return BadRequest("Adres gerekli.");
         }
-
         try
         {
             var balance = await _tronService.GetBalanceAsync(address);
@@ -75,22 +71,16 @@ public class WalletController : ControllerBase
         {
             return BadRequest("Geçersiz transfer isteği.");
         }
-
         try
         {
             var receiverWallet = await _applicationDbContext.TronWalletModels
                 .FirstOrDefaultAsync(w => w.WalletAddress == request.ReceiverAddress);
 
             await _tronService.Transfer(request);
-
-            // Transfer işlemini gerçekleştir
-
-            // Başarılı transferin detaylarını dönebilirsiniz
             return Ok("Transfer işlemi başarılı.");
         }
         catch (ArgumentException ex)
         {
-            // Belirli hata durumları için daha açıklayıcı hata mesajları dönebilirsiniz
             return BadRequest($"Geçersiz giriş: {ex.Message}");
         }
         catch (InvalidOperationException ex)
@@ -107,7 +97,7 @@ public class WalletController : ControllerBase
     {
         try
         {
-            var usdt =  _tronService.UsdtTransfer(request); // Doğru parametre ismi kullanıldı
+            var usdt =  _tronService.UsdtTransfer(request); 
             return Ok(usdt);
         }
         catch (Exception ex)
