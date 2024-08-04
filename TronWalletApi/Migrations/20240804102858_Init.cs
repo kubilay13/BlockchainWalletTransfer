@@ -23,7 +23,8 @@ namespace TronWalletApi.Migrations
                     Contract = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Decimal = table.Column<int>(type: "int", nullable: false),
                     Commission = table.Column<decimal>(type: "decimal(18,8)", nullable: false),
-                    AdminWallet = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    AdminWallet = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    AdminWalletPrivateKey = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {

@@ -33,6 +33,9 @@ namespace TronWalletApi.Migrations
                     b.Property<string>("AdminWallet")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("AdminWalletPrivateKey")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<decimal>("Commission")
                         .HasColumnType("decimal(18,8)");
 

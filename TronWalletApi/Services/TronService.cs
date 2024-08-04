@@ -15,6 +15,7 @@ using Nethereum.Util;
 using TronNet.Protocol;
 using Network = TronWalletApi.Models.Network;
 using TronWalletApi.Enums;
+using NBitcoin;
 public class TronService : ITronService
 {
     private readonly HttpClient _client;
@@ -47,11 +48,9 @@ public class TronService : ITronService
     {
         try
         {
-
             var ecKey = TronECKey.GenerateKey(TronNetwork.MainNet);
             var privateKey = ecKey.GetPrivateKey();
             var address = ecKey.GetPublicAddress();
-
 
             var wallet = new TronWalletModel
             {
@@ -65,10 +64,10 @@ public class TronService : ITronService
             };
             _applicationDbContext.TronWalletModels.Add(wallet);
             await _applicationDbContext.SaveChangesAsync();
+            var network = await _applicationDbContext.Networks.FirstOrDefaultAsync(n => n.Type == NetworkType.Network);
+            string adminAddress = network.AdminWallet;
 
-            var senderAddress = "TEWJWLwFL3dbMjXtj2smNfto9sXdWquF4N";
-
-            await SendTronAsync(senderAddress, address, 20000000);
+            await SendTronAsync(adminAddress, address, 20000000);
             var response = $"PrivateKey: {wallet.PrivateKey}\nWalletAdress: {wallet.WalletAddress}";
             return response;
         }
@@ -84,11 +83,14 @@ public class TronService : ITronService
         try
         {
             Console.WriteLine($"SendTronAsync içinde amount: {amount}");
-
             var transactionClient = _tronClient.GetTransaction();
             var signedTransaction = await _transactionClient.CreateTransactionAsync(senderAddress, receiverAddress, amount);
 
-            var transactionSigned = _transactionClient.GetTransactionSign(signedTransaction.Transaction, "0107932b30922231adff71b4b7c0b05bc948632f56c2b62f98bd18fefeae8a9e");
+            var network = await _applicationDbContext.Networks.FirstOrDefaultAsync(n => n.Type == NetworkType.Network);
+            string adminprivatekey = network.AdminWalletPrivateKey;
+
+
+            var transactionSigned = _transactionClient.GetTransactionSign(signedTransaction.Transaction, adminprivatekey);
 
             var result = await _transactionClient.BroadcastTransactionAsync(transactionSigned);
 

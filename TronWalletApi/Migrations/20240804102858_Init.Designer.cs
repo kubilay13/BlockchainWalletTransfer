@@ -12,7 +12,7 @@ using TronWalletApi.Context;
 namespace TronWalletApi.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240801140951_Init")]
+    [Migration("20240804102858_Init")]
     partial class Init
     {
         /// <inheritdoc />
@@ -34,6 +34,9 @@ namespace TronWalletApi.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("AdminWallet")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("AdminWalletPrivateKey")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<decimal>("Commission")
