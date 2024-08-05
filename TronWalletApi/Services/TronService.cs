@@ -16,6 +16,7 @@ using TronNet.Protocol;
 using Network = TronWalletApi.Models.Network;
 using TronWalletApi.Enums;
 using NBitcoin;
+using Google.Rpc;
 public class TronService : ITronService
 {
     private readonly HttpClient _client;
@@ -82,6 +83,7 @@ public class TronService : ITronService
     {
         try
         {
+
             Console.WriteLine($"SendTronAsync içinde amount: {amount}");
             var transactionClient = _tronClient.GetTransaction();
             var signedTransaction = await _transactionClient.CreateTransactionAsync(senderAddress, receiverAddress, amount);
@@ -151,17 +153,17 @@ public class TronService : ITronService
             throw new ApplicationException("API ile iletişim sırasında bir hata oluştu.", ex);
         }
     }
-    public async Task<decimal> GetBalanceAsyncUsdt(string UsdtBalance,string privatekey)
+    public async Task<decimal> GetBalanceAsyncUsdt(string UsdtBalance, string privatekey)
     {
         try
         {
             var account = _walletClient.GetAccount(privatekey);
             var protocol = _contractClientFactory.CreateClient(ContractProtocol.TRC20);
             var usdtbalance = await protocol.BalanceOfAsync(_usdtContractAddress, account);
-           
-            if (usdtbalance!=null)
+
+            if (usdtbalance != null)
             {
-                return usdtbalance ;
+                return usdtbalance;
             }
             else
             {
@@ -234,79 +236,95 @@ public class TronService : ITronService
                 var _comission = _network!.Commission;
                 var _amount = UnitConversion.Convert.ToWei(request.Amount, (int)_network.Decimal);
                 var senderAddress = await _applicationDbContext.TronWalletModels.FirstOrDefaultAsync(w => w.WalletAddress == request.SenderAddress);
-
-                var transactionClient = _tronClient.GetTransaction();
-
-                var signedTransaction = await _transactionClient.CreateTransactionAsync(request.SenderAddress, request.ReceiverAddress, (long)_amount);
-
-                var transactionSigned = _transactionClient.GetTransactionSign(signedTransaction.Transaction, senderAddress!.PrivateKey);
-
-                var result = await _transactionClient.BroadcastTransactionAsync(transactionSigned);
-
-                if (!result.Result)
+                if (_amount > 0)
                 {
-                    throw new ApplicationException($"Trx transfer işlemi başarısız oldu. Hata mesajı: {result.Message}");
-                }
-                var transactionHash = GetTransactionHash(transactionSigned);
-                if (transactionHash != null)
-                {
-                    var transferHistory = new TransferHistoryModel
+                    var transactionClient = _tronClient.GetTransaction();
+
+                    var signedTransaction = await _transactionClient.CreateTransactionAsync(request.SenderAddress, request.ReceiverAddress, (long)_amount);
+
+                    var transactionSigned = _transactionClient.GetTransactionSign(signedTransaction.Transaction, senderAddress!.PrivateKey);
+
+                    var result = await _transactionClient.BroadcastTransactionAsync(transactionSigned);
+
+
+                    if (!result.Result)
                     {
-                        SendingAddress = request.SenderAddress,
-                        ReceivedAddress = request.ReceiverAddress,
-                        CoinType = request.CoinName!.ToUpper(),
-                        TransactionNetwork = "TRON",
-                        TransactionAmount = request.Amount,
-                        TransactionDate = DateTime.UtcNow,
-                        TransactionDateTime = DateTime.Now.ToString("HH:mm:ss"),
-                        Commission = _comission,
-                        NetworkFee = 0,
-                        SenderTransactionUrl = $"https://nile.tronscan.org/#/address/{request.SenderAddress}",
-                        ReceiverTransactionUrl = $"https://nile.tronscan.org/#/address/{request.ReceiverAddress}",
-                        TransactionUrl= $"https://nile.tronscan.org/#/transaction/{transactionHash}",
-                        TransactionStatus = true,
-                        TransactionType = request.TransactionType,
-                        TransactionHash = transactionHash,
-                    };
-                    _applicationDbContext.TransferHistoryModels.Add(transferHistory);
-                    await _applicationDbContext.SaveChangesAsync();
-                }
-                else
-                {
-                    var transferHistory = new TransferHistoryModel
-                    {
-                        SendingAddress = request.SenderAddress,
-                        ReceivedAddress = request.ReceiverAddress,
-                        CoinType = request.CoinName!.ToUpper(),
-                        TransactionNetwork = "TRON",
-                        TransactionAmount = request.Amount,
-                        TransactionDate = DateTime.UtcNow,
-                        TransactionDateTime = DateTime.Now.ToString("HH:mm:ss"),
-                        Commission = _comission,
-                        NetworkFee = 0,
-                        SenderTransactionUrl = $"https://nile.tronscan.org/#/address/{request.SenderAddress}",
-                        ReceiverTransactionUrl = $"https://nile.tronscan.org/#/address/{request.ReceiverAddress}",
-                        TransactionUrl = $"https://nile.tronscan.org/#/transaction/{transactionHash}",
-                        TransactionStatus = false,
-                        TransactionType = request.TransactionType,
-                        TransactionHash = null,
-                    };
-                    _applicationDbContext.TransferHistoryModels.Add(transferHistory);
-                    await _applicationDbContext.SaveChangesAsync();
-                }
-                if (transactionHash != null)
-                {
-                    senderAddress.TrxAmount -= request.Amount;
-                    _applicationDbContext.TronWalletModels.Update(senderAddress);
-                    var receiverAddress = await _applicationDbContext.TronWalletModels.FirstOrDefaultAsync(w => w.WalletAddress == request.ReceiverAddress);
-                    if (receiverAddress != null)
-                    {
-                        receiverAddress.TrxAmount += request.Amount;
-                        _applicationDbContext.TronWalletModels.Update(receiverAddress);
+                        throw new ApplicationException($"Trx transfer işlemi başarısız oldu. Hata mesajı: {result.Message}");
                     }
+                    var transactionHash = GetTransactionHash(transactionSigned);
+                    if (transactionHash != null)
+                    {
+                        var transferHistory = new TransferHistoryModel
+                        {
+                            SendingAddress = request.SenderAddress,
+                            ReceivedAddress = request.ReceiverAddress,
+                            CoinType = request.CoinName!.ToUpper(),
+                            TransactionNetwork = "TRON",
+                            TransactionAmount = request.Amount,
+                            TransactionDate = DateTime.UtcNow,
+                            TransactionDateTime = DateTime.Now.ToString("HH:mm:ss"),
+                            Commission = _comission,
+                            NetworkFee = 0,
+                            SenderTransactionUrl = $"https://nile.tronscan.org/#/address/{request.SenderAddress}",
+                            ReceiverTransactionUrl = $"https://nile.tronscan.org/#/address/{request.ReceiverAddress}",
+                            TransactionUrl = $"https://nile.tronscan.org/#/transaction/{transactionHash}",
+                            TransactionStatus = true,
+                            TransactionType = request.TransactionType,
+                            TransactionHash = transactionHash,
+                        };
+                        _applicationDbContext.TransferHistoryModels.Add(transferHistory);
+                        await _applicationDbContext.SaveChangesAsync();
+                    }
+                    else
+                    {
+                        var transferHistory = new TransferHistoryModel
+                        {
+                            SendingAddress = request.SenderAddress,
+                            ReceivedAddress = request.ReceiverAddress,
+                            CoinType = request.CoinName!.ToUpper(),
+                            TransactionNetwork = "TRON",
+                            TransactionAmount = request.Amount,
+                            TransactionDate = DateTime.UtcNow,
+                            TransactionDateTime = DateTime.Now.ToString("HH:mm:ss"),
+                            Commission = _comission,
+                            NetworkFee = 0,
+                            SenderTransactionUrl = $"https://nile.tronscan.org/#/address/{request.SenderAddress}",
+                            ReceiverTransactionUrl = $"https://nile.tronscan.org/#/address/{request.ReceiverAddress}",
+                            TransactionUrl = $"https://nile.tronscan.org/#/transaction/{transactionHash}",
+                            TransactionStatus = false,
+                            TransactionType = request.TransactionType,
+                            TransactionHash = null,
+                        };
+                        _applicationDbContext.TransferHistoryModels.Add(transferHistory);
+                        await _applicationDbContext.SaveChangesAsync();
+                    }
+                    if (transactionHash != null)
+                    {
+                        senderAddress.TrxAmount -= request.Amount;
+                        _applicationDbContext.TronWalletModels.Update(senderAddress);
+                        var receiverAddress = await _applicationDbContext.TronWalletModels.FirstOrDefaultAsync(w => w.WalletAddress == request.ReceiverAddress);
+                        if (receiverAddress != null)
+                        {
+                            receiverAddress.TrxAmount += request.Amount;
+                            _applicationDbContext.TronWalletModels.Update(receiverAddress);
+                        }
 
-                    await _applicationDbContext.SaveChangesAsync();
+                        await _applicationDbContext.SaveChangesAsync();
+                    }
+                    var network = await _applicationDbContext.Networks.FirstOrDefaultAsync(n => n.Type == NetworkType.Network);
+                    string adminAddress = network.AdminWallet;
+
+                    var transactionCommission = request.Amount - network.Commission * 1000000;
+
+                    var AdmintransactionClient = _tronClient.GetTransaction();
+
+                    var AdminsignedTransaction = await _transactionClient.CreateTransactionAsync(request.SenderAddress, network.AdminWallet, (long)network.Commission);
+
+                    var AdmintransactionSigned = _transactionClient.GetTransactionSign(AdminsignedTransaction.Transaction, senderAddress!.PrivateKey);
+
+                    var Adminresult = await _transactionClient.BroadcastTransactionAsync(AdmintransactionSigned);
                 }
+
             }
         }
         catch (ApplicationException ex)
@@ -322,6 +340,7 @@ public class TronService : ITronService
     }
     public async Task UsdtTransfer(TransferRequest request)
     {
+
         var network = await _applicationDbContext.Networks.FirstOrDefaultAsync(n => n.Type == NetworkType.Network);
         string adminAddress = network.AdminWallet;
         var senderprivatekey = await GetPrivateKeyFromDatabase(request.SenderAddress);
@@ -332,13 +351,11 @@ public class TronService : ITronService
         var contractClient = _contractClientFactory.CreateClient(ContractProtocol.TRC20);
         var wallet = await _applicationDbContext.TronWalletModels.FirstOrDefaultAsync(q => q.WalletAddress == request.SenderAddress);
 
-
-    
-
-        if (wallet.UsdtAmount < request.Amount && wallet.UsdtAmount==0)
+        if (wallet.UsdtAmount < request.Amount && wallet.UsdtAmount == 0)
         {
-          
-        }else
+
+        }
+        else
         {
             if (wallet.TrxAmount >= commission)
             {
@@ -438,7 +455,7 @@ public class TronService : ITronService
                         _applicationDbContext.TronWalletModels.Update(receiverAddress);
                     }
                     await _applicationDbContext.SaveChangesAsync();
-                  
+
                 }
             }
         }
@@ -448,11 +465,10 @@ public class TronService : ITronService
         var wallet = await _applicationDbContext.TronWalletModels.FirstOrDefaultAsync(q => q.WalletAddress == senderadress);
         return wallet?.PrivateKey!;
     }
-    
-   
+
     private async Task UpdateValue(TransferRequest request, long scaledAmount, string senderPrivateKey)
     {
-        
+
         var transactionClient = _tronClient.GetTransaction();
         var transactionExtension = await transactionClient.CreateTransactionAsync(request.SenderAddress, request.ReceiverAddress, scaledAmount);
         var signedTransaction = transactionClient.GetTransactionSign(transactionExtension.Transaction, senderPrivateKey);
@@ -538,7 +554,6 @@ public class TronService : ITronService
             {
                 throw new ApplicationException($"Hash değeri '{transactionHash}' için işlem ücreti bilgisi eksik. Yanıt: {responseString}");
             }
-
 
             var netUsage = transactionInfo.Receipt.NetUsage;
             var fee = transactionInfo.Fee;
