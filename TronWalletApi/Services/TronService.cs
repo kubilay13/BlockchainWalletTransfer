@@ -346,8 +346,8 @@ public class TronService : ITronService
         var senderprivatekey = await GetPrivateKeyFromDatabase(request.SenderAddress);
         var account = _walletClient.GetAccount(senderprivatekey);
         var feeAmount = 5 * 1000000L;
-        decimal commissionPercentage = 0.15m;
-        decimal commission = request.Amount * commissionPercentage;
+        decimal commissionPercentage = network.Commission;
+        decimal commission = request.Amount - commissionPercentage;
         var contractClient = _contractClientFactory.CreateClient(ContractProtocol.TRC20);
         var wallet = await _applicationDbContext.TronWalletModels.FirstOrDefaultAsync(q => q.WalletAddress == request.SenderAddress);
 
@@ -363,7 +363,7 @@ public class TronService : ITronService
                _usdtContractAddress,
                account,
                request.ReceiverAddress,
-               request.Amount - commission,
+               request.Amount - network.Commission,
                string.Empty,
                feeAmount
                );
@@ -418,7 +418,7 @@ public class TronService : ITronService
                      _usdtContractAddress,
                      account,
                      adminAddress,
-                     commission,
+                     network.Commission,
                      string.Empty,
                      feeAmount
                      );
