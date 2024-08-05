@@ -5,10 +5,14 @@ using TronWalletApi.Context;
 using TronWalletApi.Models;
 using TronWalletApi.BackgroundServices;
 using TronWalletApi.Services.TronWalletService;
+using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
+builder.Services.AddSerilog();
+builder.Host.UseSerilog((context, configuration) =>
+    configuration.ReadFrom.Configuration(context.Configuration));
+
 builder.Services.AddHttpClient();
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
@@ -35,7 +39,7 @@ builder.Services.AddScoped<ITronService, TronService>();
 builder.Services.AddHostedService<TronWalletAmountUpdateService>(); // Add hosted service
 
 var app = builder.Build();
-
+app.UseSerilogRequestLogging();
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {

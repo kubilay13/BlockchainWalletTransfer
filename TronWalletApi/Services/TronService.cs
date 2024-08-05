@@ -25,11 +25,12 @@ public class TronService : ITronService
     private readonly IWalletClient _walletClient;
     private readonly ITransactionClient _transactionClient;
     private readonly HttpClient _httpClient;
-    private readonly ILogger<TronWalletAmountUpdateService> _logger;
+    private readonly ILogger<TronService> _logger;
     private readonly IContractClientFactory _contractClientFactory;
     private readonly string _usdtContractAddress = "TXYZopYRdj2D9XRtbG411XZZ3kM5VkAeBf";
+   
 
-    public TronService(HttpClient client, ITronClient tronClient, ApplicationDbContext applicationDbContext, IWalletClient walletClient, ITransactionClient transactionClient, HttpClient httpClient, ILogger<TronWalletAmountUpdateService> logger, IContractClientFactory contractClientFactory)
+    public TronService(HttpClient client, ITronClient tronClient, ApplicationDbContext applicationDbContext, IWalletClient walletClient, ITransactionClient transactionClient, HttpClient httpClient, ILogger<TronService> logger, IContractClientFactory contractClientFactory)
     {
         _client = client;
         _client.BaseAddress = new Uri("https://nile.trongrid.io");
@@ -49,6 +50,7 @@ public class TronService : ITronService
     {
         try
         {
+            _logger.LogInformation("deneme");
             var ecKey = TronECKey.GenerateKey(TronNetwork.MainNet);
             var privateKey = ecKey.GetPrivateKey();
             var address = ecKey.GetPublicAddress();
