@@ -6,12 +6,16 @@ using TronWalletApi.Models;
 using TronWalletApi.BackgroundServices;
 using TronWalletApi.Services.TronWalletService;
 using Serilog;
+using Serilog.Sinks.SystemConsole.Themes;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddSerilog();
 builder.Host.UseSerilog((context, configuration) =>
-    configuration.ReadFrom.Configuration(context.Configuration));
+{
+    configuration.ReadFrom.Configuration(context.Configuration)
+                 .WriteTo.Console(theme: AnsiConsoleTheme.Code, outputTemplate: "[{Timestamp:yyyy-MM-dd HH:mm:ss} {Level:u3}] {Message:lj}{NewLine}{Exception}");
+});
 
 builder.Services.AddHttpClient();
 builder.Services.AddControllers();
@@ -25,7 +29,6 @@ builder.Services.AddDbContext<ApplicationDbContext>(option =>
 
 builder.Services.AddScoped<ITronWalletService, TronWalletService>();
 
-// Configure other services
 var tronNetOptions = builder.Configuration.GetSection("TronNet").Get<TronNetOptions>();
 builder.Services.AddTronNet(x =>
 {
@@ -36,11 +39,10 @@ builder.Services.AddTronNet(x =>
 });
 builder.Services.AddHttpClient();
 builder.Services.AddScoped<ITronService, TronService>();
-builder.Services.AddHostedService<TronWalletAmountUpdateService>(); // Add hosted service
+builder.Services.AddHostedService<TronWalletAmountUpdateService>(); 
 
 var app = builder.Build();
 app.UseSerilogRequestLogging();
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();

@@ -17,6 +17,7 @@ using Network = TronWalletApi.Models.Network;
 using TronWalletApi.Enums;
 using NBitcoin;
 using Google.Rpc;
+using Serilog;
 public class TronService : ITronService
 {
     private readonly HttpClient _client;
@@ -50,7 +51,7 @@ public class TronService : ITronService
     {
         try
         {
-            _logger.LogInformation("deneme");
+         
             var ecKey = TronECKey.GenerateKey(TronNetwork.MainNet);
             var privateKey = ecKey.GetPrivateKey();
             var address = ecKey.GetPublicAddress();
@@ -278,6 +279,7 @@ public class TronService : ITronService
                             TransactionType = request.TransactionType,
                             TransactionHash = transactionHash,
                         };
+                        Log.Error("TRX Transfer İşlemi Başarılı.");
                         _applicationDbContext.TransferHistoryModels.Add(transferHistory);
                         await _applicationDbContext.SaveChangesAsync();
                     }
@@ -301,6 +303,7 @@ public class TronService : ITronService
                             TransactionType = request.TransactionType,
                             TransactionHash = null,
                         };
+                        Log.Error("TRX Transfer İşlemi Sırasında Bir Sorun Oluştu.");
                         _applicationDbContext.TransferHistoryModels.Add(transferHistory);
                         await _applicationDbContext.SaveChangesAsync();
                     }
@@ -346,7 +349,6 @@ public class TronService : ITronService
     }
     public async Task UsdtTransfer(TransferRequest request)
     {
-
         var network = await _applicationDbContext.Networks.FirstOrDefaultAsync(n => n.Type == NetworkType.Network);
         string adminAddress = network.AdminWallet;
         var senderprivatekey = await GetPrivateKeyFromDatabase(request.SenderAddress);
@@ -420,7 +422,6 @@ public class TronService : ITronService
                     };
                     _applicationDbContext.TransferHistoryModels.Add(historyModel);
                     await _applicationDbContext.SaveChangesAsync();
-
                 }
                 else
                 {
@@ -486,7 +487,7 @@ public class TronService : ITronService
     }
     private async Task<bool> TransferControl(TransferRequest request)
     {
-        //var Commission = 0.15m;
+        
         var Commission = await _applicationDbContext.Networks
         .FirstOrDefaultAsync(w => w.Name == request.CoinName);
 
@@ -585,7 +586,6 @@ public class TronService : ITronService
             throw new ApplicationException($"İşlem ücretini alma sırasında bir hata oluştu: {ex.Message}", ex);
         }
     }
-
 }
 
 
