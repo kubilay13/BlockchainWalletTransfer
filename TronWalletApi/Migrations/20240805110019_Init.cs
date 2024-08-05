@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace TronWalletApi.Migrations
 {
     /// <inheritdoc />
-    public partial class Init : Migration
+    public partial class Init : Migration 
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)

@@ -224,6 +224,10 @@ public class TronService : ITronService
         {
             if (request != null)
             {
+                if (request.SenderAddress == request.ReceiverAddress)
+                {
+                    throw new ApplicationException("Alıcı Cüzdan Adresiyle Gönderici Adres Aynılar.");
+                }
                 var _transferLimit = await TransferControl(request);
 
                 if (!_transferLimit)
@@ -351,9 +355,13 @@ public class TronService : ITronService
         var contractClient = _contractClientFactory.CreateClient(ContractProtocol.TRC20);
         var wallet = await _applicationDbContext.TronWalletModels.FirstOrDefaultAsync(q => q.WalletAddress == request.SenderAddress);
 
+        if(request.SenderAddress==request.ReceiverAddress)
+        {
+            throw new ApplicationException("Alıcı Cüzdan Adresiyle Gönderici Adres Aynılar.");
+        }
         if (wallet.UsdtAmount < request.Amount && wallet.UsdtAmount == 0)
         {
-
+            throw new ApplicationException("Transfer İşlemini Karşılayacak Miktar Cüzdanınızda Yok.");
         }
         else
         {
