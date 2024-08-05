@@ -314,11 +314,11 @@ public class TronService : ITronService
                     var network = await _applicationDbContext.Networks.FirstOrDefaultAsync(n => n.Type == NetworkType.Network);
                     string adminAddress = network.AdminWallet;
 
-                    var transactionCommission = request.Amount - network.Commission * 1000000;
+                    var transactionCommission = request.Amount - network.Commission ;
 
                     var AdmintransactionClient = _tronClient.GetTransaction();
 
-                    var AdminsignedTransaction = await _transactionClient.CreateTransactionAsync(request.SenderAddress, network.AdminWallet, (long)network.Commission);
+                    var AdminsignedTransaction = await _transactionClient.CreateTransactionAsync(request.SenderAddress, network.AdminWallet, (long)network.Commission * 1000000);
 
                     var AdmintransactionSigned = _transactionClient.GetTransactionSign(AdminsignedTransaction.Transaction, senderAddress!.PrivateKey);
 
