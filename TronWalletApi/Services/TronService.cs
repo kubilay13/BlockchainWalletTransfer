@@ -349,6 +349,9 @@ public class TronService : ITronService
     }
     public async Task UsdtTransfer(TransferRequest request)
     {
+        var privatekey = await _applicationDbContext.TronWalletModels.FirstOrDefaultAsync(q=>q.WalletAddress==request.SenderAddress);
+        string senderadress = privatekey.PrivateKey;
+
         var network = await _applicationDbContext.Networks.FirstOrDefaultAsync(n => n.Type == NetworkType.Network);
         string adminAddress = network.AdminWallet;
         var senderprivatekey = await GetPrivateKeyFromDatabase(request.SenderAddress);
@@ -375,7 +378,7 @@ public class TronService : ITronService
                _usdtContractAddress,
                account,
                request.ReceiverAddress,
-               request.Amount - network.Commission,
+               request.Amount /*- network.Commission*/,
                string.Empty,
                feeAmount
                );
@@ -425,14 +428,12 @@ public class TronService : ITronService
                 }
                 else
                 {
-                    var commissionResult = await contractClient.TransferAsync(
-                     _usdtContractAddress,
-                     account,
-                     adminAddress,
-                     network.Commission,
-                     string.Empty,
-                     feeAmount
-                     );
+                    var AdminsignedTransaction = await _transactionClient.CreateTransactionAsync(request.SenderAddress, network.AdminWallet, (long)network.Commission * 1000000);
+
+                    var AdmintransactionSigned = _transactionClient.GetTransactionSign(AdminsignedTransaction.Transaction, privatekey.PrivateKey);
+
+                    var Adminresult = await _transactionClient.BroadcastTransactionAsync(AdmintransactionSigned);
+
                     var historyModel = new TransferHistoryModel
                     {
                         SendingAddress = request.SenderAddress,
@@ -466,7 +467,6 @@ public class TronService : ITronService
                         _applicationDbContext.TronWalletModels.Update(receiverAddress);
                     }
                     await _applicationDbContext.SaveChangesAsync();
-
                 }
             }
         }
