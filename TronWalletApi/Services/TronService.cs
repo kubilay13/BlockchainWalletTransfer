@@ -7,16 +7,11 @@ using HDWallet.Core;
 using TronNet.Crypto;
 using Newtonsoft.Json;
 using Google.Protobuf;
-using TronWalletApi.BackgroundServices;
 using TronWalletApi.Models.TransactionModel;
 using TronNet.Contracts;
 using Transaction = TronNet.Protocol.Transaction;
 using Nethereum.Util;
-using TronNet.Protocol;
-using Network = TronWalletApi.Models.Network;
 using TronWalletApi.Enums;
-using NBitcoin;
-using Google.Rpc;
 using Serilog;
 public class TronService : ITronService
 {
@@ -50,11 +45,9 @@ public class TronService : ITronService
     {
         try
         {
-         
             var ecKey = TronECKey.GenerateKey(TronNetwork.MainNet);
             var privateKey = ecKey.GetPrivateKey();
             var address = ecKey.GetPublicAddress();
-
             var wallet = new TronWalletModel
             {
                 WalletName = walletName,
@@ -69,14 +62,12 @@ public class TronService : ITronService
             await _applicationDbContext.SaveChangesAsync();
             var network = await _applicationDbContext.Networks.FirstOrDefaultAsync(n => n.Type == NetworkType.Network);
             string adminAddress = network.AdminWallet;
-
             await SendTronAsync(adminAddress, address, 20000000);
             var response = $"PrivateKey: {wallet.PrivateKey}\nWalletAdress: {wallet.WalletAddress}";
             return response;
         }
         catch (Exception ex)
         {
-
             throw new ApplicationException("Tron cüzdanı oluşturma işlemi başarısız oldu.", ex);
         }
     }
@@ -84,24 +75,17 @@ public class TronService : ITronService
     {
         try
         {
-
             Console.WriteLine($"SendTronAsync içinde amount: {amount}");
             var transactionClient = _tronClient.GetTransaction();
             var signedTransaction = await _transactionClient.CreateTransactionAsync(senderAddress, receiverAddress, amount);
-
             var network = await _applicationDbContext.Networks.FirstOrDefaultAsync(n => n.Type == NetworkType.Network);
             string adminprivatekey = network.AdminWalletPrivateKey;
-
-
             var transactionSigned = _transactionClient.GetTransactionSign(signedTransaction.Transaction, adminprivatekey);
-
             var result = await _transactionClient.BroadcastTransactionAsync(transactionSigned);
-
             if (!result.Result)
             {
                 throw new ApplicationException("TRX gönderimi başarısız oldu.");
             }
-
             var wallet = await _applicationDbContext.TronWalletModels.FirstOrDefaultAsync(w => w.WalletAddress == receiverAddress);
             if (wallet != null)
             {
@@ -125,16 +109,12 @@ public class TronService : ITronService
         {
             var hexAddress = Base58Encoder.DecodeFromBase58Check(address).ToHexString();
             string apiUrl = $"/wallet/getaccount?address={hexAddress}";
-
             var response = await _client.GetAsync(apiUrl);
             response.EnsureSuccessStatusCode();
-
             var responseBody = await response.Content.ReadAsStringAsync();
             Console.WriteLine("Response Body:");
             Console.WriteLine(responseBody);
-
             var jsonObject = JObject.Parse(responseBody);
-
             if (jsonObject["balance"] != null && decimal.TryParse(jsonObject["balance"].ToString(), out decimal balance))
             {
                 return balance / 1000000m;
@@ -153,11 +133,9 @@ public class TronService : ITronService
     {
         try
         {
-           
             var account = _walletClient.GetAccount(privatekey);
             var protocol = _contractClientFactory.CreateClient(ContractProtocol.TRC20);
             var usdtbalance = await protocol.BalanceOfAsync(_configuration.GetValue<string>("Contract:Usdt"), account);
-
             if (usdtbalance != null)
             {
                 return usdtbalance;
@@ -188,7 +166,6 @@ public class TronService : ITronService
         decimal tronPriceInUsd = json["tron"]["usd"].Value<decimal>();
         return tronPriceInUsd;
     }
-
     public async Task Transfer(TransferRequest request)
     {
         switch (request!.CoinName!.ToUpper())
@@ -202,7 +179,6 @@ public class TronService : ITronService
                 break;
         }
     }
-
     private async Task TrxTransfer(TransferRequest request)
     {
         try
@@ -221,23 +197,22 @@ public class TronService : ITronService
                 }
                 var _network = await _applicationDbContext.Networks
                     .FirstOrDefaultAsync(w => w.Name == request.CoinName);
-
                 var network = await _applicationDbContext.Networks.FirstOrDefaultAsync(n => n.Type == NetworkType.Network);
                 string adminAddress = network.AdminWallet;
                 var _comission =_network!.Commission;
                 var _amount = UnitConversion.Convert.ToWei(request.Amount, (int)_network.Decimal);
                 var senderAddress = await _applicationDbContext.TronWalletModels.FirstOrDefaultAsync(w => w.WalletAddress == request.SenderAddress);
+                var trxamount = await _applicationDbContext.TronWalletModels.FirstOrDefaultAsync(n => n.TrxAmount == request.Amount);
+                if (_comission > trxamount.TrxAmount)
+                {
+                    throw new ApplicationException("Alınacak Komüsyon Tutarı Bakiyenizde Bulunmuyor.");
+                }
                 if (_amount > 0)
                 {
                     var transactionClient = _tronClient.GetTransaction();
-
                     var signedTransaction = await _transactionClient.CreateTransactionAsync(request.SenderAddress, request.ReceiverAddress, (long)_amount);
-
                     var transactionSigned = _transactionClient.GetTransactionSign(signedTransaction.Transaction, senderAddress!.PrivateKey);
-
                     var result = await _transactionClient.BroadcastTransactionAsync(transactionSigned);
-
-
                     if (!result.Result)
                     {
                         throw new ApplicationException($"Trx transfer işlemi başarısız oldu. Hata mesajı: {result.Message}");
@@ -301,17 +276,12 @@ public class TronService : ITronService
                             receiverAddress.TrxAmount += request.Amount;
                             _applicationDbContext.TronWalletModels.Update(receiverAddress);
                         }
-
                         await _applicationDbContext.SaveChangesAsync();
                     }
                     var transactionCommission = (request.Amount * network.Commission) / 100 ;
-
                     var AdmintransactionClient = _tronClient.GetTransaction();
-
                     var AdminsignedTransaction = await _transactionClient.CreateTransactionAsync(request.SenderAddress, network.AdminWallet, (long)transactionCommission * 1000000);
-
                     var AdmintransactionSigned = _transactionClient.GetTransactionSign(AdminsignedTransaction.Transaction, senderAddress!.PrivateKey);
-
                     var Adminresult = await _transactionClient.BroadcastTransactionAsync(AdmintransactionSigned);
                 }
             }
@@ -339,7 +309,6 @@ public class TronService : ITronService
         var contractClient = _contractClientFactory.CreateClient(ContractProtocol.TRC20);
         var wallet = await _applicationDbContext.TronWalletModels.FirstOrDefaultAsync(q => q.WalletAddress == request.SenderAddress);
         string senderadress = wallet.PrivateKey;
-
         if (request.SenderAddress==request.ReceiverAddress)
         {
             throw new ApplicationException("Alıcı Cüzdan Adresiyle Gönderici Adres Aynılar.");
@@ -360,10 +329,8 @@ public class TronService : ITronService
                string.Empty,
                feeAmount
                );
-
                 if (transferResult == null)
                 {
-
                     var successError = new TransactionErrorHistoryModel
                     {
                         SendingAddress = request.SenderAddress,
@@ -408,13 +375,9 @@ public class TronService : ITronService
                 {
                     var transactionCommission = (request.Amount * network.Commission) / 100;
                     var AdmintransactionClient = _tronClient.GetTransaction();
-
                     var AdminsignedTransaction = await _transactionClient.CreateTransactionAsync(request.SenderAddress, network.AdminWallet, (long)transactionCommission * 1000000);
-
                     var AdmintransactionSigned = _transactionClient.GetTransactionSign(AdminsignedTransaction.Transaction, account.PrivateKey);
-
                     var Adminresult = await _transactionClient.BroadcastTransactionAsync(AdmintransactionSigned);
-
                     var historyModel = new TransferHistoryModel
                     {
                         SendingAddress = request.SenderAddress,
@@ -469,12 +432,9 @@ public class TronService : ITronService
     {
         var Commission = await _applicationDbContext.Networks
         .FirstOrDefaultAsync(w => w.Name == request.CoinName);
-
         var _comission = Commission!.Commission;
-
         var senderWallet = await _applicationDbContext.TronWalletModels
            .FirstOrDefaultAsync(w => w.WalletAddress == request.SenderAddress);
-
         if (request.TransactionType != TronWalletApi.Enums.TransactionType.Deposit)
         {
             var twentyFourHoursAgo = DateTime.UtcNow.AddHours(-24);
@@ -486,7 +446,6 @@ public class TronService : ITronService
                 throw new ApplicationException("Günlük transfer sınırını aştınız.");
             }
         }
-
         if (senderWallet == null)
         {
             throw new ApplicationException($"Gönderen adres {request.SenderAddress} bulunamadı.");
@@ -495,7 +454,6 @@ public class TronService : ITronService
         {
             throw new ApplicationException("Gönderilecek miktar 0'dan büyük olmalıdır.");
         }
-
         if (senderWallet.TrxAmount < request.Amount + _comission)
         {
             throw new ApplicationException($"Yetersiz bakiye.Bakiye {request.Amount + _comission} tutarından fazla olmalıdır.");
@@ -504,7 +462,6 @@ public class TronService : ITronService
              .FirstOrDefaultAsync(w => w.WalletAddress == request.ReceiverAddress);
         return true;
     }
-
     private string GetTransactionHash(Transaction signedTransaction)
     {
         using (var sha256 = System.Security.Cryptography.SHA256.Create())
@@ -520,23 +477,17 @@ public class TronService : ITronService
         {
             var response = await _httpClient.GetAsync($"https://nile.trongrid.io/walletsolidity/gettransactioninfobyid?value={transactionHash}");
             response.EnsureSuccessStatusCode();
-
             var responseString = await response.Content.ReadAsStringAsync();
-
             Console.WriteLine("API Yanıtı: " + responseString);
-
             if (string.IsNullOrWhiteSpace(responseString))
             {
                 throw new ApplicationException($"Hash değeri '{transactionHash}' için API yanıtı boş.");
             }
-
             var transactionInfo = JsonConvert.DeserializeObject<TransactionInfoModel>(responseString);
-
             if (transactionInfo == null)
             {
                 throw new ApplicationException($"Hash değeri '{transactionHash}' için işlem bilgisi bulunamadı.");
             }
-
             if (transactionInfo.Receipt == null)
             {
                 throw new ApplicationException($"Hash değeri '{transactionHash}' için işlem ücreti bilgisi eksik. Yanıt: {responseString}");
