@@ -49,7 +49,7 @@ public class WalletController : ControllerBase
         try
         {
             var balance = await _tronService.GetBalanceAsync(address);
-            var trxUsdPrice = await _tronService.GetTronUsdPriceAsync();
+            var trxUsdPrice = await _tronService.GetTronUsdApiPriceAsync();
             var balanceInUsd = balance * trxUsdPrice;
 
             return Ok(new
