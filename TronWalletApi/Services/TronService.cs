@@ -20,6 +20,7 @@ using Google.Rpc;
 using Serilog;
 public class TronService : ITronService
 {
+    private readonly IConfiguration _configuration;
     private readonly HttpClient _client;
     private readonly ITronClient _tronClient;
     private readonly ApplicationDbContext _applicationDbContext;
@@ -28,10 +29,7 @@ public class TronService : ITronService
     private readonly HttpClient _httpClient;
     private readonly ILogger<TronService> _logger;
     private readonly IContractClientFactory _contractClientFactory;
-    private readonly string _usdtContractAddress = "TXYZopYRdj2D9XRtbG411XZZ3kM5VkAeBf";
-   
-
-    public TronService(HttpClient client, ITronClient tronClient, ApplicationDbContext applicationDbContext, IWalletClient walletClient, ITransactionClient transactionClient, HttpClient httpClient, ILogger<TronService> logger, IContractClientFactory contractClientFactory)
+    public TronService(HttpClient client, ITronClient tronClient, ApplicationDbContext applicationDbContext, IWalletClient walletClient, ITransactionClient transactionClient, HttpClient httpClient, ILogger<TronService> logger, IContractClientFactory contractClientFactory, IConfiguration configuration)
     {
         _client = client;
         _client.BaseAddress = new Uri("https://nile.trongrid.io");
@@ -46,6 +44,7 @@ public class TronService : ITronService
         _httpClient = httpClient;
         _logger = logger;
         _contractClientFactory = contractClientFactory;
+        _configuration = configuration;
     }
     public async Task<string> CreateWallet(string walletName)
     {
@@ -81,7 +80,6 @@ public class TronService : ITronService
             throw new ApplicationException("Tron cüzdanı oluşturma işlemi başarısız oldu.", ex);
         }
     }
-
     public async Task SendTronAsync(string senderAddress, string receiverAddress, long amount)
     {
         try
@@ -155,9 +153,10 @@ public class TronService : ITronService
     {
         try
         {
+           
             var account = _walletClient.GetAccount(privatekey);
             var protocol = _contractClientFactory.CreateClient(ContractProtocol.TRC20);
-            var usdtbalance = await protocol.BalanceOfAsync(_usdtContractAddress, account);
+            var usdtbalance = await protocol.BalanceOfAsync(_configuration.GetValue<string>("Contract:Usdt"), account);
 
             if (usdtbalance != null)
             {
@@ -354,7 +353,7 @@ public class TronService : ITronService
             if (wallet.TrxAmount >= commission)
             {
                 var transferResult = await contractClient.TransferAsync(
-               _usdtContractAddress,
+               network.Contract,
                account,
                request.ReceiverAddress,
                request.Amount,
