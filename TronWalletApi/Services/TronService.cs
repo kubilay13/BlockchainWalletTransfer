@@ -203,10 +203,7 @@ public class TronService : ITronService
                 var _amount = UnitConversion.Convert.ToWei(request.Amount, (int)_network.Decimal);
                 var senderAddress = await _applicationDbContext.TronWalletModels.FirstOrDefaultAsync(w => w.WalletAddress == request.SenderAddress);
                 var trxamount = await _applicationDbContext.TronWalletModels.FirstOrDefaultAsync(n => n.TrxAmount == request.Amount);
-                if (_comission > trxamount.TrxAmount)
-                {
-                    throw new ApplicationException("Alınacak Komüsyon Tutarı Bakiyenizde Bulunmuyor.");
-                }
+              
                 if (_amount > 0)
                 {
                     var transactionClient = _tronClient.GetTransaction();
@@ -321,7 +318,7 @@ public class TronService : ITronService
         {
             if (wallet.TrxAmount >= commission)
             {
-                var transferResult = await contractClient.TransferAsync(
+               var transferResult = await contractClient.TransferAsync(
                network.Contract,
                account,
                request.ReceiverAddress,
@@ -454,7 +451,7 @@ public class TronService : ITronService
         {
             throw new ApplicationException("Gönderilecek miktar 0'dan büyük olmalıdır.");
         }
-        if (senderWallet.TrxAmount < request.Amount + _comission)
+        if (senderWallet.TrxAmount < request.Amount /*+_comission*/)
         {
             throw new ApplicationException($"Yetersiz bakiye.Bakiye {request.Amount + _comission} tutarından fazla olmalıdır.");
         }
@@ -470,7 +467,6 @@ public class TronService : ITronService
             return BitConverter.ToString(hash).Replace("-", "").ToLower();
         }
     }
-
     public async Task<TransactionInfoModel> GetTransactionFeeAsync(string transactionHash)
     {
         try
