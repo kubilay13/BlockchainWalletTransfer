@@ -12,7 +12,7 @@ using TronWalletApi.Context;
 namespace TronWalletApi.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240805110019_Init")]
+    [Migration("20240806123033_Init")]
     partial class Init
     {
         /// <inheritdoc />
@@ -376,6 +376,9 @@ namespace TronWalletApi.Migrations
 
                     b.Property<decimal>("TrxAmount")
                         .HasColumnType("decimal(18, 8)");
+
+                    b.Property<decimal>("UsdcAmount")
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<decimal>("UsdtAmount")
                         .HasColumnType("decimal(18, 8)");

@@ -92,19 +92,19 @@ public class WalletController : ControllerBase
             return StatusCode(500, $"Sunucu hatası: {ex.Message}");
         }
     }
-    [HttpPost("TransferUsdt")]
-    public async Task<IActionResult> UsdtTransfer([FromBody] TransferRequest request)
-    {
-        try
-        {
-            var usdt =  _tronService.UsdtTransfer(request); 
-            return Ok(usdt);
-        }
-        catch (Exception ex)
-        {
-            return BadRequest("USDT transferi sırasında bir hata oluştu: " + ex.Message);
-        }
-    }
+    //[HttpPost("TokenTransfer")]
+    //public async Task<IActionResult> TokenTransfer([FromBody] TransferRequest request)
+    //{
+    //    try
+    //    {
+    //        var usdt =  _tronService.TokenTransfer(request); 
+    //        return Ok(usdt);
+    //    }
+    //    catch (Exception ex)
+    //    {
+    //        return BadRequest("USDT transferi sırasında bir hata oluştu: " + ex.Message);
+    //    }
+    //}
 
 
 }

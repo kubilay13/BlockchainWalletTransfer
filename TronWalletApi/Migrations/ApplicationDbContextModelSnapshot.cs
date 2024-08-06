@@ -374,6 +374,9 @@ namespace TronWalletApi.Migrations
                     b.Property<decimal>("TrxAmount")
                         .HasColumnType("decimal(18, 8)");
 
+                    b.Property<decimal>("UsdcAmount")
+                        .HasColumnType("decimal(18,2)");
+
                     b.Property<decimal>("UsdtAmount")
                         .HasColumnType("decimal(18, 8)");
 

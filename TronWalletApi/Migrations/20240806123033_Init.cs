@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace TronWalletApi.Migrations
 {
     /// <inheritdoc />
-    public partial class Init : Migration 
+    public partial class Init : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -158,6 +158,7 @@ namespace TronWalletApi.Migrations
                     LastTransactionTime = table.Column<string>(type: "nvarchar(8)", maxLength: 8, nullable: true),
                     TrxAmount = table.Column<decimal>(type: "decimal(18,8)", nullable: false),
                     UsdtAmount = table.Column<decimal>(type: "decimal(18,8)", nullable: false),
+                    UsdcAmount = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     Network = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     WalletTronScanURL = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: true),
                     TransactionLimit = table.Column<bool>(type: "bit", nullable: false)
