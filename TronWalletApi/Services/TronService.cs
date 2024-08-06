@@ -330,7 +330,7 @@ public class TronService : ITronService
     }
     public async Task UsdtTransfer(TransferRequest request)
     {
-        var network = await _applicationDbContext.Networks.FirstOrDefaultAsync(n => n.Type == NetworkType.Network);
+        var network = await _applicationDbContext.Networks.FirstOrDefaultAsync(n => n.Type == NetworkType.Network && n.Name==request.CoinName);
         string adminAddress = network.AdminWallet;
         var senderprivatekey = await GetPrivateKeyFromDatabase(request.SenderAddress);
         var account = _walletClient.GetAccount(senderprivatekey);
@@ -407,11 +407,13 @@ public class TronService : ITronService
                 }
                 else
                 {
-                   
-                    var transactionCommission = request.Amount / network.Commission;
-                    var commissionAmount = network.Commission * 1000000;
+                    var transactionCommission = (request.Amount * network.Commission) / 100;
+                    var AdmintransactionClient = _tronClient.GetTransaction();
+
                     var AdminsignedTransaction = await _transactionClient.CreateTransactionAsync(request.SenderAddress, network.AdminWallet, (long)transactionCommission * 1000000);
-                    var AdmintransactionSigned = _transactionClient.GetTransactionSign(AdminsignedTransaction.Transaction, wallet.PrivateKey);
+
+                    var AdmintransactionSigned = _transactionClient.GetTransactionSign(AdminsignedTransaction.Transaction, account.PrivateKey);
+
                     var Adminresult = await _transactionClient.BroadcastTransactionAsync(AdmintransactionSigned);
 
                     var historyModel = new TransferHistoryModel
