@@ -223,6 +223,8 @@ public class TronService : ITronService
                 var _network = await _applicationDbContext.Networks
                     .FirstOrDefaultAsync(w => w.Name == request.CoinName);
 
+                var network = await _applicationDbContext.Networks.FirstOrDefaultAsync(n => n.Type == NetworkType.Network);
+                string adminAddress = network.AdminWallet;
                 var _comission =_network!.Commission;
                 var _amount = UnitConversion.Convert.ToWei(request.Amount, (int)_network.Decimal);
                 var senderAddress = await _applicationDbContext.TronWalletModels.FirstOrDefaultAsync(w => w.WalletAddress == request.SenderAddress);
@@ -303,12 +305,7 @@ public class TronService : ITronService
 
                         await _applicationDbContext.SaveChangesAsync();
                     }
-
-                    var network = await _applicationDbContext.Networks.FirstOrDefaultAsync(n => n.Type == NetworkType.Network);
-                    string adminAddress = network.AdminWallet;
-                    var commissionAmount = network.Commission * 1000000;
-
-                    var transactionCommission = request.Amount /network.Commission;
+                    var transactionCommission = (request.Amount * network.Commission) / 100 ;
 
                     var AdmintransactionClient = _tronClient.GetTransaction();
 
@@ -333,9 +330,6 @@ public class TronService : ITronService
     }
     public async Task UsdtTransfer(TransferRequest request)
     {
-        var Senderprivatekey = await _applicationDbContext.TronWalletModels.FirstOrDefaultAsync(q=>q.WalletAddress==request.SenderAddress);
-        string senderadress = Senderprivatekey.PrivateKey;
-
         var network = await _applicationDbContext.Networks.FirstOrDefaultAsync(n => n.Type == NetworkType.Network);
         string adminAddress = network.AdminWallet;
         var senderprivatekey = await GetPrivateKeyFromDatabase(request.SenderAddress);
@@ -345,8 +339,9 @@ public class TronService : ITronService
         decimal commission = request.Amount - commissionPercentage;
         var contractClient = _contractClientFactory.CreateClient(ContractProtocol.TRC20);
         var wallet = await _applicationDbContext.TronWalletModels.FirstOrDefaultAsync(q => q.WalletAddress == request.SenderAddress);
+        string senderadress = wallet.PrivateKey;
 
-        if(request.SenderAddress==request.ReceiverAddress)
+        if (request.SenderAddress==request.ReceiverAddress)
         {
             throw new ApplicationException("Alıcı Cüzdan Adresiyle Gönderici Adres Aynılar.");
         }
@@ -362,7 +357,7 @@ public class TronService : ITronService
                _usdtContractAddress,
                account,
                request.ReceiverAddress,
-               request.Amount /*- network.Commission*/,
+               request.Amount,
                string.Empty,
                feeAmount
                );
@@ -412,8 +407,11 @@ public class TronService : ITronService
                 }
                 else
                 {
-                    var AdminsignedTransaction = await _transactionClient.CreateTransactionAsync(request.SenderAddress, network.AdminWallet, (long)network.Commission * 1000000);
-                    var AdmintransactionSigned = _transactionClient.GetTransactionSign(AdminsignedTransaction.Transaction, Senderprivatekey.PrivateKey);
+                   
+                    var transactionCommission = request.Amount / network.Commission;
+                    var commissionAmount = network.Commission * 1000000;
+                    var AdminsignedTransaction = await _transactionClient.CreateTransactionAsync(request.SenderAddress, network.AdminWallet, (long)transactionCommission * 1000000);
+                    var AdmintransactionSigned = _transactionClient.GetTransactionSign(AdminsignedTransaction.Transaction, wallet.PrivateKey);
                     var Adminresult = await _transactionClient.BroadcastTransactionAsync(AdmintransactionSigned);
 
                     var historyModel = new TransferHistoryModel
