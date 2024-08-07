@@ -12,7 +12,7 @@ using TronWalletApi.Context;
 namespace TronWalletApi.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240806123033_Init")]
+    [Migration("20240806223803_Init")]
     partial class Init
     {
         /// <inheritdoc />
@@ -74,6 +74,9 @@ namespace TronWalletApi.Migrations
                         .HasMaxLength(10)
                         .HasColumnType("nvarchar(10)");
 
+                    b.Property<decimal>("Commission")
+                        .HasColumnType("decimal(18, 8)");
+
                     b.Property<string>("Network")
                         .HasColumnType("nvarchar(max)");
 
@@ -123,9 +126,6 @@ namespace TronWalletApi.Migrations
 
                     b.Property<string>("TransactionUrl")
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<decimal>("TransferFee")
-                        .HasColumnType("decimal(18, 8)");
 
                     b.HasKey("Id");
 
@@ -144,6 +144,9 @@ namespace TronWalletApi.Migrations
                         .HasMaxLength(10)
                         .HasColumnType("nvarchar(10)");
 
+                    b.Property<decimal>("Commission")
+                        .HasColumnType("decimal(18, 8)");
+
                     b.Property<string>("Network")
                         .HasColumnType("nvarchar(max)");
 
@@ -193,9 +196,6 @@ namespace TronWalletApi.Migrations
 
                     b.Property<string>("TransactionUrl")
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<decimal>("TransferFee")
-                        .HasColumnType("decimal(18, 8)");
 
                     b.HasKey("Id");
 
@@ -284,6 +284,9 @@ namespace TronWalletApi.Migrations
                         .HasMaxLength(10)
                         .HasColumnType("nvarchar(10)");
 
+                    b.Property<decimal>("Commission")
+                        .HasColumnType("decimal(18, 8)");
+
                     b.Property<string>("Network")
                         .HasColumnType("nvarchar(max)");
 
@@ -333,9 +336,6 @@ namespace TronWalletApi.Migrations
 
                     b.Property<string>("TransactionUrl")
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<decimal>("TransferFee")
-                        .HasColumnType("decimal(18, 8)");
 
                     b.HasKey("Id");
 
@@ -378,7 +378,7 @@ namespace TronWalletApi.Migrations
                         .HasColumnType("decimal(18, 8)");
 
                     b.Property<decimal>("UsdcAmount")
-                        .HasColumnType("decimal(18,2)");
+                        .HasColumnType("decimal(18, 8)");
 
                     b.Property<decimal>("UsdtAmount")
                         .HasColumnType("decimal(18, 8)");
@@ -412,6 +412,9 @@ namespace TronWalletApi.Migrations
                     b.Property<string>("CoinType")
                         .HasMaxLength(10)
                         .HasColumnType("nvarchar(10)");
+
+                    b.Property<decimal>("Commission")
+                        .HasColumnType("decimal(18, 8)");
 
                     b.Property<string>("Network")
                         .HasColumnType("nvarchar(max)");
@@ -462,9 +465,6 @@ namespace TronWalletApi.Migrations
 
                     b.Property<string>("TransactionUrl")
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<decimal>("TransferFee")
-                        .HasColumnType("decimal(18, 8)");
 
                     b.HasKey("Id");
 

@@ -85,13 +85,14 @@ namespace TronWalletApi.Services.TronWalletService
                     {
                         try
                         {
-
                             var balance = await _tronService.GetBalanceAsync(wallet.WalletAddress!);
                             wallet.TrxAmount = balance;
 
                             var UsdtBalance = await _tronService.GetBalanceAsyncUsdt(wallet.WalletAddress, wallet.PrivateKey);
                             wallet.UsdtAmount = UsdtBalance;
 
+                            var UsdcBalance = await _tronService.GetBalanceAsyncUsdc(wallet.WalletAddress, wallet.PrivateKey);
+                            wallet.UsdcAmount = UsdcBalance;
 
                             var transferHistories = await _applicationDbContext.TransferHistoryModels
                                 .Where(th => th.NetworkFee == 0)

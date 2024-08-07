@@ -21,6 +21,7 @@ namespace TronWalletApi.Models
         public TransactionType TransactionType { get; set; }
         public string TransactionTypeString => TransactionType.ToString();
         public string? Network { get; set; }
+       
 
 
 

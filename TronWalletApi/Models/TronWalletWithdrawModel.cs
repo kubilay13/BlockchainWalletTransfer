@@ -12,7 +12,7 @@ namespace TronWalletApi.Models
         public decimal TransactionAmount { get; set; }
         public DateTime TransactionDate { get; set; }
         public string? TransactionDateTime { get; set; }
-        public decimal TransferFee { get; set; }
+        public decimal Commission { get; set; }
         public decimal NetworkFee { get; set; }
         public string? SenderTransactionUrl { get; set; }
         public string? ReceiverTransactionUrl { get; set; }

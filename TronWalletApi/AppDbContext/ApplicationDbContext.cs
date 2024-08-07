@@ -65,6 +65,10 @@ namespace TronWalletApi.Context
                .HasColumnType("decimal(18, 8)");
 
             modelBuilder.Entity<TronWalletModel>()
+               .Property(t => t.UsdcAmount)
+               .HasColumnType("decimal(18, 8)");
+
+            modelBuilder.Entity<TronWalletModel>()
                 .Property(t => t.WalletTronScanURL)
                 .HasMaxLength(255);
 
@@ -161,7 +165,7 @@ namespace TronWalletApi.Context
                 .HasMaxLength(8);
 
             modelBuilder.Entity<TransactionErrorHistoryModel>()
-                .Property(t => t.TransferFee)
+                .Property(t => t.Commission)
                 .HasColumnType("decimal(18, 8)");
 
             modelBuilder.Entity<TransactionErrorHistoryModel>()
@@ -208,7 +212,7 @@ namespace TronWalletApi.Context
                 .HasMaxLength(8);
 
             modelBuilder.Entity<TransactionSuccesHistoryModel>()
-                .Property(t => t.TransferFee)
+                .Property(t => t.Commission)
                 .HasColumnType("decimal(18, 8)");
 
             modelBuilder.Entity<TransactionSuccesHistoryModel>()
@@ -254,7 +258,7 @@ namespace TronWalletApi.Context
                 .HasMaxLength(8);
 
             modelBuilder.Entity<TronWalletDepositModel>()
-                .Property(t => t.TransferFee)
+                .Property(t => t.Commission)
                 .HasColumnType("decimal(18, 8)");
 
             modelBuilder.Entity<TronWalletDepositModel>()
@@ -301,7 +305,7 @@ namespace TronWalletApi.Context
                 .HasMaxLength(8);
 
             modelBuilder.Entity<TronWalletWithdrawModel>()
-                .Property(t => t.TransferFee)
+                .Property(t => t.Commission)
                 .HasColumnType("decimal(18, 8)");
 
             modelBuilder.Entity<TronWalletWithdrawModel>()
