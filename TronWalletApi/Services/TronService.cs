@@ -307,7 +307,6 @@ public class TronService : ITronService
         var network = await _applicationDbContext.Networks.FirstOrDefaultAsync(n => n.Type == NetworkType.Network && n.Name == request.CoinName);
         var senderprivatekey = await GetPrivateKeyFromDatabase(request.SenderAddress);
         var wallet = await _applicationDbContext.TronWalletModels.FirstOrDefaultAsync(q => q.WalletAddress == request.SenderAddress);
-        string senderadress = wallet.PrivateKey;
         decimal commissionPercentage = network.Commission;
         decimal commission = request.Amount - commissionPercentage;
         
@@ -324,6 +323,7 @@ public class TronService : ITronService
         }
         else
         {
+
             var contractClient = _contractClientFactory.CreateClient(ContractProtocol.TRC20);
             var account = _walletClient.GetAccount(senderprivatekey);
             if (wallet.TrxAmount >= commission)
@@ -341,6 +341,7 @@ public class TronService : ITronService
         }
     }
     private async Task WalletSaveHistoryUsdc(TransferRequest request)
+    
     {
         var network = await _applicationDbContext.Networks.FirstOrDefaultAsync(n => n.Type == NetworkType.Network && n.Name == request.CoinName);
         decimal commissionPercentage = network.Commission;
@@ -350,7 +351,6 @@ public class TronService : ITronService
         var UsdcFeeAmount = 40 * 1000000L;
         var contractClient = _contractClientFactory.CreateClient(ContractProtocol.TRC20);
         var transferResult = await contractClient.TransferAsync(network.Contract, account, request.ReceiverAddress, request.Amount, string.Empty, UsdcFeeAmount);
-        
         if (transferResult == null)
         {
             var historyModel = new TransferHistoryModel

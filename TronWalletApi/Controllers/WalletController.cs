@@ -67,7 +67,10 @@ public class WalletController : ControllerBase
     [HttpPost("Transfer(TRX,USDT,USDC)")]
     public async Task<IActionResult> Transfer([FromBody] TransferRequest request)
     {
-        if (request == null || string.IsNullOrEmpty(request.SenderAddress) || string.IsNullOrEmpty(request.ReceiverAddress) || request.Amount <= 0)
+        if (request == null ||
+            string.IsNullOrEmpty(request.SenderAddress) ||
+            string.IsNullOrEmpty(request.ReceiverAddress) ||
+            request.Amount <= 0)
         {
             return BadRequest("Geçersiz transfer isteği.");
         }
@@ -76,7 +79,12 @@ public class WalletController : ControllerBase
             var receiverWallet = await _applicationDbContext.TronWalletModels
                 .FirstOrDefaultAsync(w => w.WalletAddress == request.ReceiverAddress);
 
+            request.TransactionType = receiverWallet != null
+                ? TransactionType.Deposit
+                : TransactionType.Withdraw;
+
             await _tronService.TransferTRXorToken(request);
+
             return Ok("Transfer işlemi başarılı.");
         }
         catch (ArgumentException ex)
@@ -92,6 +100,7 @@ public class WalletController : ControllerBase
             return StatusCode(500, $"Sunucu hatası: {ex.Message}");
         }
     }
+
     //[HttpPost("TokenTransfer")]
     //public async Task<IActionResult> TokenTransfer([FromBody] TransferRequest request)
     //{
@@ -105,6 +114,4 @@ public class WalletController : ControllerBase
     //        return BadRequest("USDT transferi sırasında bir hata oluştu: " + ex.Message);
     //    }
     //}
-
-
 }
