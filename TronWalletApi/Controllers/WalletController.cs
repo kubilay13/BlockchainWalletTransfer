@@ -76,7 +76,7 @@ public class WalletController : ControllerBase
             var receiverWallet = await _applicationDbContext.TronWalletModels
                 .FirstOrDefaultAsync(w => w.WalletAddress == request.ReceiverAddress);
 
-            await _tronService.Transfer(request);
+            await _tronService.TransferTRXorToken(request);
             return Ok("Transfer işlemi başarılı.");
         }
         catch (ArgumentException ex)

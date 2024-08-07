@@ -12,7 +12,7 @@ using TronWalletApi.Context;
 namespace TronWalletApi.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240806223803_Init")]
+    [Migration("20240807130206_Init")]
     partial class Init
     {
         /// <inheritdoc />
