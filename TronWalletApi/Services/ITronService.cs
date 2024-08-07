@@ -7,7 +7,7 @@ public interface ITronService
     Task<decimal> GetBalanceAsyncUsdt(string address, string privatekey);
     Task<decimal> GetBalanceAsyncUsdc(string UsdcBalance, string privatekey);
     Task<decimal> GetTronUsdApiPriceAsync();
-    Task<decimal> GetBalance(string address);
+    Task<decimal> GetBalanceAsyncTrx(string address);
     Task SendTronAsync(string senderAddress, string receiverAddress, long amount);
     Task Transfer(TransferRequest request);
     Task<TransactionInfoModel> GetTransactionFeeAsync(string transactionHash);
