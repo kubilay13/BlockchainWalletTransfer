@@ -12,7 +12,6 @@ using Transaction = TronNet.Protocol.Transaction;
 using Nethereum.Util;
 using TronWalletApi.Enums;
 using Serilog;
-using Nethereum.Signer;
 public class TronService : ITronService
 {
     private readonly IConfiguration _configuration;
@@ -326,16 +325,12 @@ public class TronService : ITronService
         else
         {
             var contractClient = _contractClientFactory.CreateClient(ContractProtocol.TRC20);
-            var UsdcAmount = 40 * 1000000L;
             var account = _walletClient.GetAccount(senderprivatekey);
             if (wallet.TrxAmount >= commission)
             {
-                var transferResult = await contractClient.TransferAsync(
-                _configuration.GetValue<string>("Contract:Usdc"), account, request.ReceiverAddress, request.Amount, string.Empty, UsdcAmount);
-                await WalletTokenAdminComission(request);
                 if (wallet.UsdcAmount !=0)
                 {
-                    
+                    await WalletTokenAdminComission(request);
                     await WalletSaveHistoryUsdc(request);
                 }
                 else
