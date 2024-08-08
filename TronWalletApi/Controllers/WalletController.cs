@@ -1,18 +1,11 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Business.Models;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Threading.Tasks;
 using TronWalletApi.Context;
 using TronWalletApi.Enums;
-public class TransferRequest
-{
-    public string? SenderAddress { get; set; }
-    public string? ReceiverAddress { get; set; }
-    public decimal Amount { get; set; }
-    public string? CoinName { get; set; }
-    public TransactionType TransactionType { get; set; }
-}
 
 [ApiController]
 [Route("api/[controller]")]

@@ -10,24 +10,14 @@ namespace TronWalletApi.Context
         }
         public DbSet<TronWalletModel> TronWalletModels { get; set; }
         public DbSet<TransferHistoryModel> TransferHistoryModels { get; set; }
-        public DbSet<TronWalletDepositModel> TronWalletDepositModels { get; set; }
-        public DbSet<TronWalletWithdrawModel> TronWalletWithdrawModels { get; set; }
         public DbSet<TransactionSuccesHistoryModel> TransactionSuccesHistoryModels { get; set; }
-        public DbSet<TransactionErrorHistoryModel> TransactionErrorHistoryModels { get; set; }
         public DbSet<Network> Networks { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<TronWalletModel>().HasKey(t => t.Id);
             modelBuilder.Entity<TransferHistoryModel>().HasKey(t => t.Id);
-
-            modelBuilder.Entity<TransactionErrorHistoryModel>().HasKey(t => t.Id);
             modelBuilder.Entity<TransactionSuccesHistoryModel>().HasKey(t => t.Id);
-
-            modelBuilder.Entity<TronWalletDepositModel>().HasKey(t => t.Id);
-            modelBuilder.Entity<TronWalletWithdrawModel>().HasKey(t => t.Id);
-
-
 
             //TronWalletModel--
 
@@ -75,10 +65,6 @@ namespace TronWalletApi.Context
             modelBuilder.Entity<TronWalletModel>()
                 .Property(t => t.TransactionLimit)
                 .IsRequired();
-
-
-
-
 
             //TransferHistoryModel--
 
@@ -130,54 +116,6 @@ namespace TronWalletApi.Context
 
 
 
-
-            //TransactionErrorHistoryModel--
-
-            modelBuilder.Entity<TransactionErrorHistoryModel>()
-             .Property(t => t.SendingAddress)
-             .HasMaxLength(34)
-             .IsRequired();
-
-            modelBuilder.Entity<TransactionErrorHistoryModel>()
-                .Property(t => t.ReceivedAddress)
-                .HasMaxLength(34)
-                .IsRequired();
-
-            modelBuilder.Entity<TransactionErrorHistoryModel>()
-                .Property(t => t.TransactionHash)
-                .HasMaxLength(64)
-                .IsRequired();
-
-            modelBuilder.Entity<TransactionErrorHistoryModel>()
-                .Property(t => t.CoinType)
-                .HasMaxLength(10);
-
-            modelBuilder.Entity<TransactionErrorHistoryModel>()
-                .Property(t => t.TransactionNetwork)
-                .HasMaxLength(10);
-
-            modelBuilder.Entity<TransactionErrorHistoryModel>()
-                .Property(t => t.TransactionDate)
-                .HasColumnType("datetime2");
-
-            modelBuilder.Entity<TransactionErrorHistoryModel>()
-                .Property(t => t.TransactionDateTime)
-                .HasMaxLength(8);
-
-            modelBuilder.Entity<TransactionErrorHistoryModel>()
-                .Property(t => t.Commission)
-                .HasColumnType("decimal(18, 8)");
-
-            modelBuilder.Entity<TransactionErrorHistoryModel>()
-                .Property(t => t.NetworkFee)
-                .HasColumnType("decimal(18, 8)");
-
-            modelBuilder.Entity<TransactionErrorHistoryModel>()
-                .Property(t => t.TransactionStatus)
-                .IsRequired();
-
-
-
             //TransactionSuccesHistoryModel--
 
             modelBuilder.Entity<TransactionSuccesHistoryModel>()
@@ -224,97 +162,6 @@ namespace TronWalletApi.Context
                 .IsRequired();
 
 
-            //TronWalletDepositModel--
-
-            modelBuilder.Entity<TronWalletDepositModel>()
-            .Property(t => t.SendingAddress)
-            .HasMaxLength(34)
-            .IsRequired();
-
-            modelBuilder.Entity<TronWalletDepositModel>()
-                .Property(t => t.ReceivedAddress)
-                .HasMaxLength(34)
-                .IsRequired();
-
-            modelBuilder.Entity<TronWalletDepositModel>()
-                .Property(t => t.TransactionHash)
-                .HasMaxLength(64)
-                .IsRequired();
-
-            modelBuilder.Entity<TronWalletDepositModel>()
-                .Property(t => t.CoinType)
-                .HasMaxLength(10);
-
-            modelBuilder.Entity<TronWalletDepositModel>()
-                .Property(t => t.TransactionNetwork)
-                .HasMaxLength(10);
-
-            modelBuilder.Entity<TronWalletDepositModel>()
-                .Property(t => t.TransactionDate)
-                .HasColumnType("datetime2");
-
-            modelBuilder.Entity<TronWalletDepositModel>()
-                .Property(t => t.TransactionDateTime)
-                .HasMaxLength(8);
-
-            modelBuilder.Entity<TronWalletDepositModel>()
-                .Property(t => t.Commission)
-                .HasColumnType("decimal(18, 8)");
-
-            modelBuilder.Entity<TronWalletDepositModel>()
-                .Property(t => t.NetworkFee)
-                .HasColumnType("decimal(18, 8)");
-
-            modelBuilder.Entity<TronWalletDepositModel>()
-                .Property(t => t.TransactionStatus)
-                .IsRequired();
-
-
-
-            //TronWalletWithdrawModel--
-
-            modelBuilder.Entity<TronWalletWithdrawModel>()
-          .Property(t => t.SendingAddress)
-          .HasMaxLength(34)
-          .IsRequired();
-
-            modelBuilder.Entity<TronWalletWithdrawModel>()
-                .Property(t => t.ReceivedAddress)
-                .HasMaxLength(34)
-                .IsRequired();
-
-            modelBuilder.Entity<TronWalletWithdrawModel>()
-                .Property(t => t.TransactionHash)
-                .HasMaxLength(64)
-                .IsRequired();
-
-            modelBuilder.Entity<TronWalletWithdrawModel>()
-                .Property(t => t.CoinType)
-                .HasMaxLength(10);
-
-            modelBuilder.Entity<TronWalletWithdrawModel>()
-                .Property(t => t.TransactionNetwork)
-                .HasMaxLength(10);
-
-            modelBuilder.Entity<TronWalletWithdrawModel>()
-                .Property(t => t.TransactionDate)
-                .HasColumnType("datetime2");
-
-            modelBuilder.Entity<TronWalletWithdrawModel>()
-                .Property(t => t.TransactionDateTime)
-                .HasMaxLength(8);
-
-            modelBuilder.Entity<TronWalletWithdrawModel>()
-                .Property(t => t.Commission)
-                .HasColumnType("decimal(18, 8)");
-
-            modelBuilder.Entity<TronWalletWithdrawModel>()
-                .Property(t => t.NetworkFee)
-                .HasColumnType("decimal(18, 8)");
-
-            modelBuilder.Entity<TronWalletWithdrawModel>()
-                .Property(t => t.TransactionStatus)
-                .IsRequired();
         }
     }
 

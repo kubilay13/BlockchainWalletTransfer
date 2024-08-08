@@ -7,6 +7,7 @@ using TronWalletApi.BackgroundServices;
 using TronWalletApi.Services.TronWalletService;
 using Serilog;
 using Serilog.Sinks.SystemConsole.Themes;
+using Business.Services.TronService;
 
 var builder = WebApplication.CreateBuilder(args);
 
