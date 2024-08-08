@@ -1,4 +1,4 @@
-﻿namespace TronWalletApi.Models
+﻿namespace Business.Models.TronModels
 {
     public class TronApiModel
     {

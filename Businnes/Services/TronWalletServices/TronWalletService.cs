@@ -69,8 +69,6 @@ namespace TronWalletApi.Services.TronWalletService
             }
         }
 
-
-
         public async Task UpdateWalletAmountsAsync()
         {
             _logger.LogInformation("Wallet miktarları güncelleniyor.");

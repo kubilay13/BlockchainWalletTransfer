@@ -1,4 +1,4 @@
-﻿using Business.Models;
+﻿using Business.Models.TronModels;
 using TronWalletApi.Models;
 
 public interface ITronService

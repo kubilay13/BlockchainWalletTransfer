@@ -1,6 +1,5 @@
 ﻿using Newtonsoft.Json.Linq;
 using TronWalletApi.Context;
-using TronWalletApi.Models;
 using Microsoft.EntityFrameworkCore;
 using TronNet;
 using HDWallet.Core;
@@ -14,7 +13,7 @@ using TronWalletApi.Enums;
 using Serilog;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using Business.Models;
+using Business.Models.TronModels;
 public class TronService : ITronService
 {
     private readonly IConfiguration _configuration;

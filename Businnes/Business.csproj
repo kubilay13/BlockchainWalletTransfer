@@ -27,4 +27,8 @@
     <PackageReference Include="TronNet" Version="0.2.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Models\ETHModels\" />
+  </ItemGroup>
+
 </Project>

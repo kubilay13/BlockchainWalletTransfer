@@ -1,6 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Business.Models.TronModels;
+using Microsoft.EntityFrameworkCore;
 using TronWalletApi.Models;
-using TronWalletApi.Models.TransactionModel;
 namespace TronWalletApi.Context
 {
     public class ApplicationDbContext : DbContext
@@ -114,8 +114,6 @@ namespace TronWalletApi.Context
               .Property(t => t.WalletName)
               .HasMaxLength(100);
 
-
-
             //TransactionSuccesHistoryModel--
 
             modelBuilder.Entity<TransactionSuccesHistoryModel>()
@@ -160,8 +158,6 @@ namespace TronWalletApi.Context
             modelBuilder.Entity<TransactionSuccesHistoryModel>()
                 .Property(t => t.TransactionStatus)
                 .IsRequired();
-
-
         }
     }
 

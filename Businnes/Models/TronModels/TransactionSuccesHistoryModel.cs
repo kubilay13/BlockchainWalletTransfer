@@ -1,5 +1,5 @@
 ﻿using TronWalletApi.Enums;
-namespace TronWalletApi.Models.TransactionModel
+namespace Business.Models.TronModels
 {
     public class TransactionSuccesHistoryModel
     {

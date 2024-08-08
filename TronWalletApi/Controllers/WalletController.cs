@@ -1,4 +1,4 @@
-﻿using Business.Models;
+﻿using Business.Models.TronModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;

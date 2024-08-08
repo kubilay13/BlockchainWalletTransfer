@@ -1,5 +1,5 @@
 ﻿using TronWalletApi.Enums;
-namespace Business.Models
+namespace Business.Models.TronModels
 {
     public class TransferRequest
     {

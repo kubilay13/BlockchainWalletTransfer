@@ -22,7 +22,5 @@ namespace TronWalletApi.Models
         public string? AdminWallet { get; set; }
 
         public string? AdminWalletPrivateKey { get; set; }
-
-
     }
 }
