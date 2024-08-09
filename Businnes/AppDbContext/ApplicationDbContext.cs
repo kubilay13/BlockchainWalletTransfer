@@ -59,6 +59,10 @@ namespace TronWalletApi.Context
                .HasColumnType("decimal(18, 8)");
 
             modelBuilder.Entity<TronWalletModel>()
+             .Property(t => t.ETHAmount)
+             .HasColumnType("decimal(18, 8)");
+
+            modelBuilder.Entity<TronWalletModel>()
                 .Property(t => t.WalletTronScanURL)
                 .HasMaxLength(255);
 
