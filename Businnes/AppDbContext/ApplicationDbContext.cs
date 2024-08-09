@@ -20,6 +20,45 @@ namespace TronWalletApi.Context
             modelBuilder.Entity<TransactionSuccesHistoryModel>().HasKey(t => t.Id);
 
             base.OnModelCreating(modelBuilder);
+
+            modelBuilder.Entity<TronWalletModel>().HasData(
+                new TronWalletModel
+                {
+                    Id=1,
+                    WalletName = "TestAdress",
+                    PrivateKey = "5a87ccab1b8b8f2d86c24ad6f278d8030be5a17d056588242ef377d9c3ddeb8e",
+                    WalletAddress = "TXTVwsUMsWrWsvd61VRcE9Bsk4WbEY9DGv",
+                    CreatedAt = DateTime.UtcNow,
+                    LastTransactionAt = DateTime.UtcNow,
+                    LastTransactionTime = "10:49:03",
+                    TrxAmount = 0,
+                    UsdtAmount = 0,
+                    UsdcAmount = 0,
+                    ETHAmount = 0,
+                    Network = "Testnet(Nile)",
+                    WalletTronScanURL = "https://nile.tronscan.org/#/address/TXTVwsUMsWrWsvd61VRcE9Bsk4WbEY9DGv",
+                    TransactionLimit = false,
+                },
+                 new TronWalletModel
+                 {
+                     Id = 2,
+                     WalletName = "AdminAdress",
+                     PrivateKey = "0107932b30922231adff71b4b7c0b05bc948632f56c2b62f98bd18fefeae8a9e",
+                     WalletAddress = "TEWJWLwFL3dbMjXtj2smNfto9sXdWquF4N",
+                     CreatedAt = DateTime.UtcNow,
+                     LastTransactionAt = DateTime.UtcNow,
+                     LastTransactionTime = "10:49:03",
+                     TrxAmount = 0,
+                     UsdtAmount = 0,
+                     UsdcAmount = 0,
+                     ETHAmount = 0,
+                     Network = "Testnet(Nile)",
+                     WalletTronScanURL = "https://nile.tronscan.org/#/address/TEWJWLwFL3dbMjXtj2smNfto9sXdWquF4N",
+                     TransactionLimit = true,
+                 }
+                );
+
+
             modelBuilder.Entity<Network>().HasData(
                 new Network
                 {
@@ -39,7 +78,7 @@ namespace TronWalletApi.Context
                      Type = 0,
                      Networks = "TRON",
                      Name = "USDT",
-                     Contract = null,
+                     Contract = "TXYZopYRdj2D9XRtbG411XZZ3kM5VkAeBf",
                      Decimal = 6,
                      Commission = 10,
                      AdminWallet = "TEWJWLwFL3dbMjXtj2smNfto9sXdWquF4N",
@@ -50,7 +89,7 @@ namespace TronWalletApi.Context
                      Type = 0,
                      Networks = "TRON",
                      Name = "USDC",
-                     Contract = null,
+                     Contract = "TEMVynQpntMqkPxP6wXTW2K7e4sM3cRmWz",
                      Decimal = 6,
                      Commission = 10,
                      AdminWallet = "TEWJWLwFL3dbMjXtj2smNfto9sXdWquF4N",

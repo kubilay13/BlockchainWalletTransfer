@@ -12,7 +12,7 @@ using TronWalletApi.Context;
 namespace TronWalletApi.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240809074448_Init")]
+    [Migration("20240809092226_Init")]
     partial class Init
     {
         /// <inheritdoc />
@@ -225,6 +225,44 @@ namespace TronWalletApi.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("TronWalletModels");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            CreatedAt = new DateTime(2024, 8, 9, 9, 22, 25, 707, DateTimeKind.Utc).AddTicks(1455),
+                            CreatedAtTime = "12:22:25",
+                            ETHAmount = 0m,
+                            LastTransactionAt = new DateTime(2024, 8, 9, 9, 22, 25, 707, DateTimeKind.Utc).AddTicks(1455),
+                            LastTransactionTime = "10:49:03",
+                            Network = "Testnet(Nile)",
+                            PrivateKey = "5a87ccab1b8b8f2d86c24ad6f278d8030be5a17d056588242ef377d9c3ddeb8e",
+                            TransactionLimit = false,
+                            TrxAmount = 0m,
+                            UsdcAmount = 0m,
+                            UsdtAmount = 0m,
+                            WalletAddress = "TXTVwsUMsWrWsvd61VRcE9Bsk4WbEY9DGv",
+                            WalletName = "TestAdress",
+                            WalletTronScanURL = "https://nile.tronscan.org/#/address/TXTVwsUMsWrWsvd61VRcE9Bsk4WbEY9DGv"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            CreatedAt = new DateTime(2024, 8, 9, 9, 22, 25, 707, DateTimeKind.Utc).AddTicks(1463),
+                            CreatedAtTime = "12:22:25",
+                            ETHAmount = 0m,
+                            LastTransactionAt = new DateTime(2024, 8, 9, 9, 22, 25, 707, DateTimeKind.Utc).AddTicks(1463),
+                            LastTransactionTime = "10:49:03",
+                            Network = "Testnet(Nile)",
+                            PrivateKey = "0107932b30922231adff71b4b7c0b05bc948632f56c2b62f98bd18fefeae8a9e",
+                            TransactionLimit = true,
+                            TrxAmount = 0m,
+                            UsdcAmount = 0m,
+                            UsdtAmount = 0m,
+                            WalletAddress = "TEWJWLwFL3dbMjXtj2smNfto9sXdWquF4N",
+                            WalletName = "AdminAdress",
+                            WalletTronScanURL = "https://nile.tronscan.org/#/address/TEWJWLwFL3dbMjXtj2smNfto9sXdWquF4N"
+                        });
                 });
 
             modelBuilder.Entity("TronWalletApi.Models.Network", b =>
@@ -284,6 +322,7 @@ namespace TronWalletApi.Migrations
                             AdminWallet = "TEWJWLwFL3dbMjXtj2smNfto9sXdWquF4N",
                             AdminWalletPrivateKey = "0107932b30922231adff71b4b7c0b05bc948632f56c2b62f98bd18fefeae8a9e",
                             Commission = 10m,
+                            Contract = "TXYZopYRdj2D9XRtbG411XZZ3kM5VkAeBf",
                             Decimal = 6,
                             Name = "USDT",
                             Networks = "TRON",
@@ -295,6 +334,7 @@ namespace TronWalletApi.Migrations
                             AdminWallet = "TEWJWLwFL3dbMjXtj2smNfto9sXdWquF4N",
                             AdminWalletPrivateKey = "0107932b30922231adff71b4b7c0b05bc948632f56c2b62f98bd18fefeae8a9e",
                             Commission = 10m,
+                            Contract = "TEMVynQpntMqkPxP6wXTW2K7e4sM3cRmWz",
                             Decimal = 6,
                             Name = "USDC",
                             Networks = "TRON",

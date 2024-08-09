@@ -13,8 +13,7 @@ namespace Business.Services.TronWalletServices.BlockService
         }
         public async Task GetReadBlock()
         {
-            var wallets = await _applicationDbContext.TronWalletModels.ToListAsync();
-
+           
         }
     }
 }
