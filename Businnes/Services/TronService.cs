@@ -136,7 +136,7 @@ public class TronService : ITronService
         {
             var account = _walletClient.GetAccount(privatekey);
             var protocol = _contractClientFactory.CreateClient(ContractProtocol.TRC20);
-            var usdtbalance = await protocol.BalanceOfAsync(_configuration.GetValue<string>("Contract:Usdt"), account);
+            var usdtbalance = await protocol.BalanceOfAsync(_configuration.GetValue<string>("TRONNetworkContract:Usdt"), account);
             if (usdtbalance != null)
             {
                 return usdtbalance;
@@ -155,7 +155,7 @@ public class TronService : ITronService
     {
         var acount = _walletClient.GetAccount(privatekey);
         var protocol = _contractClientFactory.CreateClient(ContractProtocol.TRC20);
-        var usdcbalance = await protocol.BalanceOfAsync(_configuration.GetValue<string>("Contract:Usdc"), acount);
+        var usdcbalance = await protocol.BalanceOfAsync(_configuration.GetValue<string>("TRONNetworkContract:Usdc"), acount);
         if (usdcbalance != null)
         {
             return usdcbalance;

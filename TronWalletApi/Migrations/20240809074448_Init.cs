@@ -3,6 +3,8 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
+#pragma warning disable CA1814 // Prefer jagged arrays over multidimensional
+
 namespace TronWalletApi.Migrations
 {
     /// <inheritdoc />
@@ -18,6 +20,7 @@ namespace TronWalletApi.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Type = table.Column<int>(type: "int", nullable: false),
+                    NetworkId = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Networks = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Contract = table.Column<string>(type: "nvarchar(max)", nullable: true),
@@ -103,7 +106,7 @@ namespace TronWalletApi.Migrations
                     TrxAmount = table.Column<decimal>(type: "decimal(18,8)", nullable: false),
                     UsdtAmount = table.Column<decimal>(type: "decimal(18,8)", nullable: false),
                     UsdcAmount = table.Column<decimal>(type: "decimal(18,8)", nullable: false),
-                    ETHAmount = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    ETHAmount = table.Column<decimal>(type: "decimal(18,8)", nullable: false),
                     Network = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     WalletTronScanURL = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: true),
                     TransactionLimit = table.Column<bool>(type: "bit", nullable: false)
@@ -111,6 +114,16 @@ namespace TronWalletApi.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_TronWalletModels", x => x.Id);
+                });
+
+            migrationBuilder.InsertData(
+                table: "Networks",
+                columns: new[] { "Id", "AdminWallet", "AdminWalletPrivateKey", "Commission", "Contract", "Decimal", "Name", "NetworkId", "Networks", "Type" },
+                values: new object[,]
+                {
+                    { 1, "TEWJWLwFL3dbMjXtj2smNfto9sXdWquF4N", "0107932b30922231adff71b4b7c0b05bc948632f56c2b62f98bd18fefeae8a9e", 10m, null, 6, "TRX", null, "TRON", 0 },
+                    { 2, "TEWJWLwFL3dbMjXtj2smNfto9sXdWquF4N", "0107932b30922231adff71b4b7c0b05bc948632f56c2b62f98bd18fefeae8a9e", 10m, null, 6, "USDT", null, "TRON", 0 },
+                    { 3, "TEWJWLwFL3dbMjXtj2smNfto9sXdWquF4N", "0107932b30922231adff71b4b7c0b05bc948632f56c2b62f98bd18fefeae8a9e", 10m, null, 6, "USDC", null, "TRON", 0 }
                 });
         }
 

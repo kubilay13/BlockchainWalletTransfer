@@ -19,11 +19,49 @@ namespace TronWalletApi.Context
             modelBuilder.Entity<TransferHistoryModel>().HasKey(t => t.Id);
             modelBuilder.Entity<TransactionSuccesHistoryModel>().HasKey(t => t.Id);
 
+            base.OnModelCreating(modelBuilder);
+            modelBuilder.Entity<Network>().HasData(
+                new Network
+                {
+                    Id = 1,
+                    Type = 0,
+                    Networks = "TRON",
+                    Name = "TRX",
+                    Contract = null,
+                    Decimal = 6,
+                    Commission = 10,
+                    AdminWallet = "TEWJWLwFL3dbMjXtj2smNfto9sXdWquF4N",
+                    AdminWalletPrivateKey = "0107932b30922231adff71b4b7c0b05bc948632f56c2b62f98bd18fefeae8a9e",
+                },
+                 new Network
+                 {
+                     Id = 2,
+                     Type = 0,
+                     Networks = "TRON",
+                     Name = "USDT",
+                     Contract = null,
+                     Decimal = 6,
+                     Commission = 10,
+                     AdminWallet = "TEWJWLwFL3dbMjXtj2smNfto9sXdWquF4N",
+                     AdminWalletPrivateKey = "0107932b30922231adff71b4b7c0b05bc948632f56c2b62f98bd18fefeae8a9e",
+                 }, new Network
+                 {
+                     Id = 3,
+                     Type = 0,
+                     Networks = "TRON",
+                     Name = "USDC",
+                     Contract = null,
+                     Decimal = 6,
+                     Commission = 10,
+                     AdminWallet = "TEWJWLwFL3dbMjXtj2smNfto9sXdWquF4N",
+                     AdminWalletPrivateKey = "0107932b30922231adff71b4b7c0b05bc948632f56c2b62f98bd18fefeae8a9e",
+                 }
+                );
             //TronWalletModel--
 
             modelBuilder.Entity<TronWalletModel>()
-                .Property(t => t.PrivateKey)
-                .HasMaxLength(128);
+            .Property(t => t.PrivateKey)
+            .HasMaxLength(128);
 
             modelBuilder.Entity<TronWalletModel>()
                 .Property(t => t.WalletAddress)

@@ -12,7 +12,7 @@ using TronWalletApi.Context;
 namespace TronWalletApi.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240808110302_Init")]
+    [Migration("20240809074448_Init")]
     partial class Init
     {
         /// <inheritdoc />
@@ -181,7 +181,7 @@ namespace TronWalletApi.Migrations
                         .HasColumnType("nvarchar(8)");
 
                     b.Property<decimal>("ETHAmount")
-                        .HasColumnType("decimal(18,2)");
+                        .HasColumnType("decimal(18, 8)");
 
                     b.Property<DateTime>("LastTransactionAt")
                         .HasColumnType("datetime2");
@@ -253,6 +253,9 @@ namespace TronWalletApi.Migrations
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("NetworkId")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Networks")
                         .HasColumnType("nvarchar(max)");
 
@@ -262,6 +265,41 @@ namespace TronWalletApi.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Networks");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            AdminWallet = "TEWJWLwFL3dbMjXtj2smNfto9sXdWquF4N",
+                            AdminWalletPrivateKey = "0107932b30922231adff71b4b7c0b05bc948632f56c2b62f98bd18fefeae8a9e",
+                            Commission = 10m,
+                            Decimal = 6,
+                            Name = "TRX",
+                            Networks = "TRON",
+                            Type = 0
+                        },
+                        new
+                        {
+                            Id = 2,
+                            AdminWallet = "TEWJWLwFL3dbMjXtj2smNfto9sXdWquF4N",
+                            AdminWalletPrivateKey = "0107932b30922231adff71b4b7c0b05bc948632f56c2b62f98bd18fefeae8a9e",
+                            Commission = 10m,
+                            Decimal = 6,
+                            Name = "USDT",
+                            Networks = "TRON",
+                            Type = 0
+                        },
+                        new
+                        {
+                            Id = 3,
+                            AdminWallet = "TEWJWLwFL3dbMjXtj2smNfto9sXdWquF4N",
+                            AdminWalletPrivateKey = "0107932b30922231adff71b4b7c0b05bc948632f56c2b62f98bd18fefeae8a9e",
+                            Commission = 10m,
+                            Decimal = 6,
+                            Name = "USDC",
+                            Networks = "TRON",
+                            Type = 0
+                        });
                 });
 #pragma warning restore 612, 618
         }

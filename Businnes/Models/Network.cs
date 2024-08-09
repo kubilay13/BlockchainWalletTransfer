@@ -9,6 +9,8 @@ namespace TronWalletApi.Models
 
         public NetworkType Type { get; set; }
 
+        public string? NetworkId {  get; set; }
+
         public string? Networks { get; set; }
 
         public string? Name { get; set; }
