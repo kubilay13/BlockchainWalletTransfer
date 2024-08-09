@@ -19,7 +19,7 @@ public class WalletController : ControllerBase
         _tronService = tronService;
         _applicationDbContext = applicationDbContext;
     }
-    [HttpGet("createwallet")]
+    [HttpGet("createwallet(TRX,ETH Network)")]
     public async Task<IActionResult> CreateWallet(string walletName)
     {
         try

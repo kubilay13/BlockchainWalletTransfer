@@ -22,12 +22,10 @@ namespace TronWalletApi.BackgroundServices
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
-            _logger.LogInformation("TronWalletAmountUpdateService starting.");
+            _logger.LogInformation("WalletAmountUpdateService Başlatıldı.");
 
             while (!stoppingToken.IsCancellationRequested)
-            {
-                _logger.LogInformation("TronWalletAmountUpdateService running.");
-
+            {            
                 using (var scope = _serviceProvider.CreateScope())
                 {
                     var tronWalletService = scope.ServiceProvider.GetRequiredService<ITronWalletService>();
