@@ -1,8 +1,11 @@
 ﻿using ETHWalletApi.Models;
 using Nethereum;
+using Nethereum.Hex.HexConvertors.Extensions;
 using Nethereum.Hex.HexTypes;
 using Nethereum.JsonRpc.Client;
 using Nethereum.RPC.Eth.DTOs;
+using Nethereum.Signer;
+using Nethereum.Signer.Crypto;
 using Nethereum.Util;
 using Nethereum.Web3;
 using Nethereum.Web3.Accounts;
@@ -16,7 +19,6 @@ namespace ETHWalletApi.Services
 
         public EthService(string nodeUrl)
         {
-            // Web3 örneğini nodeUrl ile başlatıyoruz
             _web3 = new Web3(nodeUrl);
         }
 
@@ -52,5 +54,7 @@ namespace ETHWalletApi.Services
                 throw new InvalidOperationException("Transaction failed due to an unexpected error", ex);
             }
         }
+
+       
     }
 }

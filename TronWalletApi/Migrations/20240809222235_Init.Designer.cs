@@ -12,7 +12,7 @@ using TronWalletApi.Context;
 namespace TronWalletApi.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240809092226_Init")]
+    [Migration("20240809222235_Init")]
     partial class Init
     {
         /// <inheritdoc />
@@ -230,10 +230,10 @@ namespace TronWalletApi.Migrations
                         new
                         {
                             Id = 1,
-                            CreatedAt = new DateTime(2024, 8, 9, 9, 22, 25, 707, DateTimeKind.Utc).AddTicks(1455),
-                            CreatedAtTime = "12:22:25",
+                            CreatedAt = new DateTime(2024, 8, 9, 22, 22, 34, 443, DateTimeKind.Utc).AddTicks(7503),
+                            CreatedAtTime = "01:22:34",
                             ETHAmount = 0m,
-                            LastTransactionAt = new DateTime(2024, 8, 9, 9, 22, 25, 707, DateTimeKind.Utc).AddTicks(1455),
+                            LastTransactionAt = new DateTime(2024, 8, 9, 22, 22, 34, 443, DateTimeKind.Utc).AddTicks(7504),
                             LastTransactionTime = "10:49:03",
                             Network = "Testnet(Nile)",
                             PrivateKey = "5a87ccab1b8b8f2d86c24ad6f278d8030be5a17d056588242ef377d9c3ddeb8e",
@@ -248,10 +248,10 @@ namespace TronWalletApi.Migrations
                         new
                         {
                             Id = 2,
-                            CreatedAt = new DateTime(2024, 8, 9, 9, 22, 25, 707, DateTimeKind.Utc).AddTicks(1463),
-                            CreatedAtTime = "12:22:25",
+                            CreatedAt = new DateTime(2024, 8, 9, 22, 22, 34, 443, DateTimeKind.Utc).AddTicks(7513),
+                            CreatedAtTime = "01:22:34",
                             ETHAmount = 0m,
-                            LastTransactionAt = new DateTime(2024, 8, 9, 9, 22, 25, 707, DateTimeKind.Utc).AddTicks(1463),
+                            LastTransactionAt = new DateTime(2024, 8, 9, 22, 22, 34, 443, DateTimeKind.Utc).AddTicks(7514),
                             LastTransactionTime = "10:49:03",
                             Network = "Testnet(Nile)",
                             PrivateKey = "0107932b30922231adff71b4b7c0b05bc948632f56c2b62f98bd18fefeae8a9e",

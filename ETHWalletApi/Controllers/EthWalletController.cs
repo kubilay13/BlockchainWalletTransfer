@@ -2,6 +2,8 @@
 using ETHWalletApi.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Nethereum.Hex.HexConvertors.Extensions;
+using Nethereum.Signer;
 
 namespace ETHWalletApi.Controllers
 {
@@ -33,6 +35,23 @@ namespace ETHWalletApi.Controllers
             {
                 return StatusCode(500, $"An error occurred: {ex.Message}");
             }
+        }
+        [HttpPost("CreateETHWallet")]
+        public async Task<IActionResult> CreateETHWallet()
+        {
+            var EthKey = EthECKey.GenerateKey();
+            var privateKey = EthKey.GetPrivateKeyAsBytes().ToHex();
+            var publicKey = EthKey.GetPubKey().ToHex();
+            var address = EthKey.GetPublicAddress();
+
+            var walletDetails = new
+            {
+                PrivateKey = privateKey,
+                PublicKey = publicKey,
+                Address = address
+            };
+
+            return Ok(walletDetails);
         }
     }
 }
