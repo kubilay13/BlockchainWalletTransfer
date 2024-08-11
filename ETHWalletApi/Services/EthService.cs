@@ -21,6 +21,31 @@ namespace ETHWalletApi.Services
         {
             _web3 = new Web3(nodeUrl);
         }
+        public async Task<EthWalletModels> CreateETHWalletAsync(string walletName)
+        {
+            var EthKey = EthECKey.GenerateKey();
+            var privateKey = EthKey.GetPrivateKeyAsBytes().ToHex();
+            var publicKey = EthKey.GetPubKey().ToHex();
+            var address = EthKey.GetPublicAddress();
+
+            if (privateKey == null || publicKey == null || address == null)
+            {
+                throw new ApplicationException("Cüzdan Oluşturma İşlemi Başarısız.");
+            }else
+            {
+                var walletDetails = new EthWalletModels
+                {
+                    WalletName = walletName,
+                    PrivateKey = privateKey,
+                    PublicKey = publicKey,
+                    WalletAddress = address,
+                    ETHAmount = 0,
+                    Network = "ETH",
+                    WalletETHScanURL = $"https://etherscan.io/address/{address}"
+                };
+                return walletDetails;
+            }
+        }
 
         public async Task<string> SendTransactionAsyncs(EthNetworkTransactionRequest request)
         {
@@ -54,7 +79,5 @@ namespace ETHWalletApi.Services
                 throw new InvalidOperationException("Transaction failed due to an unexpected error", ex);
             }
         }
-
-       
     }
 }
