@@ -1,6 +1,4 @@
-﻿using System.Threading.Tasks;
-
-namespace TronWalletApi.BackgroundServices
+﻿namespace Business.BackgroundService
 {
     public interface ITronWalletAmountUpdateService
     {

@@ -1,8 +1,8 @@
-﻿using Entities.Enums;
+﻿using DataAccessLayer.AppDbContext;
+using Entities.Enums;
 using Entities.Models.TronModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using TronWalletApi.Context;
 
 [ApiController]
 [Route("api/[controller]")]

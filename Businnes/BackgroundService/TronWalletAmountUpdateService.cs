@@ -2,10 +2,6 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using System;
-using System.Threading;
-using System.Threading.Tasks;
-using TronWalletApi.Services.TronWalletService;
 
 namespace TronWalletApi.BackgroundServices
 {
@@ -25,7 +21,7 @@ namespace TronWalletApi.BackgroundServices
             _logger.LogInformation("WalletAmountUpdateService Başlatıldı.");
 
             while (!stoppingToken.IsCancellationRequested)
-            {            
+            {
                 using (var scope = _serviceProvider.CreateScope())
                 {
                     var tronWalletService = scope.ServiceProvider.GetRequiredService<ITronWalletService>();

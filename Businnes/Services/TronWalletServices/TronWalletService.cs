@@ -1,7 +1,8 @@
 ﻿using Business.Services.TronService;
+using DataAccessLayer.AppDbContext;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using TronWalletApi.Context;
+
 
 namespace TronWalletApi.Services.TronWalletService
 {

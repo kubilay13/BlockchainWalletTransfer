@@ -1,12 +1,12 @@
 using Microsoft.EntityFrameworkCore;
 using System.Reflection;
 using TronNet;
-using TronWalletApi.Context;
 using TronWalletApi.BackgroundServices;
 using TronWalletApi.Services.TronWalletService;
 using Serilog;
 using Serilog.Sinks.SystemConsole.Themes;
 using Business.Services.TronService;
+using DataAccessLayer.AppDbContext;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -39,7 +39,7 @@ builder.Services.AddTronNet(x =>
 });
 builder.Services.AddHttpClient();
 builder.Services.AddScoped<ITronService, TronService>();
-builder.Services.AddHostedService<TronWalletAmountUpdateService>(); 
+builder.Services.AddHostedService<TronWalletAmountUpdateService>();
 
 var app = builder.Build();
 app.UseSerilogRequestLogging();

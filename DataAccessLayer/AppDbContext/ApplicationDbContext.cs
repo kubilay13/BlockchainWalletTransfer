@@ -1,9 +1,10 @@
-﻿using Entities.Models.TronModels;
+﻿using Entities.Models;
+using Entities.Models.TronModels;
 using Microsoft.EntityFrameworkCore;
-using Entities.Models;
-namespace TronWalletApi.Context
+
+namespace DataAccessLayer.AppDbContext
 {
-    public class ApplicationDbContext : DbContext
+    public class ApplicationDbContext:DbContext
     {
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
         {
@@ -24,7 +25,7 @@ namespace TronWalletApi.Context
             modelBuilder.Entity<TronWalletModel>().HasData(
                 new TronWalletModel
                 {
-                    Id=1,
+                    Id = 1,
                     WalletName = "TestAdress",
                     PrivateKey = "5a87ccab1b8b8f2d86c24ad6f278d8030be5a17d056588242ef377d9c3ddeb8e",
                     WalletAddress = "TXTVwsUMsWrWsvd61VRcE9Bsk4WbEY9DGv",
@@ -241,8 +242,5 @@ namespace TronWalletApi.Context
                 .IsRequired();
         }
     }
-
 }
-
-
 
