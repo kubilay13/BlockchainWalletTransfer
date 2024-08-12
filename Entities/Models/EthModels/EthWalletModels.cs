@@ -1,4 +1,4 @@
-﻿namespace ETHWalletApi.Models
+﻿namespace Entities.Models.EthModels
 {
     public class EthWalletModels
     {

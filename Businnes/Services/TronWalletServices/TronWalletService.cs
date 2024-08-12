@@ -2,8 +2,6 @@
 using DataAccessLayer.AppDbContext;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-
-
 namespace TronWalletApi.Services.TronWalletService
 {
     public class TronWalletService : ITronWalletService

@@ -1,5 +1,5 @@
-﻿using ETHWalletApi.AppDbContext;
-using ETHWalletApi.Models;
+﻿using DataAccessLayer.AppDbContext;
+using Entities.Models.EthModels;
 using Nethereum.Hex.HexConvertors.Extensions;
 using Nethereum.Hex.HexTypes;
 using Nethereum.JsonRpc.Client;
@@ -28,7 +28,8 @@ namespace ETHWalletApi.Services
             if (privateKey == null || publicKey == null || address == null)
             {
                 throw new ApplicationException("Cüzdan Oluşturma İşlemi Başarısız.");
-            }else
+            }
+            else
             {
                 var walletDetails = new EthWalletModels
                 {
@@ -42,23 +43,23 @@ namespace ETHWalletApi.Services
                 };
                 var EthSaveDbVallet = new EthWalletModels
                 {
-                    WalletName=walletName,
-                    PrivateKey=privateKey,  
-                    PublicKey=publicKey,
-                    WalletAddress=address,
-                    ETHAmount=0,
-                    Network="ETH",
-                    WalletETHScanURL=$"https://etherscan.io/address/{address}"
+                    WalletName = walletName,
+                    PrivateKey = privateKey,
+                    PublicKey = publicKey,
+                    WalletAddress = address,
+                    ETHAmount = 0,
+                    Network = "ETH",
+                    WalletETHScanURL = $"https://etherscan.io/address/{address}"
                 };
-                _applicationDbContext.ETHWalletModels.Add(EthSaveDbVallet);
-                await _applicationDbContext.SaveChangesAsync();
+                //_applicationDbContext.ETHWalletModels.Add(EthSaveDbVallet);
+                //await _applicationDbContext.SaveChangesAsync();
                 return walletDetails;
             }
         }
         public async Task<string> SendTransactionAsync(EthNetworkTransactionRequest request)
         {
             var account = new Nethereum.Web3.Accounts.Account(request.PrivateKey);
-            var web3 = new Web3(account,_web3.Client);
+            var web3 = new Web3(account, _web3.Client);
             var amountInWei = Web3.Convert.ToWei(request.Amount.Value);
             var gasPrice = new HexBigInteger(Web3.Convert.ToWei(25, UnitConversion.EthUnit.Gwei));
             var _gas = await web3.Eth.GasPrice.SendRequestAsync();
@@ -73,10 +74,10 @@ namespace ETHWalletApi.Services
                     GasPrice = _gas,
                     Nonce = currentNonce,
                 };
-                var signature= await web3.TransactionManager.SignTransactionAsync(transaction);
+                var signature = await web3.TransactionManager.SignTransactionAsync(transaction);
                 var txnHash = await web3.Eth.Transactions.SendRawTransaction.SendRequestAsync(signature);
                 return txnHash;
-              
+
             }
             catch (RpcResponseException ex)
             {

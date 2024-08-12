@@ -1,73 +1,90 @@
-﻿using ETHWalletApi.Models;
-using ETHWalletApi.Services;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using DataAccessLayer.AppDbContext;
+using Entities.Models.EthModels;
 using Nethereum.Hex.HexConvertors.Extensions;
+using Nethereum.Hex.HexTypes;
+using Nethereum.JsonRpc.Client;
+using Nethereum.RPC.Eth.DTOs;
 using Nethereum.Signer;
-using Org.BouncyCastle.Asn1.Ocsp;
-
-namespace ETHWalletApi.Controllers
+using Nethereum.Util;
+using Nethereum.Web3;
+namespace ETHWalletApi.Services
 {
-    [Route("api/[controller]")]
-    [ApiController]
-    public class EthWalletController : ControllerBase
+    public class EthService : IEthService
     {
-        private readonly IEthService _ethService;
-
-        public EthWalletController(IEthService ethService)
+        private readonly Web3 _web3;
+        private readonly ApplicationDbContext _applicationDbContext;
+        public EthService(ApplicationDbContext applicationDbContext)
         {
-            _ethService = ethService;
+            _applicationDbContext = applicationDbContext;
+            _web3 = new Web3("https://sepolia.infura.io/v3/3fcb68529b9e4288a4eb599f266bbb50");
         }
-        public class CreateWalletRequest
+        public async Task<EthWalletModels> CreateETHWalletAsync(string walletName)
         {
-            public string WalletName { get; set; }
-        }
-        [HttpPost("CreateETHWallet")]
-        public async Task<IActionResult> CreateETHWallet([FromBody] CreateWalletRequest request)
-        {
-            if (string.IsNullOrEmpty(request.WalletName))
+            var EthKey = EthECKey.GenerateKey();
+            var privateKey = EthKey.GetPrivateKeyAsBytes().ToHex();
+            var publicKey = EthKey.GetPubKey().ToHex();
+            var address = EthKey.GetPublicAddress();
+            if (privateKey == null || publicKey == null || address == null)
             {
-                return BadRequest(new { message = "Cüzdan adı gereklidir." });
+                throw new ApplicationException("Cüzdan Oluşturma İşlemi Başarısız.");
             }
-
-            try
+            else
             {
-                var walletDetails = await _ethService.CreateETHWalletAsync(request.WalletName);
-
-                var returnEthDetail = new
+                var walletDetails = new EthWalletModels
                 {
-                    PrivateKey = walletDetails.PrivateKey,
-                    PublicKey = walletDetails.PublicKey,
-                    WalletAddress = walletDetails.WalletAddress,
+                    WalletName = walletName,
+                    PrivateKey = privateKey,
+                    PublicKey = publicKey,
+                    WalletAddress = address,
+                    ETHAmount = 0,
+                    Network = "ETH",
+                    WalletETHScanURL = $"https://etherscan.io/address/{address}"
                 };
-
-                return Ok(returnEthDetail);
-            }
-            catch (ApplicationException ex)
-            {
-                return BadRequest(new { message = ex.Message });
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, new { message = "Beklenmeyen bir hata oluştu.", error = ex.Message });
+                var EthSaveDbVallet = new EthWalletModels
+                {
+                    WalletName = walletName,
+                    PrivateKey = privateKey,
+                    PublicKey = publicKey,
+                    WalletAddress = address,
+                    ETHAmount = 0,
+                    Network = "ETH",
+                    WalletETHScanURL = $"https://etherscan.io/address/{address}"
+                };
+                //_applicationDbContext.ETHWalletModels.Add(EthSaveDbVallet);
+                //await _applicationDbContext.SaveChangesAsync();
+                return walletDetails;
             }
         }
-
-        [HttpPost("TransferETH")]
-        public async Task<IActionResult> SendTransactionAsync([FromBody] EthNetworkTransactionRequest request)
+        public async Task<string> SendTransactionAsync(EthNetworkTransactionRequest request)
         {
-            if (request == null)
-            {
-                return BadRequest("Invalid request");
-            }
+            var account = new Nethereum.Web3.Accounts.Account(request.PrivateKey);
+            var web3 = new Web3(account, _web3.Client);
+            var amountInWei = Web3.Convert.ToWei(request.Amount.Value);
+            var gasPrice = new HexBigInteger(Web3.Convert.ToWei(25, UnitConversion.EthUnit.Gwei));
+            var _gas = await web3.Eth.GasPrice.SendRequestAsync();
+            var currentNonce = await web3.Eth.Transactions.GetTransactionCount.SendRequestAsync(account.Address);
             try
             {
-                var txnHash = await _ethService.SendTransactionAsync(request);
-                return Ok(new { TransactionHash = txnHash });
+                var transaction = new TransactionInput
+                {
+                    From = request.FromAddress,
+                    To = request.ToAddress,
+                    Value = new HexBigInteger(amountInWei),
+                    GasPrice = _gas,
+                    Nonce = currentNonce,
+                };
+                var signature = await web3.TransactionManager.SignTransactionAsync(transaction);
+                var txnHash = await web3.Eth.Transactions.SendRawTransaction.SendRequestAsync(signature);
+                return txnHash;
+
+            }
+            catch (RpcResponseException ex)
+            {
+                throw new InvalidOperationException($"Transaction failed with RPC error: {ex.Message}", ex);
             }
             catch (Exception ex)
             {
-                return StatusCode(500, $"An error occurred: {ex.Message}");
+                throw new InvalidOperationException("Transaction failed due to an unexpected error", ex);
             }
         }
     }
