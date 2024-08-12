@@ -227,10 +227,10 @@ namespace TronWalletApi.Migrations
                         new
                         {
                             Id = 1,
-                            CreatedAt = new DateTime(2024, 8, 9, 22, 22, 34, 443, DateTimeKind.Utc).AddTicks(7503),
-                            CreatedAtTime = "01:22:34",
+                            CreatedAt = new DateTime(2024, 8, 12, 7, 4, 8, 62, DateTimeKind.Utc).AddTicks(795),
+                            CreatedAtTime = "10:04:08",
                             ETHAmount = 0m,
-                            LastTransactionAt = new DateTime(2024, 8, 9, 22, 22, 34, 443, DateTimeKind.Utc).AddTicks(7504),
+                            LastTransactionAt = new DateTime(2024, 8, 12, 7, 4, 8, 62, DateTimeKind.Utc).AddTicks(796),
                             LastTransactionTime = "10:49:03",
                             Network = "Testnet(Nile)",
                             PrivateKey = "5a87ccab1b8b8f2d86c24ad6f278d8030be5a17d056588242ef377d9c3ddeb8e",
@@ -245,10 +245,10 @@ namespace TronWalletApi.Migrations
                         new
                         {
                             Id = 2,
-                            CreatedAt = new DateTime(2024, 8, 9, 22, 22, 34, 443, DateTimeKind.Utc).AddTicks(7513),
-                            CreatedAtTime = "01:22:34",
+                            CreatedAt = new DateTime(2024, 8, 12, 7, 4, 8, 62, DateTimeKind.Utc).AddTicks(804),
+                            CreatedAtTime = "10:04:08",
                             ETHAmount = 0m,
-                            LastTransactionAt = new DateTime(2024, 8, 9, 22, 22, 34, 443, DateTimeKind.Utc).AddTicks(7514),
+                            LastTransactionAt = new DateTime(2024, 8, 12, 7, 4, 8, 62, DateTimeKind.Utc).AddTicks(804),
                             LastTransactionTime = "10:49:03",
                             Network = "Testnet(Nile)",
                             PrivateKey = "0107932b30922231adff71b4b7c0b05bc948632f56c2b62f98bd18fefeae8a9e",

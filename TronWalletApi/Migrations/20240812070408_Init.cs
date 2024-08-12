@@ -131,8 +131,8 @@ namespace TronWalletApi.Migrations
                 columns: new[] { "Id", "CreatedAt", "CreatedAtTime", "ETHAmount", "LastTransactionAt", "LastTransactionTime", "Network", "PrivateKey", "TransactionLimit", "TrxAmount", "UsdcAmount", "UsdtAmount", "WalletAddress", "WalletName", "WalletTronScanURL" },
                 values: new object[,]
                 {
-                    { 1, new DateTime(2024, 8, 9, 22, 22, 34, 443, DateTimeKind.Utc).AddTicks(7503), "01:22:34", 0m, new DateTime(2024, 8, 9, 22, 22, 34, 443, DateTimeKind.Utc).AddTicks(7504), "10:49:03", "Testnet(Nile)", "5a87ccab1b8b8f2d86c24ad6f278d8030be5a17d056588242ef377d9c3ddeb8e", false, 0m, 0m, 0m, "TXTVwsUMsWrWsvd61VRcE9Bsk4WbEY9DGv", "TestAdress", "https://nile.tronscan.org/#/address/TXTVwsUMsWrWsvd61VRcE9Bsk4WbEY9DGv" },
-                    { 2, new DateTime(2024, 8, 9, 22, 22, 34, 443, DateTimeKind.Utc).AddTicks(7513), "01:22:34", 0m, new DateTime(2024, 8, 9, 22, 22, 34, 443, DateTimeKind.Utc).AddTicks(7514), "10:49:03", "Testnet(Nile)", "0107932b30922231adff71b4b7c0b05bc948632f56c2b62f98bd18fefeae8a9e", true, 0m, 0m, 0m, "TEWJWLwFL3dbMjXtj2smNfto9sXdWquF4N", "AdminAdress", "https://nile.tronscan.org/#/address/TEWJWLwFL3dbMjXtj2smNfto9sXdWquF4N" }
+                    { 1, new DateTime(2024, 8, 12, 7, 4, 8, 62, DateTimeKind.Utc).AddTicks(795), "10:04:08", 0m, new DateTime(2024, 8, 12, 7, 4, 8, 62, DateTimeKind.Utc).AddTicks(796), "10:49:03", "Testnet(Nile)", "5a87ccab1b8b8f2d86c24ad6f278d8030be5a17d056588242ef377d9c3ddeb8e", false, 0m, 0m, 0m, "TXTVwsUMsWrWsvd61VRcE9Bsk4WbEY9DGv", "TestAdress", "https://nile.tronscan.org/#/address/TXTVwsUMsWrWsvd61VRcE9Bsk4WbEY9DGv" },
+                    { 2, new DateTime(2024, 8, 12, 7, 4, 8, 62, DateTimeKind.Utc).AddTicks(804), "10:04:08", 0m, new DateTime(2024, 8, 12, 7, 4, 8, 62, DateTimeKind.Utc).AddTicks(804), "10:49:03", "Testnet(Nile)", "0107932b30922231adff71b4b7c0b05bc948632f56c2b62f98bd18fefeae8a9e", true, 0m, 0m, 0m, "TEWJWLwFL3dbMjXtj2smNfto9sXdWquF4N", "AdminAdress", "https://nile.tronscan.org/#/address/TEWJWLwFL3dbMjXtj2smNfto9sXdWquF4N" }
                 });
         }
 

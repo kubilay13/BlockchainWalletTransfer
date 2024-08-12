@@ -22,7 +22,7 @@ namespace ETHWalletApi.Controllers
         {
             public string WalletName { get; set; }
         }
-        [HttpGet("CreateETHWallet")]
+        [HttpPost("CreateETHWallet")]
         public async Task<IActionResult> CreateETHWallet([FromBody] CreateWalletRequest request)
         {
             if (string.IsNullOrEmpty(request.WalletName))
@@ -39,7 +39,6 @@ namespace ETHWalletApi.Controllers
                     PrivateKey = walletDetails.PrivateKey,
                     PublicKey = walletDetails.PublicKey,
                     WalletAddress = walletDetails.WalletAddress,
-                    WalletETHScanURL = walletDetails.WalletETHScanURL
                 };
 
                 return Ok(returnEthDetail);
@@ -53,7 +52,8 @@ namespace ETHWalletApi.Controllers
                 return StatusCode(500, new { message = "Beklenmeyen bir hata oluştu.", error = ex.Message });
             }
         }
-        [HttpPost("sendtransaction")]
+
+        [HttpPost("TransferETH")]
         public async Task<IActionResult> SendTransactionAsync([FromBody] EthNetworkTransactionRequest request)
         {
             if (request == null)
@@ -62,8 +62,7 @@ namespace ETHWalletApi.Controllers
             }
             try
             {
-                // Burada `await` ve `SendTransactionAsync` metodunun çağrıldığından emin olun
-                var txnHash = await _ethService.SendTransactionAsyncs(request);
+                var txnHash = await _ethService.SendTransactionAsync(request);
                 return Ok(new { TransactionHash = txnHash });
             }
             catch (Exception ex)
