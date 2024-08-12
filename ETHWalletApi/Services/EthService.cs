@@ -14,11 +14,17 @@ namespace ETHWalletApi.Services
     public class EthService : IEthService
     {
         private readonly Web3 _web3;
-        public EthService(string nodeUrl, string privateKey)
+
+        public EthService( )
         {
-            var account = new Nethereum.Web3.Accounts.Account(privateKey); 
-            _web3 = new Web3(account, nodeUrl);
+            _web3 = new Web3("https://sepolia.infura.io/v3/3fcb68529b9e4288a4eb599f266bbb50");
         }
+
+        //public EthService(string nodeUrl, string privateKey)
+        //{
+        //    var account = new Nethereum.Web3.Accounts.Account(privateKey); 
+        //    _web3 = new Web3(account, nodeUrl);
+        //}
         public async Task<EthWalletModels> CreateETHWalletAsync(string walletName)
         {
             var EthKey = EthECKey.GenerateKey();
@@ -48,12 +54,13 @@ namespace ETHWalletApi.Services
         public async Task<string> SendTransactionAsync(EthNetworkTransactionRequest request)
         {
             var account = new Nethereum.Web3.Accounts.Account(request.PrivateKey);
-            var web3 = new Web3(account);
+            var web3 = new Web3(account,_web3.Client);
 
             var amountInWei = Web3.Convert.ToWei(request.Amount.Value);
-            var gasPrice = new HexBigInteger(Web3.Convert.ToWei(2, UnitConversion.EthUnit.Gwei));
+            var gasPrice = new HexBigInteger(Web3.Convert.ToWei(25, UnitConversion.EthUnit.Gwei));
             var gasLimit = new HexBigInteger(21000);
-
+            var _gas = await web3.Eth.GasPrice.SendRequestAsync();
+            var currentNonce = await web3.Eth.Transactions.GetTransactionCount.SendRequestAsync(account.Address);
             try
             {
                 var transaction = new TransactionInput
@@ -61,11 +68,13 @@ namespace ETHWalletApi.Services
                     From = request.FromAddress,
                     To = request.ToAddress,
                     Value = new HexBigInteger(amountInWei),
-                    GasPrice = gasPrice,
-                    Gas = gasLimit
+                    GasPrice = _gas,
+                    Nonce = currentNonce,
+                    //Gas = gasLimit
                 };
+                var signature= await web3.TransactionManager.SignTransactionAsync(transaction);
+                var txnHash = await web3.Eth.Transactions.SendRawTransaction.SendRequestAsync(signature);
 
-                var txnHash = await web3.Eth.Transactions.SendTransaction.SendRequestAsync(transaction);
                 return txnHash;
             }
             catch (RpcResponseException ex)
