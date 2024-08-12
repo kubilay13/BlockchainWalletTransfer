@@ -1,11 +1,8 @@
-﻿using Business.Models.TronModels;
+﻿using Entities.Enums;
+using Entities.Models.TronModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.Threading.Tasks;
 using TronWalletApi.Context;
-using TronWalletApi.Enums;
 
 [ApiController]
 [Route("api/[controller]")]

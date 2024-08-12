@@ -1,6 +1,4 @@
-﻿using Business.Models.TronModels;
-using TronWalletApi.Models;
-
+﻿using Entities.Models.TronModels;
 public interface ITronService
 {
     Task<string> CreateWallet(string walletName);

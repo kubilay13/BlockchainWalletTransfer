@@ -1,9 +1,9 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
-using TronWalletApi.Enums;
+﻿using Entities.Enums;
+using System.ComponentModel.DataAnnotations.Schema;
 
-namespace Business.Models
+namespace Entities.Models
 {
-    internal class Token
+    public class Token
     {
         public int Id { get; set; }
 

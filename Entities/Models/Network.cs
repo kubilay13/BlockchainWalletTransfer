@@ -1,7 +1,12 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
-using TronWalletApi.Enums;
+﻿using Entities.Enums;
+using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace TronWalletApi.Models
+namespace Entities.Models
 {
     public class Network
     {
@@ -9,7 +14,7 @@ namespace TronWalletApi.Models
 
         public NetworkType Type { get; set; }
 
-        public string? NetworkId {  get; set; }
+        public string? NetworkId { get; set; }
 
         public string? Networks { get; set; }
 

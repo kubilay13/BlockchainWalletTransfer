@@ -1,4 +1,4 @@
-﻿namespace Business.Models.TronModels
+﻿namespace Entities.Models.TronModels
 {
     public class TronWalletModel
     {

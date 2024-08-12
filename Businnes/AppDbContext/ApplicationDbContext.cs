@@ -1,6 +1,6 @@
-﻿using Business.Models.TronModels;
+﻿using Entities.Models.TronModels;
 using Microsoft.EntityFrameworkCore;
-using TronWalletApi.Models;
+using Entities.Models;
 namespace TronWalletApi.Context
 {
     public class ApplicationDbContext : DbContext

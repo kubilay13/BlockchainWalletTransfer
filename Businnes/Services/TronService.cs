@@ -9,11 +9,11 @@ using Google.Protobuf;
 using TronNet.Contracts;
 using Transaction = TronNet.Protocol.Transaction;
 using Nethereum.Util;
-using TronWalletApi.Enums;
 using Serilog;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using Business.Models.TronModels;
+using Entities.Models.TronModels;
+using Entities.Enums;
 public class TronService : ITronService
 {
     private readonly IConfiguration _configuration;
@@ -515,7 +515,7 @@ public class TronService : ITronService
         var _comission = Commission!.Commission;
         var senderWallet = await _applicationDbContext.TronWalletModels
            .FirstOrDefaultAsync(w => w.WalletAddress == request.SenderAddress);
-        if (request.TransactionType != TronWalletApi.Enums.TransactionType.Deposit)
+        if (request.TransactionType != TransactionType.Deposit)
         {
             var twentyFourHoursAgo = DateTime.UtcNow.AddHours(-24);
             var dailyTransfers = await _applicationDbContext.TransferHistoryModels

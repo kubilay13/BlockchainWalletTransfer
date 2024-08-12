@@ -1,5 +1,6 @@
-﻿using TronWalletApi.Enums;
-namespace Business.Models.TronModels
+﻿using Entities.Enums;
+
+namespace Entities.Models.TronModels
 {
     public class TransactionSuccesHistoryModel
     {

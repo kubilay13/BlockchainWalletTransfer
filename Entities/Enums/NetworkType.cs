@@ -1,4 +1,4 @@
-﻿namespace TronWalletApi.Enums
+﻿namespace Entities.Enums
 {
     public enum NetworkType
     {

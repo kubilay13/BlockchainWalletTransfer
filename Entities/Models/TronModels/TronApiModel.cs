@@ -4,10 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Business.Services.TronWalletServices.BlockService
+namespace Entities.Models.TronModels
 {
-    internal interface IWalletBlockSerivce
+    public class TronApiModel
     {
-        Task GetReadBlock();
+        public decimal TronUSD { get; set; }
     }
 }

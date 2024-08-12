@@ -2,7 +2,6 @@ using Microsoft.EntityFrameworkCore;
 using System.Reflection;
 using TronNet;
 using TronWalletApi.Context;
-using TronWalletApi.Models;
 using TronWalletApi.BackgroundServices;
 using TronWalletApi.Services.TronWalletService;
 using Serilog;

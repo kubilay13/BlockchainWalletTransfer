@@ -1,12 +1,7 @@
 ﻿using Business.Services.TronService;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using System;
-using System.Linq;
-using System.Threading.Tasks;
-using TronNet.Protocol;
 using TronWalletApi.Context;
-using TronWalletApi.Models;
 
 namespace TronWalletApi.Services.TronWalletService
 {
