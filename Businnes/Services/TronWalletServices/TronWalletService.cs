@@ -78,13 +78,13 @@ namespace TronWalletApi.Services.TronWalletService
                     {
                         try
                         {
-                            var balance = await _tronService.GetBalanceAsync(wallet.WalletAddress!);
+                            var balance = await _tronService.GetBalanceAsync(wallet.WalletAddressTron!);
                             wallet.TrxAmount = balance;
 
-                            var UsdtBalance = await _tronService.GetBalanceAsyncUsdt(wallet.WalletAddress, wallet.PrivateKey);
+                            var UsdtBalance = await _tronService.GetBalanceAsyncUsdt(wallet.WalletAddressTron, wallet.PrivateKeyTron);
                             wallet.UsdtAmount = UsdtBalance;
 
-                            var UsdcBalance = await _tronService.GetBalanceAsyncUsdc(wallet.WalletAddress, wallet.PrivateKey);
+                            var UsdcBalance = await _tronService.GetBalanceAsyncUsdc(wallet.WalletAddressTron, wallet.PrivateKeyTron);
                             wallet.UsdcAmount = UsdcBalance;
 
                             var transferHistories = await _applicationDbContext.TransferHistoryModels
@@ -131,7 +131,7 @@ namespace TronWalletApi.Services.TronWalletService
                         }
                         catch (Exception ex)
                         {
-                            _logger.LogError(ex, $"Cüzdan bakiyesi güncellenirken bir hata oluştu. Cüzdan Adresi: {wallet.WalletAddress}");
+                            _logger.LogError(ex, $"Cüzdan bakiyesi güncellenirken bir hata oluştu. Cüzdan Adresi: {wallet.WalletAddressTron}");
                         }
                     }
 

@@ -4,8 +4,11 @@
     {
         public int Id { get; set; }
         public string? WalletName { get; set; }
-        public string? PrivateKey { get; set; }
-        public string? WalletAddress { get; set; }
+        public string? PrivateKeyTron { get; set; }
+        public string? WalletAddressTron { get; set; }
+
+        public string? PrivateKeyEth { get; set; }
+        public string? WalletAddressETH { get; set; }
         public DateTime CreatedAt { get; set; }
         public string? CreatedAtTime { get; set; }
         public DateTime LastTransactionAt { get; set; }

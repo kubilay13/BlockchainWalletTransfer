@@ -29,8 +29,8 @@ namespace DataAccessLayer.AppDbContext
                 {
                     Id = 1,
                     WalletName = "TestAdress",
-                    PrivateKey = "5a87ccab1b8b8f2d86c24ad6f278d8030be5a17d056588242ef377d9c3ddeb8e",
-                    WalletAddress = "TXTVwsUMsWrWsvd61VRcE9Bsk4WbEY9DGv",
+                    PrivateKeyTron = "5a87ccab1b8b8f2d86c24ad6f278d8030be5a17d056588242ef377d9c3ddeb8e",
+                    WalletAddressTron = "TXTVwsUMsWrWsvd61VRcE9Bsk4WbEY9DGv",
                     CreatedAt = DateTime.UtcNow,
                     LastTransactionAt = DateTime.UtcNow,
                     LastTransactionTime = "10:49:03",
@@ -46,8 +46,8 @@ namespace DataAccessLayer.AppDbContext
                  {
                      Id = 2,
                      WalletName = "AdminAdress",
-                     PrivateKey = "0107932b30922231adff71b4b7c0b05bc948632f56c2b62f98bd18fefeae8a9e",
-                     WalletAddress = "TEWJWLwFL3dbMjXtj2smNfto9sXdWquF4N",
+                     PrivateKeyTron = "0107932b30922231adff71b4b7c0b05bc948632f56c2b62f98bd18fefeae8a9e",
+                     WalletAddressTron = "TEWJWLwFL3dbMjXtj2smNfto9sXdWquF4N",
                      CreatedAt = DateTime.UtcNow,
                      LastTransactionAt = DateTime.UtcNow,
                      LastTransactionTime = "10:49:03",
@@ -102,11 +102,11 @@ namespace DataAccessLayer.AppDbContext
             //TronWalletModel--
 
             modelBuilder.Entity<TronWalletModel>()
-            .Property(t => t.PrivateKey)
+            .Property(t => t.PrivateKeyTron)
             .HasMaxLength(128);
 
             modelBuilder.Entity<TronWalletModel>()
-                .Property(t => t.WalletAddress)
+                .Property(t => t.WalletAddressTron)
                 .HasMaxLength(34)
                 .IsRequired();
 

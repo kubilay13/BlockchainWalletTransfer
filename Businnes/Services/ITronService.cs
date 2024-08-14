@@ -8,7 +8,7 @@ public interface ITronService
     Task<decimal> GetTronUsdApiPriceAsync();
     Task<decimal> GetBalanceAsyncTrx(string address);
     Task SendTronAsync(string senderAddress, string receiverAddress, long amount);
-    Task TransferTRXorToken(TransferRequest request);
+    Task TransferTRXorToken(TransferRequest request,string transactionType);
     Task<TransactionInfoModel> GetTransactionFeeAsync(string transactionHash);
     Task TokenTransfer(TransferRequest request);
 }

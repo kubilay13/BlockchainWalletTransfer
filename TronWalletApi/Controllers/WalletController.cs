@@ -64,16 +64,20 @@ public class WalletController : ControllerBase
         {
             return BadRequest("Geçersiz transfer isteği.");
         }
+
         try
         {
+            // Alıcı cüzdanı veritabanında bul
             var receiverWallet = await _applicationDbContext.TronWalletModels
-                .FirstOrDefaultAsync(w => w.WalletAddress == request.ReceiverAddress);
+                .FirstOrDefaultAsync(w => w.WalletAddressTron == request.ReceiverAddress);
 
-            request.TransactionType = receiverWallet != null
+            // TransactionType'ı belirle
+            var transactionType = receiverWallet != null
                 ? TransactionType.Deposit
                 : TransactionType.Withdraw;
 
-            await _tronService.TransferTRXorToken(request);
+            // Transfer işlemini yap
+            await _tronService.TransferTRXorToken(request, transactionType.ToString());
 
             return Ok("Transfer işlemi başarılı.");
         }
@@ -90,6 +94,7 @@ public class WalletController : ControllerBase
             return StatusCode(500, $"Sunucu hatası: {ex.Message}");
         }
     }
+
 
     //[HttpPost("TokenTransfer")]
     //public async Task<IActionResult> TokenTransfer([FromBody] TransferRequest request)
