@@ -41,23 +41,23 @@ namespace ETHWalletApi.Controllers
             }
         }
 
-        [HttpPost("send-transaction")]
-        public async Task<IActionResult> SendTransactionAsync([FromBody] EthNetworkTransactionRequest request)
-        {
-            if (request == null)
-            {
-                return BadRequest("Transaction request is required.");
-            }
+        //[HttpPost("send-transaction")]
+        //public async Task<IActionResult> SendTransactionAsync([FromBody] EthNetworkTransactionRequest request)
+        //{
+        //    if (request == null)
+        //    {
+        //        return BadRequest("Transaction request is required.");
+        //    }
 
-            try
-            {
-                var transactionHash = await _ethService.SendTransactionAsync(request);
-                return Ok(new { TransactionHash = transactionHash });
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, $"Internal server error: {ex.Message}");
-            }
-        }
+        //    try
+        //    {
+        //        var transactionHash = await _ethService.SendTransactionAsync(request);
+        //        return Ok(new { TransactionHash = transactionHash });
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return StatusCode(500, $"Internal server error: {ex.Message}");
+        //    }
+        //}
     }
 }

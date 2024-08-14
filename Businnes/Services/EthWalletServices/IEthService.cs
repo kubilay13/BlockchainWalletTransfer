@@ -5,7 +5,7 @@ namespace ETHWalletApi.Services
 {
     public interface IEthService
     {
-        Task<string> SendTransactionAsync(EthNetworkTransactionRequest request);
+        //Task<string> SendTransactionAsync(EthNetworkTransactionRequest request);
         Task<EthWalletModels> CreateETHWalletAsync(string walletName);
     }
 }
