@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #pragma warning disable CA1814 // Prefer jagged arrays over multidimensional
 
-namespace TronWalletApi.Migrations
+namespace ETHWalletApi.Migrations
 {
     /// <inheritdoc />
     public partial class Init : Migration
@@ -13,6 +13,25 @@ namespace TronWalletApi.Migrations
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.CreateTable(
+                name: "EthWalletModelss",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    WalletName = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    PrivateKey = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    PublicKey = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    WalletAddress = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    ETHAmount = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    Network = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    WalletETHScanURL = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_EthWalletModelss", x => x.Id);
+                });
+
             migrationBuilder.CreateTable(
                 name: "Networks",
                 columns: table => new
@@ -131,14 +150,17 @@ namespace TronWalletApi.Migrations
                 columns: new[] { "Id", "CreatedAt", "CreatedAtTime", "ETHAmount", "LastTransactionAt", "LastTransactionTime", "Network", "PrivateKey", "TransactionLimit", "TrxAmount", "UsdcAmount", "UsdtAmount", "WalletAddress", "WalletName", "WalletTronScanURL" },
                 values: new object[,]
                 {
-                    { 1, new DateTime(2024, 8, 12, 13, 21, 22, 892, DateTimeKind.Utc).AddTicks(1266), "16:21:22", 0m, new DateTime(2024, 8, 12, 13, 21, 22, 892, DateTimeKind.Utc).AddTicks(1266), "10:49:03", "Testnet(Nile)", "5a87ccab1b8b8f2d86c24ad6f278d8030be5a17d056588242ef377d9c3ddeb8e", false, 0m, 0m, 0m, "TXTVwsUMsWrWsvd61VRcE9Bsk4WbEY9DGv", "TestAdress", "https://nile.tronscan.org/#/address/TXTVwsUMsWrWsvd61VRcE9Bsk4WbEY9DGv" },
-                    { 2, new DateTime(2024, 8, 12, 13, 21, 22, 892, DateTimeKind.Utc).AddTicks(1278), "16:21:22", 0m, new DateTime(2024, 8, 12, 13, 21, 22, 892, DateTimeKind.Utc).AddTicks(1278), "10:49:03", "Testnet(Nile)", "0107932b30922231adff71b4b7c0b05bc948632f56c2b62f98bd18fefeae8a9e", true, 0m, 0m, 0m, "TEWJWLwFL3dbMjXtj2smNfto9sXdWquF4N", "AdminAdress", "https://nile.tronscan.org/#/address/TEWJWLwFL3dbMjXtj2smNfto9sXdWquF4N" }
+                    { 1, new DateTime(2024, 8, 14, 15, 25, 11, 440, DateTimeKind.Utc).AddTicks(8193), "18:25:11", 0m, new DateTime(2024, 8, 14, 15, 25, 11, 440, DateTimeKind.Utc).AddTicks(8194), "10:49:03", "Testnet(Nile)", "5a87ccab1b8b8f2d86c24ad6f278d8030be5a17d056588242ef377d9c3ddeb8e", false, 0m, 0m, 0m, "TXTVwsUMsWrWsvd61VRcE9Bsk4WbEY9DGv", "TestAdress", "https://nile.tronscan.org/#/address/TXTVwsUMsWrWsvd61VRcE9Bsk4WbEY9DGv" },
+                    { 2, new DateTime(2024, 8, 14, 15, 25, 11, 440, DateTimeKind.Utc).AddTicks(8201), "18:25:11", 0m, new DateTime(2024, 8, 14, 15, 25, 11, 440, DateTimeKind.Utc).AddTicks(8202), "10:49:03", "Testnet(Nile)", "0107932b30922231adff71b4b7c0b05bc948632f56c2b62f98bd18fefeae8a9e", true, 0m, 0m, 0m, "TEWJWLwFL3dbMjXtj2smNfto9sXdWquF4N", "AdminAdress", "https://nile.tronscan.org/#/address/TEWJWLwFL3dbMjXtj2smNfto9sXdWquF4N" }
                 });
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropTable(
+                name: "EthWalletModelss");
+
             migrationBuilder.DropTable(
                 name: "Networks");
 

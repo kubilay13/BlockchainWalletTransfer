@@ -1,4 +1,5 @@
 ﻿using Entities.Models;
+using Entities.Models.EthModels;
 using Entities.Models.TronModels;
 using Microsoft.EntityFrameworkCore;
 
@@ -13,6 +14,7 @@ namespace DataAccessLayer.AppDbContext
         public DbSet<TransferHistoryModel> TransferHistoryModels { get; set; }
         public DbSet<TransactionSuccesHistoryModel> TransactionSuccesHistoryModels { get; set; }
         public DbSet<Network> Networks { get; set; }
+        public DbSet<EthWalletModels> EthWalletModelss { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

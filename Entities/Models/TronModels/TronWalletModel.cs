@@ -13,7 +13,6 @@
         public decimal TrxAmount { get; set; }
         public decimal UsdtAmount { get; set; }
         public decimal UsdcAmount { get; set; }
-
         public decimal ETHAmount { get; set; }
         public string? Network { get; set; }
         public string? WalletTronScanURL { get; set; }

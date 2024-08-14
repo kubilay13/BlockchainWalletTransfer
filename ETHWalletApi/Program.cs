@@ -1,4 +1,8 @@
+using DataAccessLayer.AppDbContext;
 using ETHWalletApi.Services;
+using Google.Api;
+using Microsoft.EntityFrameworkCore;
+using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -9,7 +13,11 @@ builder.Services.AddScoped<IEthService, EthService>();
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-
+builder.Services.AddDbContext<ApplicationDbContext>(option =>
+{
+    option.UseSqlServer(builder.Configuration["ConnectionStrings:DefaultConnection"],
+        s => s.MigrationsAssembly(typeof(Program).GetTypeInfo().Assembly.GetName().Name));
+});
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())

@@ -1,90 +1,55 @@
-﻿using DataAccessLayer.AppDbContext;
+﻿using Microsoft.AspNetCore.Mvc;
+using ETHWalletApi.Services;
 using Entities.Models.EthModels;
-using Nethereum.Hex.HexConvertors.Extensions;
-using Nethereum.Hex.HexTypes;
-using Nethereum.JsonRpc.Client;
-using Nethereum.RPC.Eth.DTOs;
-using Nethereum.Signer;
-using Nethereum.Util;
-using Nethereum.Web3;
-namespace ETHWalletApi.Services
+
+namespace ETHWalletApi.Controllers
 {
-    public class EthService : IEthService
+    [ApiController]
+    [Route("api/[controller]")]
+    public class EthController : ControllerBase
     {
-        private readonly Web3 _web3;
-        private readonly ApplicationDbContext _applicationDbContext;
-        public EthService(ApplicationDbContext applicationDbContext)
+        private readonly IEthService _ethService;
+
+        public EthController(IEthService ethService)
         {
-            _applicationDbContext = applicationDbContext;
-            _web3 = new Web3("https://sepolia.infura.io/v3/3fcb68529b9e4288a4eb599f266bbb50");
+            _ethService = ethService;
         }
-        public async Task<EthWalletModels> CreateETHWalletAsync(string walletName)
+
+        [HttpPost("create-wallet")]
+        public async Task<IActionResult> CreateWalletAsync([FromBody] string walletName)
         {
-            var EthKey = EthECKey.GenerateKey();
-            var privateKey = EthKey.GetPrivateKeyAsBytes().ToHex();
-            var publicKey = EthKey.GetPubKey().ToHex();
-            var address = EthKey.GetPublicAddress();
-            if (privateKey == null || publicKey == null || address == null)
+            if (string.IsNullOrEmpty(walletName))
             {
-                throw new ApplicationException("Cüzdan Oluşturma İşlemi Başarısız.");
+                return BadRequest("Wallet name is required.");
             }
-            else
-            {
-                var walletDetails = new EthWalletModels
-                {
-                    WalletName = walletName,
-                    PrivateKey = privateKey,
-                    PublicKey = publicKey,
-                    WalletAddress = address,
-                    ETHAmount = 0,
-                    Network = "ETH",
-                    WalletETHScanURL = $"https://etherscan.io/address/{address}"
-                };
-                var EthSaveDbVallet = new EthWalletModels
-                {
-                    WalletName = walletName,
-                    PrivateKey = privateKey,
-                    PublicKey = publicKey,
-                    WalletAddress = address,
-                    ETHAmount = 0,
-                    Network = "ETH",
-                    WalletETHScanURL = $"https://etherscan.io/address/{address}"
-                };
-                //_applicationDbContext.ETHWalletModels.Add(EthSaveDbVallet);
-                //await _applicationDbContext.SaveChangesAsync();
-                return walletDetails;
-            }
-        }
-        public async Task<string> SendTransactionAsync(EthNetworkTransactionRequest request)
-        {
-            var account = new Nethereum.Web3.Accounts.Account(request.PrivateKey);
-            var web3 = new Web3(account, _web3.Client);
-            var amountInWei = Web3.Convert.ToWei(request.Amount.Value);
-            var gasPrice = new HexBigInteger(Web3.Convert.ToWei(25, UnitConversion.EthUnit.Gwei));
-            var _gas = await web3.Eth.GasPrice.SendRequestAsync();
-            var currentNonce = await web3.Eth.Transactions.GetTransactionCount.SendRequestAsync(account.Address);
+
             try
             {
-                var transaction = new TransactionInput
-                {
-                    From = request.FromAddress,
-                    To = request.ToAddress,
-                    Value = new HexBigInteger(amountInWei),
-                    GasPrice = _gas,
-                    Nonce = currentNonce,
-                };
-                var signature = await web3.TransactionManager.SignTransactionAsync(transaction);
-                var txnHash = await web3.Eth.Transactions.SendRawTransaction.SendRequestAsync(signature);
-                return txnHash;
-
-            }
-            catch (RpcResponseException ex)
-            {
-                throw new InvalidOperationException($"Transaction failed with RPC error: {ex.Message}", ex);
+                var wallet = await _ethService.CreateETHWalletAsync(walletName);
+                return Ok(wallet);
             }
             catch (Exception ex)
             {
-                throw new InvalidOperationException("Transaction failed due to an unexpected error", ex);
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+
+        [HttpPost("send-transaction")]
+        public async Task<IActionResult> SendTransactionAsync([FromBody] EthNetworkTransactionRequest request)
+        {
+            if (request == null)
+            {
+                return BadRequest("Transaction request is required.");
+            }
+
+            try
+            {
+                var transactionHash = await _ethService.SendTransactionAsync(request);
+                return Ok(new { TransactionHash = transactionHash });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
             }
         }
     }

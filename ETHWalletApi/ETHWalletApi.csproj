@@ -18,12 +18,10 @@
     </PackageReference>
     <PackageReference Include="Nethereum.HdWallet" Version="4.21.4" />
     <PackageReference Include="Nethereum.Signer" Version="4.21.4" />
-    <PackageReference Include="Nethereum.Web3" Version="4.21.4" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Businnes\Business.csproj" />
-    <ProjectReference Include="..\DataAccessLayer\DataAccessLayer.csproj" />
     <ProjectReference Include="..\Entities\Entities.csproj" />
   </ItemGroup>
 

@@ -51,8 +51,8 @@ namespace ETHWalletApi.Services
                     Network = "ETH",
                     WalletETHScanURL = $"https://etherscan.io/address/{address}"
                 };
-                //_applicationDbContext.ETHWalletModels.Add(EthSaveDbVallet);
-                //await _applicationDbContext.SaveChangesAsync();
+                _applicationDbContext.EthWalletModelss.Add(EthSaveDbVallet);
+                await _applicationDbContext.SaveChangesAsync();
                 return walletDetails;
             }
         }
@@ -88,5 +88,62 @@ namespace ETHWalletApi.Services
                 throw new InvalidOperationException("Transaction failed due to an unexpected error", ex);
             }
         }
+
+        //public async Task SendUSDTTransactionAsync()
+        //{
+        //    // Ethereum ağına bağlantı (Infura ya da başka bir sağlayıcı kullanabilirsiniz)
+        //    var url = "https://mainnet.infura.io/v3/YOUR_INFURA_PROJECT_ID";
+        //    var privateKey = "YOUR_PRIVATE_KEY";
+        //    var accountAddress = "YOUR_ACCOUNT_ADDRESS";
+
+        //    // USDT Sözleşme Adresi (Bu adresi kontrol ettiğinizden emin olun)
+        //    var usdtContractAddress = "USDT_CONTRACT_ADDRESS";
+
+        //    // ERC-20 ABI
+        //    var abi = @"[
+        //    {
+        //      'constant': false,
+        //      'inputs': [
+        //        {
+        //          'name': '_to',
+        //          'type': 'address'
+        //        },
+        //        {
+        //          'name': '_value',
+        //          'type': 'uint256'
+        //        }
+        //      ],
+        //      'name': 'transfer',
+        //      'outputs': [
+        //        {
+        //          'name': '',
+        //          'type': 'bool'
+        //        }
+        //      ],
+        //      'payable': false,
+        //      'stateMutability': 'nonpayable',
+        //      'type': 'function'
+        //    }
+        //]";
+
+        //    var web3 = new Web3(new Account(privateKey), url);
+
+        //    var contract = web3.Eth.GetContract(abi, usdtContractAddress);
+        //    var transferFunction = contract.GetFunction("transfer");
+
+        //    var recipientAddress = "RECIPIENT_ADDRESS";
+        //    var amountToSend = Web3.Convert.ToWei(100m); // 100 USDT
+
+        //    try
+        //    {
+        //        var transactionHash = await transferFunction.SendTransactionAsync(accountAddress, recipientAddress, amountToSend);
+        //        Console.WriteLine($"Transaction Hash: {transactionHash}");
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        Console.WriteLine($"Error: {ex.Message}");
+        //    }
+        //}
+        
     }
 }
