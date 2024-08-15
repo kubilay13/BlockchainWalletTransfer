@@ -57,41 +57,41 @@ namespace ETHWalletApi.Services
                 return walletDetails;
             }
         }
-        //public async Task<string> SendTransactionAsync(EthNetworkTransactionRequest request)
-        //{
-        //    var account = new Nethereum.Web3.Accounts.Account(request.PrivateKey);
-        //    var web3 = new Web3(account, _web3.Client);
-        //    var amountInWei = Web3.Convert.ToWei(request.Amount.Value);
-        //    //var gasPrice = new HexBigInteger(Web3.Convert.ToWei(25, UnitConversion.EthUnit.Gwei));
-        //    var _gas = await web3.Eth.GasPrice.SendRequestAsync();
-        //    var currentNonce = await web3.Eth.Transactions.GetTransactionCount.SendRequestAsync(account.Address);
-        //    try
-        //    {
-        //        var transaction = new TransferHistoryModel
-        //        {
-        //            SendingAddress = request.FromAddress,
-        //            ReceivedAddress = request.ToAddress,
-        //            Value = new HexBigInteger(amountInWei),
-        //            GasPrice = _gas,
-        //            Nonce = currentNonce,
-        //        };
-        //        var signature = await web3.TransactionManager.SignTransactionAsync(transaction);
-        //        var txnHash = await web3.Eth.Transactions.SendRawTransaction.SendRequestAsync(signature);
-        //        _applicationDbContext.TransferHistoryModels.Add(transaction);
-        //        await _applicationDbContext.SaveChangesAsync();
-        //        return txnHash;
+        public async Task<string> SendTransactionAsync(EthNetworkTransactionRequest request)
+        {
+            var account = new Nethereum.Web3.Accounts.Account(request.PrivateKey);
+            var web3 = new Web3(account, _web3.Client);
+            var amountInWei = Web3.Convert.ToWei(request.Amount.Value);
+            //var gasPrice = new HexBigInteger(Web3.Convert.ToWei(25, UnitConversion.EthUnit.Gwei));
+            var _gas = await web3.Eth.GasPrice.SendRequestAsync();
+            var currentNonce = await web3.Eth.Transactions.GetTransactionCount.SendRequestAsync(account.Address);
+            try
+            {
+                var transaction = new EthNetworkTransactionRequest
+                {
+                    FromAddress = request.FromAddress,
+                    ToAddress = request.ToAddress,
+                    TransactionAmount = new HexBigInteger(amountInWei),
+                    Amount = _gas,
+                    Nonce = currentNonce,
+                };
+                var signature = await web3.TransactionManager.SignTransactionAsync(transaction);
+                var txnHash = await web3.Eth.Transactions.SendRawTransaction.SendRequestAsync(signature);
+                _applicationDbContext.TransferHistoryModels.Add(transaction);
+                await _applicationDbContext.SaveChangesAsync();
+                return txnHash;
 
 
-        //    }
-        //    catch (RpcResponseException ex)
-        //    {
-        //        throw new InvalidOperationException($"ETH Transfer İşlemi Başarısız: {ex.Message}", ex);
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        throw new InvalidOperationException("ETH Transfer İşleminde Beklenmeyen Bir Hata Oluştu. ", ex);
-        //    }
-        //}
+            }
+            catch (RpcResponseException ex)
+            {
+                throw new InvalidOperationException($"ETH Transfer İşlemi Başarısız: {ex.Message}", ex);
+            }
+            catch (Exception ex)
+            {
+                throw new InvalidOperationException("ETH Transfer İşleminde Beklenmeyen Bir Hata Oluştu. ", ex);
+            }
+        }
 
         //public async Task SendUSDTTransactionAsync()
         //{
@@ -148,6 +148,6 @@ namespace ETHWalletApi.Services
         //        Console.WriteLine($"Error: {ex.Message}");
         //    }
         //}
-        
+
     }
 }

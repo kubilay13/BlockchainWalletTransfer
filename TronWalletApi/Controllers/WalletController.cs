@@ -17,16 +17,16 @@ public class WalletController : ControllerBase
         _applicationDbContext = applicationDbContext;
     }
     [HttpGet("createwallet(TRX,ETH Network)")]
-    public async Task<IActionResult> CreateWallet(string walletName)
+    public async Task<string> CreateWallet(string walletName)
     {
         try
         {
-            var walletAddress = await _tronService.CreateWallet(walletName);
-            return Ok(walletAddress);
+            var wallet = await _tronService.CreateWallet(walletName);
+            return wallet;
         }
         catch (Exception ex)
         {
-            return BadRequest("Cüzdan oluşturulurken bir hata oluştu: " + ex.Message);
+            return "Cüzdan Oluşurken Beklenmedik Hata Oluştu.";
         }
     }
     [HttpGet("balance")]

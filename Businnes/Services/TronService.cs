@@ -14,8 +14,6 @@ using Microsoft.Extensions.Logging;
 using Entities.Models.TronModels;
 using Entities.Enums;
 using DataAccessLayer.AppDbContext;
-using ETHWalletApi.Services;
-using Nethereum.Signer;
 using System.Text;
 
 public class TronService : ITronService
@@ -50,10 +48,6 @@ public class TronService : ITronService
     {
         try
         {
-            var ethKey = EthECKey.GenerateKey();
-            var ethprivateKey = ethKey.GetPrivateKeyAsBytes().ToHex();
-            var ethaddress = ethKey.GetPublicAddress();
-
             var ecKey = TronECKey.GenerateKey(TronNetwork.MainNet);
             var privateKey = ecKey.GetPrivateKey();
             var address = ecKey.GetPublicAddress();
@@ -62,8 +56,6 @@ public class TronService : ITronService
                 WalletName = walletName,
                 PrivateKeyTron = privateKey,
                 WalletAddressTron = address,
-                PrivateKeyEth=ethprivateKey,
-                WalletAddressETH=ethaddress,
                 CreatedAt = DateTime.UtcNow,
                 CreatedAtTime = DateTime.Now.ToString("HH:mm:ss"),
                 WalletTronScanURL = $"https://nile.tronscan.org/#/address/{address}",
@@ -73,14 +65,13 @@ public class TronService : ITronService
             await _applicationDbContext.SaveChangesAsync();
             var network = await _applicationDbContext.Networks.FirstOrDefaultAsync(n => n.Type == NetworkType.Network);
             string adminAddress = network.AdminWallet;
-            await SendTronAsync(adminAddress, address, 200000000);
+            await SendTronAsync(adminAddress, address, 20000000);
             var responseBuilder = new StringBuilder();
             responseBuilder.AppendLine($"WalletName: {wallet.WalletName}");
             responseBuilder.AppendLine($"Tron Private Key: {wallet.PrivateKeyTron}");
             responseBuilder.AppendLine($"Tron Wallet Address: {wallet.WalletAddressTron}");
             responseBuilder.AppendLine($"Ethereum Private Key: {wallet.PrivateKeyEth}");
             responseBuilder.AppendLine($"Ethereum Wallet Address: {wallet.WalletAddressETH}");
-
             var response = responseBuilder.ToString();
             return response;
         }

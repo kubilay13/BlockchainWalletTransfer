@@ -6,7 +6,6 @@
         public string? WalletName { get; set; }
         public string? PrivateKeyTron { get; set; }
         public string? WalletAddressTron { get; set; }
-
         public string? PrivateKeyEth { get; set; }
         public string? WalletAddressETH { get; set; }
         public DateTime CreatedAt { get; set; }

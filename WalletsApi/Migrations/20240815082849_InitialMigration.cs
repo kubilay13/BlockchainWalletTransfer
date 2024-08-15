@@ -5,10 +5,10 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #pragma warning disable CA1814 // Prefer jagged arrays over multidimensional
 
-namespace TronWalletApi.Migrations
+namespace WalletsApi.Migrations
 {
     /// <inheritdoc />
-    public partial class Init : Migration
+    public partial class InitialMigration : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -118,6 +118,7 @@ namespace TronWalletApi.Migrations
                     WalletName = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
                     PrivateKeyTron = table.Column<string>(type: "nvarchar(128)", maxLength: 128, nullable: true),
                     WalletAddressTron = table.Column<string>(type: "nvarchar(34)", maxLength: 34, nullable: false),
+                    NetworkName = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     PrivateKeyEth = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     WalletAddressETH = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
@@ -149,11 +150,11 @@ namespace TronWalletApi.Migrations
 
             migrationBuilder.InsertData(
                 table: "TronWalletModels",
-                columns: new[] { "Id", "CreatedAt", "CreatedAtTime", "ETHAmount", "LastTransactionAt", "LastTransactionTime", "Network", "PrivateKeyEth", "PrivateKeyTron", "TransactionLimit", "TrxAmount", "UsdcAmount", "UsdtAmount", "WalletAddressETH", "WalletAddressTron", "WalletName", "WalletTronScanURL" },
+                columns: new[] { "Id", "CreatedAt", "CreatedAtTime", "ETHAmount", "LastTransactionAt", "LastTransactionTime", "Network", "NetworkName", "PrivateKeyEth", "PrivateKeyTron", "TransactionLimit", "TrxAmount", "UsdcAmount", "UsdtAmount", "WalletAddressETH", "WalletAddressTron", "WalletName", "WalletTronScanURL" },
                 values: new object[,]
                 {
-                    { 1, new DateTime(2024, 8, 14, 23, 21, 21, 919, DateTimeKind.Utc).AddTicks(6473), "02:21:21", 0m, new DateTime(2024, 8, 14, 23, 21, 21, 919, DateTimeKind.Utc).AddTicks(6473), "10:49:03", "Testnet(Nile)", null, "5a87ccab1b8b8f2d86c24ad6f278d8030be5a17d056588242ef377d9c3ddeb8e", false, 0m, 0m, 0m, null, "TXTVwsUMsWrWsvd61VRcE9Bsk4WbEY9DGv", "TestAdress", "https://nile.tronscan.org/#/address/TXTVwsUMsWrWsvd61VRcE9Bsk4WbEY9DGv" },
-                    { 2, new DateTime(2024, 8, 14, 23, 21, 21, 919, DateTimeKind.Utc).AddTicks(6481), "02:21:21", 0m, new DateTime(2024, 8, 14, 23, 21, 21, 919, DateTimeKind.Utc).AddTicks(6481), "10:49:03", "Testnet(Nile)", null, "0107932b30922231adff71b4b7c0b05bc948632f56c2b62f98bd18fefeae8a9e", true, 0m, 0m, 0m, null, "TEWJWLwFL3dbMjXtj2smNfto9sXdWquF4N", "AdminAdress", "https://nile.tronscan.org/#/address/TEWJWLwFL3dbMjXtj2smNfto9sXdWquF4N" }
+                    { 1, new DateTime(2024, 8, 15, 8, 28, 48, 496, DateTimeKind.Utc).AddTicks(2738), "11:28:48", 0m, new DateTime(2024, 8, 15, 8, 28, 48, 496, DateTimeKind.Utc).AddTicks(2739), "10:49:03", "Testnet(Nile)", null, null, "5a87ccab1b8b8f2d86c24ad6f278d8030be5a17d056588242ef377d9c3ddeb8e", false, 0m, 0m, 0m, null, "TXTVwsUMsWrWsvd61VRcE9Bsk4WbEY9DGv", "TestAdress", "https://nile.tronscan.org/#/address/TXTVwsUMsWrWsvd61VRcE9Bsk4WbEY9DGv" },
+                    { 2, new DateTime(2024, 8, 15, 8, 28, 48, 496, DateTimeKind.Utc).AddTicks(2752), "11:28:48", 0m, new DateTime(2024, 8, 15, 8, 28, 48, 496, DateTimeKind.Utc).AddTicks(2752), "10:49:03", "Testnet(Nile)", null, null, "0107932b30922231adff71b4b7c0b05bc948632f56c2b62f98bd18fefeae8a9e", true, 0m, 0m, 0m, null, "TEWJWLwFL3dbMjXtj2smNfto9sXdWquF4N", "AdminAdress", "https://nile.tronscan.org/#/address/TEWJWLwFL3dbMjXtj2smNfto9sXdWquF4N" }
                 });
         }
 

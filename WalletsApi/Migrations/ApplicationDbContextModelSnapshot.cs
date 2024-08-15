@@ -4,23 +4,20 @@ using DataAccessLayer.AppDbContext;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
-using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
-namespace TronWalletApi.Migrations
+namespace WalletsApi.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240814232122_Init")]
-    partial class Init
+    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
     {
-        /// <inheritdoc />
-        protected override void BuildTargetModel(ModelBuilder modelBuilder)
+        protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "8.0.7")
+                .HasAnnotation("ProductVersion", "8.0.8")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
@@ -304,6 +301,9 @@ namespace TronWalletApi.Migrations
                     b.Property<string>("Network")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("NetworkName")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("PrivateKeyEth")
                         .HasColumnType("nvarchar(max)");
 
@@ -347,10 +347,10 @@ namespace TronWalletApi.Migrations
                         new
                         {
                             Id = 1,
-                            CreatedAt = new DateTime(2024, 8, 14, 23, 21, 21, 919, DateTimeKind.Utc).AddTicks(6473),
-                            CreatedAtTime = "02:21:21",
+                            CreatedAt = new DateTime(2024, 8, 15, 8, 28, 48, 496, DateTimeKind.Utc).AddTicks(2738),
+                            CreatedAtTime = "11:28:48",
                             ETHAmount = 0m,
-                            LastTransactionAt = new DateTime(2024, 8, 14, 23, 21, 21, 919, DateTimeKind.Utc).AddTicks(6473),
+                            LastTransactionAt = new DateTime(2024, 8, 15, 8, 28, 48, 496, DateTimeKind.Utc).AddTicks(2739),
                             LastTransactionTime = "10:49:03",
                             Network = "Testnet(Nile)",
                             PrivateKeyTron = "5a87ccab1b8b8f2d86c24ad6f278d8030be5a17d056588242ef377d9c3ddeb8e",
@@ -365,10 +365,10 @@ namespace TronWalletApi.Migrations
                         new
                         {
                             Id = 2,
-                            CreatedAt = new DateTime(2024, 8, 14, 23, 21, 21, 919, DateTimeKind.Utc).AddTicks(6481),
-                            CreatedAtTime = "02:21:21",
+                            CreatedAt = new DateTime(2024, 8, 15, 8, 28, 48, 496, DateTimeKind.Utc).AddTicks(2752),
+                            CreatedAtTime = "11:28:48",
                             ETHAmount = 0m,
-                            LastTransactionAt = new DateTime(2024, 8, 14, 23, 21, 21, 919, DateTimeKind.Utc).AddTicks(6481),
+                            LastTransactionAt = new DateTime(2024, 8, 15, 8, 28, 48, 496, DateTimeKind.Utc).AddTicks(2752),
                             LastTransactionTime = "10:49:03",
                             Network = "Testnet(Nile)",
                             PrivateKeyTron = "0107932b30922231adff71b4b7c0b05bc948632f56c2b62f98bd18fefeae8a9e",
