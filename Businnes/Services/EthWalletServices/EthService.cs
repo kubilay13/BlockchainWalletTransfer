@@ -67,18 +67,34 @@ namespace ETHWalletApi.Services
             var currentNonce = await web3.Eth.Transactions.GetTransactionCount.SendRequestAsync(account.Address);
             try
             {
-                var transaction = new EthNetworkTransactionRequest
+                var transaction = new TransactionInput
                 {
-                    FromAddress = request.FromAddress,
-                    ToAddress = request.ToAddress,
-                    TransactionAmount = new HexBigInteger(amountInWei),
-                    Amount = _gas,
+                    From = request.FromAddress,
+                    To = request.ToAddress,
+                    Value =new HexBigInteger( amountInWei),
+                    Gas = _gas,
                     Nonce = currentNonce,
                 };
+                
                 var signature = await web3.TransactionManager.SignTransactionAsync(transaction);
                 var txnHash = await web3.Eth.Transactions.SendRawTransaction.SendRequestAsync(signature);
-                _applicationDbContext.TransferHistoryModels.Add(transaction);
-                await _applicationDbContext.SaveChangesAsync();
+                var EthTransaction = new TransferHistoryModel
+                {
+                    ReceivedAddress = request.FromAddress,
+                    SendingAddress = request.ToAddress,
+                    TransactionHash = txnHash,
+                    CoinType ="ETH",
+                    TransactionNetwork="ETH",
+                    TransactionAmount=request.Amount.Value,
+                    Commission =0,
+                    NetworkFee= Convert.ToDecimal(_gas),
+                    TransactionUrl=$"https://etherscan.io/tx/{txnHash}",
+                    TransactionStatus=true,
+                    
+
+                };
+                //_applicationDbContext.TransferHistoryModels.Add(transaction);
+                //await _applicationDbContext.SaveChangesAsync();
                 return txnHash;
 
 

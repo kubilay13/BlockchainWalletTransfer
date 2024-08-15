@@ -15,8 +15,6 @@ namespace Entities.Models.TronModels
         public string? TransactionDateTime { get; set; }
         public decimal Commission { get; set; }
         public decimal NetworkFee { get; set; }
-        public string? SenderTransactionUrl { get; set; }
-        public string? ReceiverTransactionUrl { get; set; }
         public string? TransactionUrl { get; set; }
         public bool TransactionStatus { get; set; }
         public TransactionType TransactionType { get; set; }
