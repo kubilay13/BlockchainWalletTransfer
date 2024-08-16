@@ -1,4 +1,6 @@
 ﻿using Entities.Enums;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Entities.Models.TronModels
 {
@@ -7,13 +9,17 @@ namespace Entities.Models.TronModels
         public int Id { get; set; }
         public string? SendingAddress { get; set; }
         public string? ReceivedAddress { get; set; }
+        [MaxLength(256)]
         public string? TransactionHash { get; set; }
         public string? CoinType { get; set; }
         public string? TransactionNetwork { get; set; }
         public decimal TransactionAmount { get; set; }
         public DateTime TransactionDate { get; set; }
-        public string? TransactionDateTime { get; set; }
+
+        [Column(TypeName = "decimal(18,8)")]
+
         public decimal Commission { get; set; }
+        [Column(TypeName = "decimal(18,8)")]
         public decimal NetworkFee { get; set; }
         public string? TransactionUrl { get; set; }
         public bool TransactionStatus { get; set; }
@@ -22,14 +28,12 @@ namespace Entities.Models.TronModels
         public string? Network { get; set; }
 
 
+        //public TransferHistoryModel()
+        //{
+        //    TransactionDate = DateTime.UtcNow;
+        //    TransactionDateTime = DateTime.Now.ToString("HH:mm:ss");
+        //    Network = "Testnet(Nile)";
+        //}
 
-
-
-        public TransferHistoryModel()
-        {
-            TransactionDate = DateTime.UtcNow;
-            TransactionDateTime = DateTime.Now.ToString("HH:mm:ss");
-            Network = "Testnet(Nile)";
-        }
     }
 }

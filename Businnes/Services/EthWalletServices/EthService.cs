@@ -67,42 +67,37 @@ namespace ETHWalletApi.Services
 
             try
             {
-            
+
                 var transaction = new TransactionInput
                 {
                     From = request.FromAddress,
                     To = request.ToAddress,
                     Value = new HexBigInteger(amountInWei),
                     Nonce = currentNonce,
-                    GasPrice = await web3.Eth.GasPrice.SendRequestAsync() 
+                    GasPrice = await web3.Eth.GasPrice.SendRequestAsync()
                 };
-
-
                 var _gas = await web3.Eth.Transactions.EstimateGas.SendRequestAsync(transaction);
                 transaction.Gas = _gas;
-
-                
                 var signature = await web3.TransactionManager.SignTransactionAsync(transaction);
                 var txnHash = await web3.Eth.Transactions.SendRawTransaction.SendRequestAsync(signature);
-
-                //var EthTransaction = new TransferHistoryModel
-                //{
-                //    ReceivedAddress = request.FromAddress,
-                //    SendingAddress = request.ToAddress,
-                //    TransactionHash = txnHash,
-                //    CoinType = "ETHEREUM",
-                //    TransactionNetwork = "ETH",
-                //    TransactionAmount = request.Amount.Value,
-                //    Commission = 0,
-                //    NetworkFee = Convert.ToDecimal(_gas),
-                //    TransactionUrl = $"https://etherscan.io/tx/{txnHash}",
-                //    TransactionStatus = true,
-                //    TransactionType = 0,
-                //    Network = "TestNet(Nile)"
-                //};
-
-                //_applicationDbContext.TransferHistoryModels.Add(EthTransaction);
-                //await _applicationDbContext.SaveChangesAsync();
+                var EthTransaction = new TransferHistoryModel
+                {
+                    SendingAddress = request.FromAddress,
+                    ReceivedAddress = request.ToAddress,
+                    TransactionHash = txnHash,
+                    CoinType = "ETHEREUM",
+                    TransactionNetwork = "ETH",
+                    TransactionAmount = request.Amount.Value,
+                    TransactionDate = DateTime.UtcNow,
+                    Commission = 0,
+                    NetworkFee = Convert.ToDecimal(_gas.ToString()),
+                    TransactionUrl = $"https://etherscan.io/tx/{txnHash}",
+                    TransactionStatus = true,
+                    TransactionType = 0,
+                    Network = "Ethereum"
+                };
+                _applicationDbContext.TransferHistoryModels.Add(EthTransaction);
+                await _applicationDbContext.SaveChangesAsync();
                 return txnHash;
             }
             catch (RpcResponseException ex)

@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace DataAccessLayer.AppDbContext
 {
-    public class ApplicationDbContext:DbContext
+    public class ApplicationDbContext : DbContext
     {
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
         {
@@ -21,7 +21,6 @@ namespace DataAccessLayer.AppDbContext
             modelBuilder.Entity<WalletModel>().HasKey(t => t.Id);
             modelBuilder.Entity<TransferHistoryModel>().HasKey(t => t.Id);
             modelBuilder.Entity<TransactionSuccesHistoryModel>().HasKey(t => t.Id);
-
             base.OnModelCreating(modelBuilder);
 
             modelBuilder.Entity<WalletModel>().HasData(
@@ -33,7 +32,6 @@ namespace DataAccessLayer.AppDbContext
                     WalletAddressTron = "TXTVwsUMsWrWsvd61VRcE9Bsk4WbEY9DGv",
                     CreatedAt = DateTime.UtcNow,
                     LastTransactionAt = DateTime.UtcNow,
-                    LastTransactionTime = "10:49:03",
                     TrxAmount = 0,
                     UsdtAmount = 0,
                     UsdcAmount = 0,
@@ -50,7 +48,6 @@ namespace DataAccessLayer.AppDbContext
                      WalletAddressTron = "TEWJWLwFL3dbMjXtj2smNfto9sXdWquF4N",
                      CreatedAt = DateTime.UtcNow,
                      LastTransactionAt = DateTime.UtcNow,
-                     LastTransactionTime = "10:49:03",
                      TrxAmount = 0,
                      UsdtAmount = 0,
                      UsdcAmount = 0,
@@ -154,17 +151,17 @@ namespace DataAccessLayer.AppDbContext
 
             modelBuilder.Entity<TransferHistoryModel>()
                 .Property(t => t.SendingAddress)
-                .HasMaxLength(34)
+                .HasMaxLength(64)
                 .IsRequired();
 
             modelBuilder.Entity<TransferHistoryModel>()
                 .Property(t => t.ReceivedAddress)
-                .HasMaxLength(34)
+                .HasMaxLength(64)
                 .IsRequired();
 
             modelBuilder.Entity<TransferHistoryModel>()
                 .Property(t => t.TransactionHash)
-                .HasMaxLength(64)
+                .HasMaxLength(256)
                 .IsRequired();
 
             modelBuilder.Entity<TransferHistoryModel>()
@@ -178,10 +175,6 @@ namespace DataAccessLayer.AppDbContext
             modelBuilder.Entity<TransferHistoryModel>()
                 .Property(t => t.TransactionDate)
                 .HasColumnType("datetime2");
-
-            modelBuilder.Entity<TransferHistoryModel>()
-                .Property(t => t.TransactionDateTime)
-                .HasMaxLength(8);
 
             modelBuilder.Entity<TransferHistoryModel>()
                 .Property(t => t.Commission)
@@ -202,17 +195,17 @@ namespace DataAccessLayer.AppDbContext
 
             modelBuilder.Entity<TransactionSuccesHistoryModel>()
             .Property(t => t.SendingAddress)
-            .HasMaxLength(34)
+            .HasMaxLength(64)
             .IsRequired();
 
             modelBuilder.Entity<TransactionSuccesHistoryModel>()
                 .Property(t => t.ReceivedAddress)
-                .HasMaxLength(34)
+                .HasMaxLength(64)
                 .IsRequired();
 
             modelBuilder.Entity<TransactionSuccesHistoryModel>()
                 .Property(t => t.TransactionHash)
-                .HasMaxLength(64)
+                .HasMaxLength(256)
                 .IsRequired();
 
             modelBuilder.Entity<TransactionSuccesHistoryModel>()
