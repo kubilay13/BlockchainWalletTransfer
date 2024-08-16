@@ -59,8 +59,8 @@ namespace ETHWalletApi.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    SendingAddress = table.Column<string>(type: "nvarchar(34)", maxLength: 34, nullable: false),
-                    ReceivedAddress = table.Column<string>(type: "nvarchar(34)", maxLength: 34, nullable: false),
+                    SendingAddress = table.Column<string>(type: "nvarchar(64)", maxLength: 64, nullable: false),
+                    ReceivedAddress = table.Column<string>(type: "nvarchar(64)", maxLength: 64, nullable: false),
                     TransactionHash = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
                     CoinType = table.Column<string>(type: "nvarchar(10)", maxLength: 10, nullable: true),
                     TransactionNetwork = table.Column<string>(type: "nvarchar(10)", maxLength: 10, nullable: true),
@@ -89,7 +89,7 @@ namespace ETHWalletApi.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     SendingAddress = table.Column<string>(type: "nvarchar(64)", maxLength: 64, nullable: false),
                     ReceivedAddress = table.Column<string>(type: "nvarchar(64)", maxLength: 64, nullable: false),
-                    TransactionHash = table.Column<string>(type: "nvarchar(64)", maxLength: 64, nullable: false),
+                    TransactionHash = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
                     CoinType = table.Column<string>(type: "nvarchar(10)", maxLength: 10, nullable: true),
                     TransactionNetwork = table.Column<string>(type: "nvarchar(10)", maxLength: 10, nullable: true),
                     TransactionAmount = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
@@ -126,6 +126,7 @@ namespace ETHWalletApi.Migrations
                     UsdcAmount = table.Column<decimal>(type: "decimal(18,8)", nullable: false),
                     ETHAmount = table.Column<decimal>(type: "decimal(18,8)", nullable: false),
                     Network = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    WalletEthScanUrl = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     WalletTronScanURL = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: true),
                     TransactionLimit = table.Column<bool>(type: "bit", nullable: false)
                 },
@@ -146,11 +147,12 @@ namespace ETHWalletApi.Migrations
 
             migrationBuilder.InsertData(
                 table: "WalletModels",
-                columns: new[] { "Id", "CreatedAt", "CreatedAtTime", "ETHAmount", "LastTransactionAt", "LastTransactionTime", "Network", "PrivateKeyEth", "PrivateKeyTron", "TransactionLimit", "TrxAmount", "UsdcAmount", "UsdtAmount", "WalletAddressETH", "WalletAddressTron", "WalletName", "WalletTronScanURL" },
+                columns: new[] { "Id", "CreatedAt", "CreatedAtTime", "ETHAmount", "LastTransactionAt", "LastTransactionTime", "Network", "PrivateKeyEth", "PrivateKeyTron", "TransactionLimit", "TrxAmount", "UsdcAmount", "UsdtAmount", "WalletAddressETH", "WalletAddressTron", "WalletEthScanUrl", "WalletName", "WalletTronScanURL" },
                 values: new object[,]
                 {
-                    { 1, new DateTime(2024, 8, 16, 10, 39, 43, 688, DateTimeKind.Utc).AddTicks(5972), "13:39:43", 0m, new DateTime(2024, 8, 16, 10, 39, 43, 688, DateTimeKind.Utc).AddTicks(5973), "13:39:43", "Testnet(Nile)", null, "5a87ccab1b8b8f2d86c24ad6f278d8030be5a17d056588242ef377d9c3ddeb8e", false, 0m, 0m, 0m, null, "TXTVwsUMsWrWsvd61VRcE9Bsk4WbEY9DGv", "TestAdress", "https://nile.tronscan.org/#/address/TXTVwsUMsWrWsvd61VRcE9Bsk4WbEY9DGv" },
-                    { 2, new DateTime(2024, 8, 16, 10, 39, 43, 688, DateTimeKind.Utc).AddTicks(5980), "13:39:43", 0m, new DateTime(2024, 8, 16, 10, 39, 43, 688, DateTimeKind.Utc).AddTicks(5981), "13:39:43", "Testnet(Nile)", null, "0107932b30922231adff71b4b7c0b05bc948632f56c2b62f98bd18fefeae8a9e", true, 0m, 0m, 0m, null, "TEWJWLwFL3dbMjXtj2smNfto9sXdWquF4N", "AdminAdress", "https://nile.tronscan.org/#/address/TEWJWLwFL3dbMjXtj2smNfto9sXdWquF4N" }
+                    { 1, new DateTime(2024, 8, 16, 11, 41, 31, 239, DateTimeKind.Utc).AddTicks(450), "14:41:31", 0m, new DateTime(2024, 8, 16, 11, 41, 31, 239, DateTimeKind.Utc).AddTicks(450), "14:41:31", "Testnet(Nile)", null, "5a87ccab1b8b8f2d86c24ad6f278d8030be5a17d056588242ef377d9c3ddeb8e", false, 0m, 0m, 0m, null, "TXTVwsUMsWrWsvd61VRcE9Bsk4WbEY9DGv", null, "TRXTestAdress", "https://nile.tronscan.org/#/address/TXTVwsUMsWrWsvd61VRcE9Bsk4WbEY9DGv" },
+                    { 2, new DateTime(2024, 8, 16, 11, 41, 31, 239, DateTimeKind.Utc).AddTicks(459), "14:41:31", 0m, new DateTime(2024, 8, 16, 11, 41, 31, 239, DateTimeKind.Utc).AddTicks(459), "14:41:31", "Testnet(Sepolia)", "f7753fbb6a94a3f5758acfd83e2c568899220f2ba782b831b14ea5bfc95bc422", null, true, 0m, 0m, 0m, "0x09Dd4927885EdbC5Ad820Fe489d7409A58ebe6DA", "null", null, "ETHAdminAdress", "https://etherscan.io/address/0x09Dd4927885EdbC5Ad820Fe489d7409A58ebe6DA" },
+                    { 3, new DateTime(2024, 8, 16, 11, 41, 31, 239, DateTimeKind.Utc).AddTicks(466), "14:41:31", 0m, new DateTime(2024, 8, 16, 11, 41, 31, 239, DateTimeKind.Utc).AddTicks(467), "14:41:31", "Testnet(Nile)", null, "0107932b30922231adff71b4b7c0b05bc948632f56c2b62f98bd18fefeae8a9e", true, 0m, 0m, 0m, null, "TEWJWLwFL3dbMjXtj2smNfto9sXdWquF4N", null, "TRXAdminAdress", "https://nile.tronscan.org/#/address/TEWJWLwFL3dbMjXtj2smNfto9sXdWquF4N" }
                 });
         }
 

@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ETHWalletApi.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240816103944_Init")]
+    [Migration("20240816114131_Init")]
     partial class Init
     {
         /// <inheritdoc />
@@ -159,8 +159,8 @@ namespace ETHWalletApi.Migrations
 
                     b.Property<string>("ReceivedAddress")
                         .IsRequired()
-                        .HasMaxLength(34)
-                        .HasColumnType("nvarchar(34)");
+                        .HasMaxLength(64)
+                        .HasColumnType("nvarchar(64)");
 
                     b.Property<string>("ReceiverTransactionUrl")
                         .HasColumnType("nvarchar(max)");
@@ -170,8 +170,8 @@ namespace ETHWalletApi.Migrations
 
                     b.Property<string>("SendingAddress")
                         .IsRequired()
-                        .HasMaxLength(34)
-                        .HasColumnType("nvarchar(34)");
+                        .HasMaxLength(64)
+                        .HasColumnType("nvarchar(64)");
 
                     b.Property<decimal>("TransactionAmount")
                         .HasColumnType("decimal(18,2)");
@@ -245,8 +245,8 @@ namespace ETHWalletApi.Migrations
 
                     b.Property<string>("TransactionHash")
                         .IsRequired()
-                        .HasMaxLength(64)
-                        .HasColumnType("nvarchar(64)");
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
 
                     b.Property<string>("TransactionNetwork")
                         .HasMaxLength(10)
@@ -321,6 +321,9 @@ namespace ETHWalletApi.Migrations
                         .HasMaxLength(34)
                         .HasColumnType("nvarchar(34)");
 
+                    b.Property<string>("WalletEthScanUrl")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("WalletName")
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
@@ -337,11 +340,11 @@ namespace ETHWalletApi.Migrations
                         new
                         {
                             Id = 1,
-                            CreatedAt = new DateTime(2024, 8, 16, 10, 39, 43, 688, DateTimeKind.Utc).AddTicks(5972),
-                            CreatedAtTime = "13:39:43",
+                            CreatedAt = new DateTime(2024, 8, 16, 11, 41, 31, 239, DateTimeKind.Utc).AddTicks(450),
+                            CreatedAtTime = "14:41:31",
                             ETHAmount = 0m,
-                            LastTransactionAt = new DateTime(2024, 8, 16, 10, 39, 43, 688, DateTimeKind.Utc).AddTicks(5973),
-                            LastTransactionTime = "13:39:43",
+                            LastTransactionAt = new DateTime(2024, 8, 16, 11, 41, 31, 239, DateTimeKind.Utc).AddTicks(450),
+                            LastTransactionTime = "14:41:31",
                             Network = "Testnet(Nile)",
                             PrivateKeyTron = "5a87ccab1b8b8f2d86c24ad6f278d8030be5a17d056588242ef377d9c3ddeb8e",
                             TransactionLimit = false,
@@ -349,17 +352,36 @@ namespace ETHWalletApi.Migrations
                             UsdcAmount = 0m,
                             UsdtAmount = 0m,
                             WalletAddressTron = "TXTVwsUMsWrWsvd61VRcE9Bsk4WbEY9DGv",
-                            WalletName = "TestAdress",
+                            WalletName = "TRXTestAdress",
                             WalletTronScanURL = "https://nile.tronscan.org/#/address/TXTVwsUMsWrWsvd61VRcE9Bsk4WbEY9DGv"
                         },
                         new
                         {
                             Id = 2,
-                            CreatedAt = new DateTime(2024, 8, 16, 10, 39, 43, 688, DateTimeKind.Utc).AddTicks(5980),
-                            CreatedAtTime = "13:39:43",
+                            CreatedAt = new DateTime(2024, 8, 16, 11, 41, 31, 239, DateTimeKind.Utc).AddTicks(459),
+                            CreatedAtTime = "14:41:31",
                             ETHAmount = 0m,
-                            LastTransactionAt = new DateTime(2024, 8, 16, 10, 39, 43, 688, DateTimeKind.Utc).AddTicks(5981),
-                            LastTransactionTime = "13:39:43",
+                            LastTransactionAt = new DateTime(2024, 8, 16, 11, 41, 31, 239, DateTimeKind.Utc).AddTicks(459),
+                            LastTransactionTime = "14:41:31",
+                            Network = "Testnet(Sepolia)",
+                            PrivateKeyEth = "f7753fbb6a94a3f5758acfd83e2c568899220f2ba782b831b14ea5bfc95bc422",
+                            TransactionLimit = true,
+                            TrxAmount = 0m,
+                            UsdcAmount = 0m,
+                            UsdtAmount = 0m,
+                            WalletAddressETH = "0x09Dd4927885EdbC5Ad820Fe489d7409A58ebe6DA",
+                            WalletAddressTron = "null",
+                            WalletName = "ETHAdminAdress",
+                            WalletTronScanURL = "https://etherscan.io/address/0x09Dd4927885EdbC5Ad820Fe489d7409A58ebe6DA"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            CreatedAt = new DateTime(2024, 8, 16, 11, 41, 31, 239, DateTimeKind.Utc).AddTicks(466),
+                            CreatedAtTime = "14:41:31",
+                            ETHAmount = 0m,
+                            LastTransactionAt = new DateTime(2024, 8, 16, 11, 41, 31, 239, DateTimeKind.Utc).AddTicks(467),
+                            LastTransactionTime = "14:41:31",
                             Network = "Testnet(Nile)",
                             PrivateKeyTron = "0107932b30922231adff71b4b7c0b05bc948632f56c2b62f98bd18fefeae8a9e",
                             TransactionLimit = true,
@@ -367,7 +389,7 @@ namespace ETHWalletApi.Migrations
                             UsdcAmount = 0m,
                             UsdtAmount = 0m,
                             WalletAddressTron = "TEWJWLwFL3dbMjXtj2smNfto9sXdWquF4N",
-                            WalletName = "AdminAdress",
+                            WalletName = "TRXAdminAdress",
                             WalletTronScanURL = "https://nile.tronscan.org/#/address/TEWJWLwFL3dbMjXtj2smNfto9sXdWquF4N"
                         });
                 });

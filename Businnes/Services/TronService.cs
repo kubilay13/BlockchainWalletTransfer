@@ -225,7 +225,6 @@ public class TronService : ITronService
                 var senderAddress = await _applicationDbContext.WalletModels.FirstOrDefaultAsync(w => w.WalletAddressTron == request.SenderAddress);
                 var trxamount = await _applicationDbContext.WalletModels.FirstOrDefaultAsync(n => n.TrxAmount == request.Amount);
                 string adminAddress = network.AdminWallet;
-
                 if (_amount > 0)
                 {
                     var transactionClient = _tronClient.GetTransaction();
@@ -251,7 +250,7 @@ public class TronService : ITronService
                             NetworkFee = 0,
                             TransactionUrl = $"https://nile.tronscan.org/#/transaction/{transactionHash}",
                             TransactionStatus = true,
-                            //TransactionType = request.TransactionType,
+                            TransactionType = request.TransactionType,
                             TransactionHash = transactionHash,
                         };
                         Log.Error("TRX Transfer İşlemi Başarılı.");
@@ -272,7 +271,7 @@ public class TronService : ITronService
                             NetworkFee = 0,
                             TransactionUrl = $"https://nile.tronscan.org/#/transaction/{transactionHash}",
                             TransactionStatus = false,
-                            //TransactionType = request.TransactionType,
+                            TransactionType = request.TransactionType,
                             TransactionHash = transactionHash,
                         };
                         Log.Error("TRX Transfer İşlemi Sırasında Bir Sorun Oluştu.");
@@ -366,7 +365,7 @@ public class TronService : ITronService
                 NetworkFee = 0,
                 TransactionUrl = $"https://nile.tronscan.org/#/transaction/{transferResult}",
                 TransactionStatus = false,
-                //TransactionType = request.TransactionType,
+                TransactionType = request.TransactionType,
                 TransactionHash = transferResult,
             };
             _applicationDbContext.TransferHistoryModels.Add(historyModel);
@@ -386,7 +385,7 @@ public class TronService : ITronService
                 NetworkFee = 0,
                 TransactionUrl = $"https://nile.tronscan.org/#/transaction/{transferResult}",
                 TransactionStatus = true,
-                //TransactionType = request.TransactionType,
+                TransactionType = request.TransactionType,
                 TransactionHash = transferResult,
             };
             _applicationDbContext.TransferHistoryModels.Add(historyModel);
@@ -418,7 +417,7 @@ public class TronService : ITronService
                 NetworkFee = 0,
                 TransactionUrl = $"https://nile.tronscan.org/#/transaction/{transferResult}",
                 TransactionStatus = false,
-                //TransactionType = request.TransactionType,
+                TransactionType = request.TransactionType,
                 TransactionHash = transferResult,
             };
             _applicationDbContext.TransferHistoryModels.Add(historyModel);
@@ -438,7 +437,7 @@ public class TronService : ITronService
                 NetworkFee = 0,
                 TransactionUrl = $"https://nile.tronscan.org/#/transaction/{transferResult}",
                 TransactionStatus = true,
-                //TransactionType = request.TransactionType,
+                TransactionType = request.TransactionType,
                 TransactionHash = transferResult,
             };
             _applicationDbContext.TransferHistoryModels.Add(historyModel);
@@ -500,11 +499,9 @@ public class TronService : ITronService
     }
     private async Task<bool> TransferControl(TransferRequest request)
     {
-        var Commission = await _applicationDbContext.Networks
-        .FirstOrDefaultAsync(w => w.Name == request.CoinName);
+        var Commission = await _applicationDbContext.Networks.FirstOrDefaultAsync(w => w.Name == request.CoinName);
+        var senderWallet = await _applicationDbContext.WalletModels.FirstOrDefaultAsync(w => w.WalletAddressTron == request.SenderAddress);
         var _comission = Commission!.Commission;
-        var senderWallet = await _applicationDbContext.WalletModels
-           .FirstOrDefaultAsync(w => w.WalletAddressTron == request.SenderAddress);
         if (request.TransactionType != TransactionType.Deposit)
         {
             var twentyFourHoursAgo = DateTime.UtcNow.AddHours(-24);
@@ -528,8 +525,7 @@ public class TronService : ITronService
         {
             throw new ApplicationException($"Yetersiz bakiye.Bakiye {request.Amount + _comission} tutarından fazla olmalıdır.");
         }
-        var receiverWallet = await _applicationDbContext.WalletModels
-             .FirstOrDefaultAsync(w => w.WalletAddressTron == request.ReceiverAddress);
+        var receiverWallet = await _applicationDbContext.WalletModels.FirstOrDefaultAsync(w => w.WalletAddressTron == request.ReceiverAddress);
         return true;
     }
     private string GetTransactionHash(Transaction signedTransaction)

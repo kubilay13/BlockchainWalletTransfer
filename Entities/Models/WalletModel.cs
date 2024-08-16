@@ -3,8 +3,6 @@
     public class WalletModel
     {
         public int Id { get; set; }
-
-        
         public string? WalletName { get; set; }
         public string? PrivateKeyTron { get; set; }
         public string? WalletAddressTron { get; set; }
@@ -19,6 +17,7 @@
         public decimal UsdcAmount { get; set; }
         public decimal ETHAmount { get; set; }
         public string? Network { get; set; }
+        public string? WalletEthScanUrl { get; set; }
         public string? WalletTronScanURL { get; set; }
         public bool TransactionLimit { get; set; }
 
