@@ -8,7 +8,8 @@ namespace ETHWalletApi.Services
         Task<EthWalletModels> CreateETHWalletAsync(string walletName);
         Task<string> GetPrivateKeyByAddressAsync(string walletAddress);
         Task<string> SendTransactionAsyncETH(EthNetworkTransactionRequest request);
-        //Task<string> SendTransactionAsyncUSDT(EthNetworkTransactionRequest request);
-    
+
+        Task<string> SendTransactionAsyncUSDT(EthNetworkTransactionRequest request);
+
     }
 }

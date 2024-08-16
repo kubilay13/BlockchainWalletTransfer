@@ -58,5 +58,28 @@ namespace ETHWalletApi.Controllers
                 return StatusCode(500, $"Internal server error: {ex.Message}");
             }
         }
+
+        [HttpPost("send-usdt")]
+        public async Task<IActionResult> SendUSDTTransaction([FromBody] EthNetworkTransactionRequest request)
+        {
+            if (request == null || string.IsNullOrEmpty(request.FromAddress) || string.IsNullOrEmpty(request.ToAddress) || request.Amount == null)
+            {
+                return BadRequest("Geçersiz işlem isteği.");
+            }
+
+            try
+            {
+                var transactionHash = await _ethService.SendTransactionAsyncUSDT(request);
+                return Ok(new { TransactionHash = transactionHash });
+            }
+            catch (InvalidOperationException ex)
+            {
+                return StatusCode(500, $"İşlem sırasında bir hata oluştu: {ex.Message}");
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Beklenmeyen bir hata oluştu: {ex.Message}");
+            }
+        }
     }
 }

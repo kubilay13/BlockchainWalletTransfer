@@ -1,6 +1,8 @@
-﻿namespace Entities.Models.EthModels
+﻿using Nethereum.Contracts;
+
+namespace Entities.Models.EthModels
 {
-    public class EthNetworkTransactionRequest
+    public class EthNetworkTransactionRequest:FunctionMessage
     {
         public string? FromAddress { get; set; }
         public string? ToAddress { get; set; }
