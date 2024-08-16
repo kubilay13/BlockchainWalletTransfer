@@ -22,7 +22,7 @@ namespace ETHWalletApi.Services
             _web3 = new Web3("https://sepolia.infura.io/v3/3fcb68529b9e4288a4eb599f266bbb50");
             _httpClient = httpClient;
         }
-        public async Task<EthWalletModels> CreateETHWalletAsync(string walletName)
+        public async Task<EthWalletModels>CreateETHWalletAsync(string walletName)
         {
             var EthKey = EthECKey.GenerateKey();
             var privateKey = EthKey.GetPrivateKeyAsBytes().ToHex();
@@ -81,7 +81,7 @@ namespace ETHWalletApi.Services
                 return walletDetails;
             }
         }
-        public async Task<string> SendTransactionAsync(EthNetworkTransactionRequest request)
+        public async Task<string> SendTransactionAsyncETH(EthNetworkTransactionRequest request)
         {
             var privateKey = await GetPrivateKeyByAddressAsync(request.FromAddress);
             var account = new Nethereum.Web3.Accounts.Account(privateKey);
@@ -132,18 +132,23 @@ namespace ETHWalletApi.Services
                 throw new InvalidOperationException("ETH Transfer İşleminde Beklenmeyen Bir Hata Oluştu. ", ex);
             }
         }
+
+        //public async Task<string> SendTransactionAsyncUSDT(EthNetworkTransactionRequest request)
+        //{
+
+        //}
+
         public async Task<string> GetPrivateKeyByAddressAsync(string walletAddress)
         {
             var wallet = await _applicationDbContext.WalletModels
                 .FirstOrDefaultAsync(w => w.WalletAddressETH == walletAddress);
-
             if (wallet == null || wallet.PrivateKeyEth == null)
             {
                 throw new ApplicationException("Cüzdan bulunamadı veya privateKey mevcut değil.");
             }
-
             return wallet.PrivateKeyEth;
         }
 
+        
     }
 }

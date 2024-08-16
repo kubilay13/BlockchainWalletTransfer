@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #pragma warning disable CA1814 // Prefer jagged arrays over multidimensional
 
-namespace ETHWalletApi.Migrations
+namespace TronWalletApi.Migrations
 {
     /// <inheritdoc />
     public partial class Init : Migration
@@ -150,9 +150,9 @@ namespace ETHWalletApi.Migrations
                 columns: new[] { "Id", "CreatedAt", "CreatedAtTime", "ETHAmount", "LastTransactionAt", "LastTransactionTime", "Network", "PrivateKeyEth", "PrivateKeyTron", "TransactionLimit", "TrxAmount", "UsdcAmount", "UsdtAmount", "WalletAddressETH", "WalletAddressTron", "WalletEthScanUrl", "WalletName", "WalletTronScanURL" },
                 values: new object[,]
                 {
-                    { 1, new DateTime(2024, 8, 16, 11, 41, 31, 239, DateTimeKind.Utc).AddTicks(450), "14:41:31", 0m, new DateTime(2024, 8, 16, 11, 41, 31, 239, DateTimeKind.Utc).AddTicks(450), "14:41:31", "Testnet(Nile)", null, "5a87ccab1b8b8f2d86c24ad6f278d8030be5a17d056588242ef377d9c3ddeb8e", false, 0m, 0m, 0m, null, "TXTVwsUMsWrWsvd61VRcE9Bsk4WbEY9DGv", null, "TRXTestAdress", "https://nile.tronscan.org/#/address/TXTVwsUMsWrWsvd61VRcE9Bsk4WbEY9DGv" },
-                    { 2, new DateTime(2024, 8, 16, 11, 41, 31, 239, DateTimeKind.Utc).AddTicks(459), "14:41:31", 0m, new DateTime(2024, 8, 16, 11, 41, 31, 239, DateTimeKind.Utc).AddTicks(459), "14:41:31", "Testnet(Sepolia)", "f7753fbb6a94a3f5758acfd83e2c568899220f2ba782b831b14ea5bfc95bc422", null, true, 0m, 0m, 0m, "0x09Dd4927885EdbC5Ad820Fe489d7409A58ebe6DA", "null", null, "ETHAdminAdress", "https://etherscan.io/address/0x09Dd4927885EdbC5Ad820Fe489d7409A58ebe6DA" },
-                    { 3, new DateTime(2024, 8, 16, 11, 41, 31, 239, DateTimeKind.Utc).AddTicks(466), "14:41:31", 0m, new DateTime(2024, 8, 16, 11, 41, 31, 239, DateTimeKind.Utc).AddTicks(467), "14:41:31", "Testnet(Nile)", null, "0107932b30922231adff71b4b7c0b05bc948632f56c2b62f98bd18fefeae8a9e", true, 0m, 0m, 0m, null, "TEWJWLwFL3dbMjXtj2smNfto9sXdWquF4N", null, "TRXAdminAdress", "https://nile.tronscan.org/#/address/TEWJWLwFL3dbMjXtj2smNfto9sXdWquF4N" }
+                    { 1, new DateTime(2024, 8, 16, 12, 24, 17, 471, DateTimeKind.Utc).AddTicks(7973), "15:24:17", 0m, new DateTime(2024, 8, 16, 12, 24, 17, 471, DateTimeKind.Utc).AddTicks(7973), "15:24:17", "Testnet(Nile)", null, "5a87ccab1b8b8f2d86c24ad6f278d8030be5a17d056588242ef377d9c3ddeb8e", false, 0m, 0m, 0m, null, "TXTVwsUMsWrWsvd61VRcE9Bsk4WbEY9DGv", null, "TRXTestAdress", "https://nile.tronscan.org/#/address/TXTVwsUMsWrWsvd61VRcE9Bsk4WbEY9DGv" },
+                    { 2, new DateTime(2024, 8, 16, 12, 24, 17, 471, DateTimeKind.Utc).AddTicks(8057), "15:24:17", 0m, new DateTime(2024, 8, 16, 12, 24, 17, 471, DateTimeKind.Utc).AddTicks(8058), "15:24:17", "Testnet(Sepolia)", "f7753fbb6a94a3f5758acfd83e2c568899220f2ba782b831b14ea5bfc95bc422", null, true, 0m, 0m, 0m, "0x09Dd4927885EdbC5Ad820Fe489d7409A58ebe6DA", "null", null, "ETHAdminAdress", "https://etherscan.io/address/0x09Dd4927885EdbC5Ad820Fe489d7409A58ebe6DA" },
+                    { 3, new DateTime(2024, 8, 16, 12, 24, 17, 471, DateTimeKind.Utc).AddTicks(8065), "15:24:17", 0m, new DateTime(2024, 8, 16, 12, 24, 17, 471, DateTimeKind.Utc).AddTicks(8066), "15:24:17", "Testnet(Nile)", null, "0107932b30922231adff71b4b7c0b05bc948632f56c2b62f98bd18fefeae8a9e", true, 0m, 0m, 0m, null, "TEWJWLwFL3dbMjXtj2smNfto9sXdWquF4N", null, "TRXAdminAdress", "https://nile.tronscan.org/#/address/TEWJWLwFL3dbMjXtj2smNfto9sXdWquF4N" }
                 });
         }
 

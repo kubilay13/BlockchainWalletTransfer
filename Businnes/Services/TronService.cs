@@ -252,6 +252,7 @@ public class TronService : ITronService
                             TransactionStatus = true,
                             TransactionType = request.TransactionType,
                             TransactionHash = transactionHash,
+                            Network = "TRX"
                         };
                         Log.Error("TRX Transfer İşlemi Başarılı.");
                         _applicationDbContext.TransferHistoryModels.Add(transferHistory);
@@ -273,6 +274,7 @@ public class TronService : ITronService
                             TransactionStatus = false,
                             TransactionType = request.TransactionType,
                             TransactionHash = transactionHash,
+                            Network = "TRX"
                         };
                         Log.Error("TRX Transfer İşlemi Sırasında Bir Sorun Oluştu.");
                         _applicationDbContext.TransferHistoryModels.Add(transferHistory);
@@ -367,6 +369,7 @@ public class TronService : ITronService
                 TransactionStatus = false,
                 TransactionType = request.TransactionType,
                 TransactionHash = transferResult,
+                Network = "TRX"
             };
             _applicationDbContext.TransferHistoryModels.Add(historyModel);
             await _applicationDbContext.SaveChangesAsync();
@@ -387,6 +390,7 @@ public class TronService : ITronService
                 TransactionStatus = true,
                 TransactionType = request.TransactionType,
                 TransactionHash = transferResult,
+                Network = "TRX"
             };
             _applicationDbContext.TransferHistoryModels.Add(historyModel);
             await _applicationDbContext.SaveChangesAsync();
@@ -419,6 +423,7 @@ public class TronService : ITronService
                 TransactionStatus = false,
                 TransactionType = request.TransactionType,
                 TransactionHash = transferResult,
+                Network = "TRX"
             };
             _applicationDbContext.TransferHistoryModels.Add(historyModel);
             await _applicationDbContext.SaveChangesAsync();
@@ -439,6 +444,7 @@ public class TronService : ITronService
                 TransactionStatus = true,
                 TransactionType = request.TransactionType,
                 TransactionHash = transferResult,
+                Network = "TRX"
             };
             _applicationDbContext.TransferHistoryModels.Add(historyModel);
             await _applicationDbContext.SaveChangesAsync();

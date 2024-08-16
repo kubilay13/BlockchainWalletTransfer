@@ -50,7 +50,7 @@ namespace ETHWalletApi.Controllers
             }
             try
             {
-                var transactionHash = await _ethService.SendTransactionAsync(request);
+                var transactionHash = await _ethService.SendTransactionAsyncETH(request);
                 return Ok(new { TransactionHash = transactionHash });
             }
             catch (Exception ex)

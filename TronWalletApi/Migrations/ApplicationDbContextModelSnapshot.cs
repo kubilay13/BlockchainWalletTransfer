@@ -4,19 +4,16 @@ using DataAccessLayer.AppDbContext;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
-using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
-namespace ETHWalletApi.Migrations
+namespace TronWalletApi.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240816114131_Init")]
-    partial class Init
+    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
     {
-        /// <inheritdoc />
-        protected override void BuildTargetModel(ModelBuilder modelBuilder)
+        protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -340,11 +337,11 @@ namespace ETHWalletApi.Migrations
                         new
                         {
                             Id = 1,
-                            CreatedAt = new DateTime(2024, 8, 16, 11, 41, 31, 239, DateTimeKind.Utc).AddTicks(450),
-                            CreatedAtTime = "14:41:31",
+                            CreatedAt = new DateTime(2024, 8, 16, 12, 24, 17, 471, DateTimeKind.Utc).AddTicks(7973),
+                            CreatedAtTime = "15:24:17",
                             ETHAmount = 0m,
-                            LastTransactionAt = new DateTime(2024, 8, 16, 11, 41, 31, 239, DateTimeKind.Utc).AddTicks(450),
-                            LastTransactionTime = "14:41:31",
+                            LastTransactionAt = new DateTime(2024, 8, 16, 12, 24, 17, 471, DateTimeKind.Utc).AddTicks(7973),
+                            LastTransactionTime = "15:24:17",
                             Network = "Testnet(Nile)",
                             PrivateKeyTron = "5a87ccab1b8b8f2d86c24ad6f278d8030be5a17d056588242ef377d9c3ddeb8e",
                             TransactionLimit = false,
@@ -358,11 +355,11 @@ namespace ETHWalletApi.Migrations
                         new
                         {
                             Id = 2,
-                            CreatedAt = new DateTime(2024, 8, 16, 11, 41, 31, 239, DateTimeKind.Utc).AddTicks(459),
-                            CreatedAtTime = "14:41:31",
+                            CreatedAt = new DateTime(2024, 8, 16, 12, 24, 17, 471, DateTimeKind.Utc).AddTicks(8057),
+                            CreatedAtTime = "15:24:17",
                             ETHAmount = 0m,
-                            LastTransactionAt = new DateTime(2024, 8, 16, 11, 41, 31, 239, DateTimeKind.Utc).AddTicks(459),
-                            LastTransactionTime = "14:41:31",
+                            LastTransactionAt = new DateTime(2024, 8, 16, 12, 24, 17, 471, DateTimeKind.Utc).AddTicks(8058),
+                            LastTransactionTime = "15:24:17",
                             Network = "Testnet(Sepolia)",
                             PrivateKeyEth = "f7753fbb6a94a3f5758acfd83e2c568899220f2ba782b831b14ea5bfc95bc422",
                             TransactionLimit = true,
@@ -377,11 +374,11 @@ namespace ETHWalletApi.Migrations
                         new
                         {
                             Id = 3,
-                            CreatedAt = new DateTime(2024, 8, 16, 11, 41, 31, 239, DateTimeKind.Utc).AddTicks(466),
-                            CreatedAtTime = "14:41:31",
+                            CreatedAt = new DateTime(2024, 8, 16, 12, 24, 17, 471, DateTimeKind.Utc).AddTicks(8065),
+                            CreatedAtTime = "15:24:17",
                             ETHAmount = 0m,
-                            LastTransactionAt = new DateTime(2024, 8, 16, 11, 41, 31, 239, DateTimeKind.Utc).AddTicks(467),
-                            LastTransactionTime = "14:41:31",
+                            LastTransactionAt = new DateTime(2024, 8, 16, 12, 24, 17, 471, DateTimeKind.Utc).AddTicks(8066),
+                            LastTransactionTime = "15:24:17",
                             Network = "Testnet(Nile)",
                             PrivateKeyTron = "0107932b30922231adff71b4b7c0b05bc948632f56c2b62f98bd18fefeae8a9e",
                             TransactionLimit = true,
