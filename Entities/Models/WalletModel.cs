@@ -1,8 +1,10 @@
 ﻿namespace Entities.Models.TronModels
 {
-    public class TronWalletModel
+    public class WalletModel
     {
         public int Id { get; set; }
+
+        
         public string? WalletName { get; set; }
         public string? PrivateKeyTron { get; set; }
         public string? WalletAddressTron { get; set; }
@@ -20,7 +22,7 @@
         public string? WalletTronScanURL { get; set; }
         public bool TransactionLimit { get; set; }
 
-        public TronWalletModel()
+        public WalletModel()
         {
             CreatedAt = DateTime.UtcNow;
             CreatedAtTime = DateTime.Now.ToString("HH:mm:ss");

@@ -34,7 +34,7 @@ namespace WalletsApi.Services
                 var ecKey = TronECKey.GenerateKey(TronNetwork.MainNet);
                 var privateKey = ecKey.GetPrivateKey();
                 var address = ecKey.GetPublicAddress();
-                var wallet = new TronWalletModel
+                var wallet = new WalletModel
                 {
                     WalletName = walletName,
                     PrivateKeyTron = privateKey,
@@ -46,7 +46,7 @@ namespace WalletsApi.Services
                     WalletTronScanURL = $"https://nile.tronscan.org/#/address/{address}",
                     Network = "Testnet(Nile)"
                 };
-                _applicationDbContext.TronWalletModels.Add(wallet);
+                _applicationDbContext.WalletModels.Add(wallet);
                 await _applicationDbContext.SaveChangesAsync();
                 var network = await _applicationDbContext.Networks.FirstOrDefaultAsync(n => n.Type == Entities.Enums.NetworkType.Network);
                 string adminAddress = network.AdminWallet;

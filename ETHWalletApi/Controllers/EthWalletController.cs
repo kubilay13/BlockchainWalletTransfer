@@ -15,7 +15,7 @@ namespace ETHWalletApi.Controllers
             _ethService = ethService;
         }
 
-        [HttpPost("create-wallet")]
+        [HttpPost("CreateETHWallet")]
         public async Task<IActionResult> CreateWalletAsync([FromBody] string walletName)
         {
             if (string.IsNullOrEmpty(walletName))
@@ -41,23 +41,22 @@ namespace ETHWalletApi.Controllers
             }
         }
 
-        //[HttpPost("send-transaction")]
-        //public async Task<IActionResult> SendTransactionAsync([FromBody] EthNetworkTransactionRequest request)
-        //{
-        //    if (request == null)
-        //    {
-        //        return BadRequest("Transaction request is required.");
-        //    }
-
-        //    try
-        //    {
-        //        var transactionHash = await _ethService.SendTransactionAsync(request);
-        //        return Ok(new { TransactionHash = transactionHash });
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        return StatusCode(500, $"Internal server error: {ex.Message}");
-        //    }
-        //}
+        [HttpPost("ETHTransfer")]
+        public async Task<IActionResult> SendTransactionAsync([FromBody] EthNetworkTransactionRequest request)
+        {
+            if (request == null)
+            {
+                return BadRequest("Transaction request is required.");
+            }
+            try
+            {
+                var transactionHash = await _ethService.SendTransactionAsync(request);
+                return Ok(new { TransactionHash = transactionHash });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
     }
 }

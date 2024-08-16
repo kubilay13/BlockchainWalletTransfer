@@ -10,7 +10,7 @@ namespace DataAccessLayer.AppDbContext
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
         {
         }
-        public DbSet<TronWalletModel> TronWalletModels { get; set; }
+        public DbSet<WalletModel> WalletModels { get; set; }
         public DbSet<TransferHistoryModel> TransferHistoryModels { get; set; }
         public DbSet<TransactionSuccesHistoryModel> TransactionSuccesHistoryModels { get; set; }
         public DbSet<Network> Networks { get; set; }
@@ -18,14 +18,14 @@ namespace DataAccessLayer.AppDbContext
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<TronWalletModel>().HasKey(t => t.Id);
+            modelBuilder.Entity<WalletModel>().HasKey(t => t.Id);
             modelBuilder.Entity<TransferHistoryModel>().HasKey(t => t.Id);
             modelBuilder.Entity<TransactionSuccesHistoryModel>().HasKey(t => t.Id);
 
             base.OnModelCreating(modelBuilder);
 
-            modelBuilder.Entity<TronWalletModel>().HasData(
-                new TronWalletModel
+            modelBuilder.Entity<WalletModel>().HasData(
+                new WalletModel
                 {
                     Id = 1,
                     WalletName = "TestAdress",
@@ -42,7 +42,7 @@ namespace DataAccessLayer.AppDbContext
                     WalletTronScanURL = "https://nile.tronscan.org/#/address/TXTVwsUMsWrWsvd61VRcE9Bsk4WbEY9DGv",
                     TransactionLimit = false,
                 },
-                 new TronWalletModel
+                 new WalletModel
                  {
                      Id = 2,
                      WalletName = "AdminAdress",
@@ -101,52 +101,52 @@ namespace DataAccessLayer.AppDbContext
                 );
             //TronWalletModel--
 
-            modelBuilder.Entity<TronWalletModel>()
+            modelBuilder.Entity<WalletModel>()
             .Property(t => t.PrivateKeyTron)
             .HasMaxLength(128);
 
-            modelBuilder.Entity<TronWalletModel>()
+            modelBuilder.Entity<WalletModel>()
                 .Property(t => t.WalletAddressTron)
                 .HasMaxLength(34)
                 .IsRequired();
 
-            modelBuilder.Entity<TronWalletModel>()
+            modelBuilder.Entity<WalletModel>()
                 .Property(t => t.CreatedAt)
                 .HasColumnType("datetime2");
 
-            modelBuilder.Entity<TronWalletModel>()
+            modelBuilder.Entity<WalletModel>()
                 .Property(t => t.CreatedAtTime)
                 .HasMaxLength(8);
 
-            modelBuilder.Entity<TronWalletModel>()
+            modelBuilder.Entity<WalletModel>()
                 .Property(t => t.LastTransactionAt)
                 .HasColumnType("datetime2");
 
-            modelBuilder.Entity<TronWalletModel>()
+            modelBuilder.Entity<WalletModel>()
                 .Property(t => t.LastTransactionTime)
                 .HasMaxLength(8);
 
-            modelBuilder.Entity<TronWalletModel>()
+            modelBuilder.Entity<WalletModel>()
                 .Property(t => t.TrxAmount)
                 .HasColumnType("decimal(18, 8)");
 
-            modelBuilder.Entity<TronWalletModel>()
+            modelBuilder.Entity<WalletModel>()
                .Property(t => t.UsdtAmount)
                .HasColumnType("decimal(18, 8)");
 
-            modelBuilder.Entity<TronWalletModel>()
+            modelBuilder.Entity<WalletModel>()
                .Property(t => t.UsdcAmount)
                .HasColumnType("decimal(18, 8)");
 
-            modelBuilder.Entity<TronWalletModel>()
+            modelBuilder.Entity<WalletModel>()
              .Property(t => t.ETHAmount)
              .HasColumnType("decimal(18, 8)");
 
-            modelBuilder.Entity<TronWalletModel>()
+            modelBuilder.Entity<WalletModel>()
                 .Property(t => t.WalletTronScanURL)
                 .HasMaxLength(255);
 
-            modelBuilder.Entity<TronWalletModel>()
+            modelBuilder.Entity<WalletModel>()
                 .Property(t => t.TransactionLimit)
                 .IsRequired();
 
@@ -194,7 +194,7 @@ namespace DataAccessLayer.AppDbContext
             modelBuilder.Entity<TransferHistoryModel>()
                 .Property(t => t.TransactionStatus)
                 .IsRequired();
-            modelBuilder.Entity<TronWalletModel>()
+            modelBuilder.Entity<WalletModel>()
               .Property(t => t.WalletName)
               .HasMaxLength(100);
 

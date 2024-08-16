@@ -6,7 +6,6 @@ using Nethereum.Hex.HexTypes;
 using Nethereum.JsonRpc.Client;
 using Nethereum.RPC.Eth.DTOs;
 using Nethereum.Signer;
-using Nethereum.Util;
 using Nethereum.Web3;
 
 namespace ETHWalletApi.Services
@@ -15,10 +14,12 @@ namespace ETHWalletApi.Services
     {
         private readonly Web3 _web3;
         private readonly ApplicationDbContext _applicationDbContext;
-        public EthService(ApplicationDbContext applicationDbContext)
+        private readonly HttpClient _httpClient;
+        public EthService(ApplicationDbContext applicationDbContext, HttpClient httpClient)
         {
             _applicationDbContext = applicationDbContext;
             _web3 = new Web3("https://sepolia.infura.io/v3/3fcb68529b9e4288a4eb599f266bbb50");
+            _httpClient = httpClient;
         }
         public async Task<EthWalletModels> CreateETHWalletAsync(string walletName)
         {
@@ -62,42 +63,47 @@ namespace ETHWalletApi.Services
             var account = new Nethereum.Web3.Accounts.Account(request.PrivateKey);
             var web3 = new Web3(account, _web3.Client);
             var amountInWei = Web3.Convert.ToWei(request.Amount.Value);
-            //var gasPrice = new HexBigInteger(Web3.Convert.ToWei(25, UnitConversion.EthUnit.Gwei));
-            var _gas = await web3.Eth.GasPrice.SendRequestAsync();
             var currentNonce = await web3.Eth.Transactions.GetTransactionCount.SendRequestAsync(account.Address);
+
             try
             {
+            
                 var transaction = new TransactionInput
                 {
                     From = request.FromAddress,
                     To = request.ToAddress,
-                    Value =new HexBigInteger( amountInWei),
-                    Gas = _gas,
+                    Value = new HexBigInteger(amountInWei),
                     Nonce = currentNonce,
+                    GasPrice = await web3.Eth.GasPrice.SendRequestAsync() 
                 };
+
+
+                var _gas = await web3.Eth.Transactions.EstimateGas.SendRequestAsync(transaction);
+                transaction.Gas = _gas;
+
                 
                 var signature = await web3.TransactionManager.SignTransactionAsync(transaction);
                 var txnHash = await web3.Eth.Transactions.SendRawTransaction.SendRequestAsync(signature);
-                var EthTransaction = new TransferHistoryModel
-                {
-                    ReceivedAddress = request.FromAddress,
-                    SendingAddress = request.ToAddress,
-                    TransactionHash = txnHash,
-                    CoinType ="ETH",
-                    TransactionNetwork="ETH",
-                    TransactionAmount=request.Amount.Value,
-                    Commission =0,
-                    NetworkFee= Convert.ToDecimal(_gas),
-                    TransactionUrl=$"https://etherscan.io/tx/{txnHash}",
-                    TransactionStatus=true,
-                    
 
-                };
-                //_applicationDbContext.TransferHistoryModels.Add(transaction);
+                //var EthTransaction = new TransferHistoryModel
+                //{
+                //    ReceivedAddress = request.FromAddress,
+                //    SendingAddress = request.ToAddress,
+                //    TransactionHash = txnHash,
+                //    CoinType = "ETHEREUM",
+                //    TransactionNetwork = "ETH",
+                //    TransactionAmount = request.Amount.Value,
+                //    Commission = 0,
+                //    NetworkFee = Convert.ToDecimal(_gas),
+                //    TransactionUrl = $"https://etherscan.io/tx/{txnHash}",
+                //    TransactionStatus = true,
+                //    TransactionType = 0,
+                //    Network = "TestNet(Nile)"
+                //};
+
+                //_applicationDbContext.TransferHistoryModels.Add(EthTransaction);
                 //await _applicationDbContext.SaveChangesAsync();
                 return txnHash;
-
-
             }
             catch (RpcResponseException ex)
             {
@@ -108,7 +114,6 @@ namespace ETHWalletApi.Services
                 throw new InvalidOperationException("ETH Transfer İşleminde Beklenmeyen Bir Hata Oluştu. ", ex);
             }
         }
-
         //public async Task SendUSDTTransactionAsync()
         //{
         //    // Ethereum ağına bağlantı (Infura ya da başka bir sağlayıcı kullanabilirsiniz)

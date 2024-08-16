@@ -64,19 +64,14 @@ public class WalletController : ControllerBase
         {
             return BadRequest("Geçersiz transfer isteği.");
         }
-
         try
         {
-            // Alıcı cüzdanı veritabanında bul
-            var receiverWallet = await _applicationDbContext.TronWalletModels
+            var receiverWallet = await _applicationDbContext.WalletModels
                 .FirstOrDefaultAsync(w => w.WalletAddressTron == request.ReceiverAddress);
-
-            // TransactionType'ı belirle
             var transactionType = receiverWallet != null
                 ? TransactionType.Deposit
                 : TransactionType.Withdraw;
 
-            // Transfer işlemini yap
             await _tronService.TransferTRXorToken(request, transactionType.ToString());
 
             return Ok("Transfer işlemi başarılı.");

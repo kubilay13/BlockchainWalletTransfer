@@ -9,7 +9,6 @@ namespace TronWalletApi.Services.TronWalletService
         private readonly ApplicationDbContext _applicationDbContext;
         private readonly ITronService _tronService;
         private readonly ILogger<TronWalletService> _logger;
-
         public TronWalletService(ITronService tronService, ApplicationDbContext applicationDbContext, ILogger<TronWalletService> logger)
         {
             _tronService = tronService;
@@ -22,11 +21,9 @@ namespace TronWalletApi.Services.TronWalletService
             var transferHistories = await _applicationDbContext.TransferHistoryModels
                 .Where(th => th.NetworkFee == 0)
                 .ToListAsync();
-
             foreach (var transferHistory in transferHistories)
             {
                 bool feeUpdated = false;
-
                 while (!feeUpdated)
                 {
                     try
@@ -62,16 +59,12 @@ namespace TronWalletApi.Services.TronWalletService
                 }
             }
         }
-
         public async Task UpdateWalletAmountsAsync()
         {
             _logger.LogInformation("Wallet miktarları güncelleniyor.");
-
             try
             {
-
-                var wallets = await _applicationDbContext.TronWalletModels.ToListAsync();
-
+                var wallets = await _applicationDbContext.WalletModels.ToListAsync();
                 if (wallets != null)
                 {
                     foreach (var wallet in wallets)
@@ -90,10 +83,8 @@ namespace TronWalletApi.Services.TronWalletService
                             var transferHistories = await _applicationDbContext.TransferHistoryModels
                                 .Where(th => th.NetworkFee == 0)
                                 .ToListAsync();
-
                             foreach (var transferHistory in transferHistories)
                             {
-
                                 try
                                 {
                                     var transactionFee = await _tronService.GetTransactionFeeAsync(transferHistory.TransactionHash!);
@@ -123,9 +114,7 @@ namespace TronWalletApi.Services.TronWalletService
                                     await Task.Delay(TimeSpan.FromSeconds(10));
                                 }
                             }
-
-
-                            _applicationDbContext.TronWalletModels.Update(wallet);
+                            _applicationDbContext.WalletModels.Update(wallet);
                             await _applicationDbContext.SaveChangesAsync();
                             _logger.LogInformation("Cüzdan bakiyesi ve NetworkFee başarıyla güncellendi.");
                         }
@@ -143,6 +132,5 @@ namespace TronWalletApi.Services.TronWalletService
                 _logger.LogError(ex, "Wallet miktarları güncellenirken bir hata oluştu.");
             }
         }
-
     }
 }
