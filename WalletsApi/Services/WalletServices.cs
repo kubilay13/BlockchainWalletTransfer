@@ -1,4 +1,5 @@
 ﻿using DataAccessLayer.AppDbContext;
+using Entities.Models;
 using Entities.Models.EthModels;
 using Entities.Models.TronModels;
 using ETHWalletApi.Services;
@@ -40,25 +41,28 @@ namespace WalletsApi.Services
                 var wallet = new WalletModel
                 {
                     WalletName = walletName,
+                    CreatedAt = DateTime.UtcNow,
+                    WalletScanURL = $"https://nile.tronscan.org/#/address/{address}",
+                    status = "Testnet(Nile)"
+                };
+                var CurrencyWallet = new CurrencyIdModel
+                {
                     PrivateKeyTron = privateKey,
                     WalletAddressTron = address,
                     PrivateKeyEth = ethprivateKey,
                     WalletAddressETH = ethaddress,
-                    CreatedAt = DateTime.UtcNow,
-                    CreatedAtTime = DateTime.Now.ToString("HH:mm:ss"),
-                    WalletTronScanURL = $"https://nile.tronscan.org/#/address/{address}",
-                    Network = "Testnet(Nile)"
-                };
+                }; 
+                _applicationDbContext.CurrencyIdModels.Add(CurrencyWallet);
                 _applicationDbContext.WalletModels.Add(wallet);
                 await _applicationDbContext.SaveChangesAsync();
                 var network = await _applicationDbContext.Networks.FirstOrDefaultAsync(n => n.Type == Entities.Enums.NetworkType.Network);
                 string adminAddress = network.AdminWallet;
                 var responseBuilder = new StringBuilder();
                 responseBuilder.AppendLine($"WalletName: {wallet.WalletName}");
-                responseBuilder.AppendLine($"Tron Private Key: {wallet.PrivateKeyTron}");
-                responseBuilder.AppendLine($"Tron Wallet Address: {wallet.WalletAddressTron}");
-                responseBuilder.AppendLine($"Ethereum Private Key: {wallet.PrivateKeyEth}");
-                responseBuilder.AppendLine($"Ethereum Wallet Address: {wallet.WalletAddressETH}");
+                responseBuilder.AppendLine($"Tron Private Key: {CurrencyWallet.PrivateKeyTron}");
+                responseBuilder.AppendLine($"Tron Wallet Address: {CurrencyWallet.WalletAddressTron}");
+                responseBuilder.AppendLine($"Ethereum Private Key: {CurrencyWallet.PrivateKeyEth}");
+                responseBuilder.AppendLine($"Ethereum Wallet Address: {CurrencyWallet.WalletAddressETH}");
                 var response = responseBuilder.ToString();
                 return response;
             }

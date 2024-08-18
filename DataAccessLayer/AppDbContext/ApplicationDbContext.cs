@@ -14,7 +14,10 @@ namespace DataAccessLayer.AppDbContext
         public DbSet<TransferHistoryModel> TransferHistoryModels { get; set; }
         public DbSet<TransactionSuccesHistoryModel> TransactionSuccesHistoryModels { get; set; }
         public DbSet<Network> Networks { get; set; }
- 
+
+        public DbSet<CurrencyIdModel> CurrencyIdModels { get; set; }
+        
+
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -28,49 +31,24 @@ namespace DataAccessLayer.AppDbContext
                 {
                     Id = 1,
                     WalletName = "TRXTestAdress",
-                    PrivateKeyTron = "5a87ccab1b8b8f2d86c24ad6f278d8030be5a17d056588242ef377d9c3ddeb8e",
-                    WalletAddressTron = "TXTVwsUMsWrWsvd61VRcE9Bsk4WbEY9DGv",
                     CreatedAt = DateTime.UtcNow,
                     LastTransactionAt = DateTime.UtcNow,
-                    TrxAmount = 0,
-                    UsdtAmount = 0,
-                    UsdcAmount = 0,
-                    ETHAmount = 0,
-                    Network = "Testnet(Nile)",
-                    WalletTronScanURL = "https://nile.tronscan.org/#/address/TXTVwsUMsWrWsvd61VRcE9Bsk4WbEY9DGv",
                     TransactionLimit = false,
                 },
                 new WalletModel
                 {
                     Id = 2,
                     WalletName = "ETHAdminAdress",
-                    PrivateKeyEth = "f7753fbb6a94a3f5758acfd83e2c568899220f2ba782b831b14ea5bfc95bc422",
-                    WalletAddressTron="null",
-                    WalletAddressETH = "0x09Dd4927885EdbC5Ad820Fe489d7409A58ebe6DA",
                     CreatedAt = DateTime.UtcNow,
                     LastTransactionAt = DateTime.UtcNow,
-                    TrxAmount = 0,
-                    UsdtAmount = 0,
-                    UsdcAmount = 0,
-                    ETHAmount = 0,
-                    Network = "Testnet(Sepolia)",
-                    WalletTronScanURL = "https://etherscan.io/address/0x09Dd4927885EdbC5Ad820Fe489d7409A58ebe6DA",
                     TransactionLimit = true,
                 },
                  new WalletModel
                  {
                      Id = 3,
                      WalletName = "TRXAdminAdress",
-                     PrivateKeyTron = "0107932b30922231adff71b4b7c0b05bc948632f56c2b62f98bd18fefeae8a9e",
-                     WalletAddressTron = "TEWJWLwFL3dbMjXtj2smNfto9sXdWquF4N",
                      CreatedAt = DateTime.UtcNow,
                      LastTransactionAt = DateTime.UtcNow,
-                     TrxAmount = 0,
-                     UsdtAmount = 0,
-                     UsdcAmount = 0,
-                     ETHAmount = 0,
-                     Network = "Testnet(Nile)",
-                     WalletTronScanURL = "https://nile.tronscan.org/#/address/TEWJWLwFL3dbMjXtj2smNfto9sXdWquF4N",
                      TransactionLimit = true,
                  }
                 );
@@ -115,11 +93,11 @@ namespace DataAccessLayer.AppDbContext
                 );
             //TronWalletModel--
 
-            modelBuilder.Entity<WalletModel>()
+            modelBuilder.Entity<CurrencyIdModel>()
             .Property(t => t.PrivateKeyTron)
             .HasMaxLength(128);
 
-            modelBuilder.Entity<WalletModel>()
+            modelBuilder.Entity<CurrencyIdModel>()
                 .Property(t => t.WalletAddressTron)
                 .HasMaxLength(34)
                 .IsRequired();
@@ -129,31 +107,27 @@ namespace DataAccessLayer.AppDbContext
                 .HasColumnType("datetime2");
 
             modelBuilder.Entity<WalletModel>()
-                .Property(t => t.CreatedAtTime)
-                .HasMaxLength(8);
-
-            modelBuilder.Entity<WalletModel>()
                 .Property(t => t.LastTransactionAt)
                 .HasColumnType("datetime2");
 
-            modelBuilder.Entity<WalletModel>()
+            modelBuilder.Entity<CurrencyIdModel>()
                 .Property(t => t.TrxAmount)
                 .HasColumnType("decimal(18, 8)");
 
-            modelBuilder.Entity<WalletModel>()
+            modelBuilder.Entity<CurrencyIdModel>()
                .Property(t => t.UsdtAmount)
                .HasColumnType("decimal(18, 8)");
 
-            modelBuilder.Entity<WalletModel>()
+            modelBuilder.Entity<CurrencyIdModel>()
                .Property(t => t.UsdcAmount)
                .HasColumnType("decimal(18, 8)");
 
-            modelBuilder.Entity<WalletModel>()
+            modelBuilder.Entity<CurrencyIdModel>()
              .Property(t => t.ETHAmount)
              .HasColumnType("decimal(18, 8)");
 
             modelBuilder.Entity<WalletModel>()
-                .Property(t => t.WalletTronScanURL)
+                .Property(t => t.WalletScanURL)
                 .HasMaxLength(255);
 
             modelBuilder.Entity<WalletModel>()

@@ -1,8 +1,6 @@
 ﻿using DataAccessLayer.AppDbContext;
-using Entities.Models;
 using Entities.Models.EthModels;
 using Entities.Models.TronModels;
-using Extensions.Data;
 using Microsoft.EntityFrameworkCore;
 using Nethereum.Contracts;
 using Nethereum.Hex.HexConvertors.Extensions;
@@ -48,28 +46,14 @@ namespace ETHWalletApi.Services
                 var walletDetails = new WalletModel
                 {
                     WalletName = walletName,
-                    PrivateKeyEth = privateKey,
-                    WalletAddressETH = address,
-                    ETHAmount = 0,
-                    Network = "ETH",
-                    WalletTronScanURL = $"https://sepolia.etherscan.io/tx/{address}"
+                    WalletScanURL = $"https://sepolia.etherscan.io/tx/{address}",
                 };
                 var ethSaveDbWallet = new WalletModel
                 {
                     WalletName = walletName,
-                    PrivateKeyTron = "null",
-                    PrivateKeyEth = privateKey,
-                    WalletAddressTron = "null",
-                    WalletAddressETH = address,
                     CreatedAt = DateTime.UtcNow,
                     LastTransactionAt = DateTime.UtcNow,
-                    TrxAmount = 0,
-                    UsdtAmount = 0,
-                    UsdcAmount = 0,
-                    ETHAmount = 0,
-                    Network = "ETH",
-                    WalletEthScanUrl = $"https://sepolia.etherscan.io/tx/{address}",
-                    WalletTronScanURL = null,
+                    WalletScanURL = $"https://sepolia.etherscan.io/tx/{address}",
                     TransactionLimit = false
                 };
                 _applicationDbContext.WalletModels.Add(ethSaveDbWallet);
@@ -180,7 +164,7 @@ namespace ETHWalletApi.Services
         }
         public async Task<string> GetPrivateKeyByAddressAsync(string walletAddress)
         {
-            var wallet = await _applicationDbContext.WalletModels
+            var wallet = await _applicationDbContext.CurrencyIdModels
                 .FirstOrDefaultAsync(w => w.WalletAddressETH == walletAddress);
             if (wallet == null || wallet.PrivateKeyEth == null)
             {

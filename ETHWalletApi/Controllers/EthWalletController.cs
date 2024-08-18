@@ -26,15 +26,8 @@ namespace ETHWalletApi.Controllers
 
             try
             {
-                var wallet = await _ethService.CreateETHWalletAsync(walletName);
-                var response = new ResponseEthWallet
-                {
-                    WalletName = walletName,
-                    PrivateKey = wallet.PrivateKeyEth,
-                    PublicKey = wallet.PublicKeyEth,
-                    WalletAddress = wallet.WalletAddressETH
-                };
-                return Ok(response);
+                var walletDetails = await _ethService.CreateETHWalletAsync(walletName);
+                return Ok(walletDetails);
             }
             catch (Exception ex)
             {

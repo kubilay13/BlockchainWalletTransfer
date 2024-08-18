@@ -64,7 +64,7 @@ namespace TronWalletApi.Services.TronWalletService
             _logger.LogInformation("Wallet miktarları güncelleniyor.");
             try
             {
-                var wallets = await _applicationDbContext.WalletModels.ToListAsync();
+                var wallets = await _applicationDbContext.CurrencyIdModels.ToListAsync();
                 if (wallets != null)
                 {
                     foreach (var wallet in wallets)
