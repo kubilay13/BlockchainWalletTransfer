@@ -1,4 +1,7 @@
 ﻿using DataAccessLayer.AppDbContext;
+using Entities.Models.EthModels;
+using Entities.Models.TronModels;
+using ETHWalletApi.Services;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json.Linq;
 using System.Net.Http;
@@ -8,16 +11,26 @@ using WalletsApi.Services;
 
 namespace WalletsApi.Controllers
 {
+    public class TransferRequestDto
+    {
+        public TransferRequest TransferRequest { get; set; }
+        public string Network { get; set; }
+        public string Coin { get; set; }
+        public EthNetworkTransactionRequest EthNetworkTransactionRequest { get; set; }
+    }
+
     [Route("api/[controller]")]
     [ApiController]
     public class WalletController : ControllerBase
     {
         private readonly IWalletService _walletService;
         private readonly ITronService  _tronService;
+        private readonly IEthService _ethService;
         private readonly ApplicationDbContext _applicationDbContext;
         private readonly HttpClient _httpClient;
-        public WalletController(ApplicationDbContext applicationDbContext,IWalletService walletService, ITronService tronService, HttpClient httpClient)
+        public WalletController(ApplicationDbContext applicationDbContext,IWalletService walletService, ITronService tronService, HttpClient httpClient,IEthService ethService)
         {
+            _ethService = ethService;
             _walletService = walletService;
             _applicationDbContext = applicationDbContext;
             _tronService = tronService;
@@ -58,11 +71,34 @@ namespace WalletsApi.Controllers
             }
         }
 
+        [HttpPost("WalletTransfer(ETH,TRX)")]
+        public async Task<IActionResult>Transfer([FromBody] TransferRequest request)
+        {
+            if (request.Network == "TRX")
+            {
+                if (request.CoinName == "TRX" || request.CoinName == "USDT" || request.CoinName == "USDC" || request.CoinName == "USDD")
+                {
+                    await _tronService.TokenTransfer(request);
+                    return Ok($"{request.CoinName} Transfer İşlemi Başarılı.");
+                }
+
+            }
+            else if (request.Network == "ETH")
+            {
+                if (request.CoinName == "ETH" || request.CoinName == "USDT")
+                {
+                    await _ethService.SendTransactionAsyncETH(request);
+                    return Ok($" Transfer İşlemi Başarılı. \n{request.CoinName}");
+                }
+            }
+            throw new NotImplementedException("asdasda");
+        }
+
         private async Task<decimal> ETHWalletBalance(string address)
         {
             try
             {
-                string infuraUrl = "https://sepolia.infura.io/v3/3fcb68529b9e4288a4eb599f266bbb50"; 
+                string infuraUrl = "https://sepolia.infura.io/v3/3fcb68529b9e4288a4eb599f266bbb50";
 
                 var requestBody = new
                 {
@@ -102,8 +138,5 @@ namespace WalletsApi.Controllers
                 return 0;
             }
         }
-
-        
-
     }
 }

@@ -33,7 +33,7 @@ namespace ETHWalletApi.Services
             _web3 = new Web3("https://sepolia.infura.io/v3/3fcb68529b9e4288a4eb599f266bbb50");
             _httpClient = httpClient;
         }
-        public async Task<EthWalletModels>CreateETHWalletAsync(string walletName)
+        public async Task<WalletModel>CreateETHWalletAsync(string walletName)
         {
             var EthKey = EthECKey.GenerateKey();
             var privateKey = EthKey.GetPrivateKeyAsBytes().ToHex();
@@ -45,15 +45,14 @@ namespace ETHWalletApi.Services
             }
             else
             {
-                var walletDetails = new EthWalletModels
+                var walletDetails = new WalletModel
                 {
                     WalletName = walletName,
-                    PrivateKey = privateKey,
-                    PublicKey = publicKey,
-                    WalletAddress = address,
+                    PrivateKeyEth = privateKey,
+                    WalletAddressETH = address,
                     ETHAmount = 0,
                     Network = "ETH",
-                    WalletETHScanURL = $"https://sepolia.etherscan.io/tx/{address}"
+                    WalletTronScanURL = $"https://sepolia.etherscan.io/tx/{address}"
                 };
                 var ethSaveDbWallet = new WalletModel
                 {
@@ -64,7 +63,6 @@ namespace ETHWalletApi.Services
                     WalletAddressETH = address,
                     CreatedAt = DateTime.UtcNow,
                     LastTransactionAt = DateTime.UtcNow,
-                    LastTransactionTime = null,
                     TrxAmount = 0,
                     UsdtAmount = 0,
                     UsdcAmount = 0,
@@ -92,19 +90,19 @@ namespace ETHWalletApi.Services
                 return walletDetails;
             }
         }
-        public async Task<string> SendTransactionAsyncETH(EthNetworkTransactionRequest request)
+        public async Task<string> SendTransactionAsyncETH(TransferRequest request)
         {
-            var privateKey = await GetPrivateKeyByAddressAsync(request.FromAddress);
+            var privateKey = await GetPrivateKeyByAddressAsync(request.SenderAddress);
             var account = new Nethereum.Web3.Accounts.Account(privateKey);
             var web3 = new Web3(account, _web3.Client);
-            var amountInWei = Web3.Convert.ToWei(request.Amount.Value);
+            var amountInWei = Web3.Convert.ToWei(request.Amount);
             var currentNonce = await web3.Eth.Transactions.GetTransactionCount.SendRequestAsync(account.Address);
             try
             {
                 var transaction = new TransactionInput
                 {
-                    From = request.FromAddress,
-                    To = request.ToAddress,
+                    From = request.SenderAddress,
+                    To = request.ReceiverAddress,
                     Value = new HexBigInteger(amountInWei),
                     Nonce = currentNonce,
                     GasPrice = await web3.Eth.GasPrice.SendRequestAsync()
@@ -116,12 +114,12 @@ namespace ETHWalletApi.Services
 
                 var EthTransaction = new TransferHistoryModel
                 {
-                    SendingAddress = request.FromAddress,
-                    ReceivedAddress = request.ToAddress,
+                    SendingAddress = request.SenderAddress,
+                    ReceivedAddress = request.ReceiverAddress,
                     TransactionHash = txnHash,
                     CoinType = "Ethereum",
                     TransactionNetwork = "ETH",
-                    TransactionAmount = request.Amount.Value,
+                    TransactionAmount = request.Amount,
                     TransactionDate = DateTime.UtcNow,
                     Commission = 0,
                     NetworkFee = Convert.ToDecimal(_gas.ToString()),
@@ -165,7 +163,7 @@ namespace ETHWalletApi.Services
                     GasPrice = await web3.Eth.GasPrice.SendRequestAsync()
                 };
                 var transferHandler = web3.Eth.GetContractTransactionHandler<TransferFunction>();
-                var transferReceipt = await transferHandler.SendRequestAndWaitForReceiptAsync(usdtcontract,functionMessage);
+                var transferReceipt = await transferHandler.SendRequestAndWaitForReceiptAsync(usdtcontract/*,functionMessage*/);
                 var transaction = await web3.Eth.Transactions.GetTransactionByHash.SendRequestAsync(transferReceipt.TransactionHash);
                 var transferDecoded = transaction.DecodeTransactionToFunctionMessage<TransferFunction>();
 

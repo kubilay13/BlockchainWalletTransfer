@@ -1,14 +1,13 @@
 ﻿using DataAccessLayer.AppDbContext;
+using Entities.Models.EthModels;
 using Entities.Models.TronModels;
-using Microsoft.AspNetCore.Mvc;
+using ETHWalletApi.Services;
 using Microsoft.EntityFrameworkCore;
-using Nethereum.JsonRpc.Client;
 using Nethereum.Signer;
 using Newtonsoft.Json.Linq;
 using System.Numerics;
 using System.Text;
 using TronNet;
-using TronNet.Protocol;
 
 namespace WalletsApi.Services
 {
@@ -18,10 +17,14 @@ namespace WalletsApi.Services
         private readonly HttpClient _httpClient;
         private readonly string _nodeUrl = "https://sepolia.infura.io/v3/3fcb68529b9e4288a4eb599f266bbb50";
         private readonly string _tronApiUrl = "https://api.trongrid.io";
-        public WalletServices(ApplicationDbContext applicationDbContext, HttpClient httpClient)
+        private readonly ITronService _tronService;
+        private readonly IEthService _ethService;
+        public WalletServices(ApplicationDbContext applicationDbContext, HttpClient httpClient,ITronService tronService, IEthService ethService)
         {
             _applicationDbContext = applicationDbContext;
             _httpClient = httpClient;
+            _tronService= tronService;
+            _ethService= ethService;
         }
         public async Task<string> CreateWallet(string walletName)
         {
@@ -62,6 +65,26 @@ namespace WalletsApi.Services
             catch (Exception ex)
             {
                 throw new ApplicationException("Tron cüzdanı oluşturma işlemi başarısız oldu.", ex);
+            }
+        }
+
+        public async Task Transfer( TransferRequest request, string Network)
+        {
+            if (request.Network == "TRX")
+            {
+                if(request.CoinName == "TRX" ||  request.CoinName=="USDT" || request.CoinName=="USDC" || request.CoinName=="USDD")
+                {
+                      await _tronService.TokenTransfer(request);
+                }
+               
+            }
+            else if (request.Network == "ETH")
+            {
+                if( request.CoinName == "ETH" || request.CoinName == "USDT")
+                {
+                    await _ethService.SendTransactionAsyncETH(request);
+                }
+                
             }
         }
 

@@ -202,7 +202,7 @@ public class TronService : ITronService
                 break;
         }
     }
-    private async Task TrxTransfer(TransferRequest request)
+    public async Task TrxTransfer(TransferRequest request)
     {
         try
         {

@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
-namespace TronWalletApi.Migrations
+namespace WalletsApi.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
     partial class ApplicationDbContextModelSnapshot : ModelSnapshot
@@ -17,7 +17,7 @@ namespace TronWalletApi.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "8.0.7")
+                .HasAnnotation("ProductVersion", "8.0.8")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
@@ -337,11 +337,11 @@ namespace TronWalletApi.Migrations
                         new
                         {
                             Id = 1,
-                            CreatedAt = new DateTime(2024, 8, 16, 12, 24, 17, 471, DateTimeKind.Utc).AddTicks(7973),
-                            CreatedAtTime = "15:24:17",
+                            CreatedAt = new DateTime(2024, 8, 18, 1, 20, 14, 112, DateTimeKind.Utc).AddTicks(7225),
+                            CreatedAtTime = "04:20:14",
                             ETHAmount = 0m,
-                            LastTransactionAt = new DateTime(2024, 8, 16, 12, 24, 17, 471, DateTimeKind.Utc).AddTicks(7973),
-                            LastTransactionTime = "15:24:17",
+                            LastTransactionAt = new DateTime(2024, 8, 18, 1, 20, 14, 112, DateTimeKind.Utc).AddTicks(7225),
+                            LastTransactionTime = "04:20:14",
                             Network = "Testnet(Nile)",
                             PrivateKeyTron = "5a87ccab1b8b8f2d86c24ad6f278d8030be5a17d056588242ef377d9c3ddeb8e",
                             TransactionLimit = false,
@@ -355,11 +355,11 @@ namespace TronWalletApi.Migrations
                         new
                         {
                             Id = 2,
-                            CreatedAt = new DateTime(2024, 8, 16, 12, 24, 17, 471, DateTimeKind.Utc).AddTicks(8057),
-                            CreatedAtTime = "15:24:17",
+                            CreatedAt = new DateTime(2024, 8, 18, 1, 20, 14, 112, DateTimeKind.Utc).AddTicks(7234),
+                            CreatedAtTime = "04:20:14",
                             ETHAmount = 0m,
-                            LastTransactionAt = new DateTime(2024, 8, 16, 12, 24, 17, 471, DateTimeKind.Utc).AddTicks(8058),
-                            LastTransactionTime = "15:24:17",
+                            LastTransactionAt = new DateTime(2024, 8, 18, 1, 20, 14, 112, DateTimeKind.Utc).AddTicks(7234),
+                            LastTransactionTime = "04:20:14",
                             Network = "Testnet(Sepolia)",
                             PrivateKeyEth = "f7753fbb6a94a3f5758acfd83e2c568899220f2ba782b831b14ea5bfc95bc422",
                             TransactionLimit = true,
@@ -374,11 +374,11 @@ namespace TronWalletApi.Migrations
                         new
                         {
                             Id = 3,
-                            CreatedAt = new DateTime(2024, 8, 16, 12, 24, 17, 471, DateTimeKind.Utc).AddTicks(8065),
-                            CreatedAtTime = "15:24:17",
+                            CreatedAt = new DateTime(2024, 8, 18, 1, 20, 14, 112, DateTimeKind.Utc).AddTicks(7241),
+                            CreatedAtTime = "04:20:14",
                             ETHAmount = 0m,
-                            LastTransactionAt = new DateTime(2024, 8, 16, 12, 24, 17, 471, DateTimeKind.Utc).AddTicks(8066),
-                            LastTransactionTime = "15:24:17",
+                            LastTransactionAt = new DateTime(2024, 8, 18, 1, 20, 14, 112, DateTimeKind.Utc).AddTicks(7241),
+                            LastTransactionTime = "04:20:14",
                             Network = "Testnet(Nile)",
                             PrivateKeyTron = "0107932b30922231adff71b4b7c0b05bc948632f56c2b62f98bd18fefeae8a9e",
                             TransactionLimit = true,

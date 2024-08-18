@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using ETHWalletApi.Services;
 using Entities.Models.EthModels;
+using Entities.Models.TronModels;
 
 namespace ETHWalletApi.Controllers
 {
@@ -29,9 +30,9 @@ namespace ETHWalletApi.Controllers
                 var response = new ResponseEthWallet
                 {
                     WalletName = walletName,
-                    PrivateKey = wallet.PrivateKey,
-                    PublicKey = wallet.PublicKey,
-                    WalletAddress = wallet.WalletAddress
+                    PrivateKey = wallet.PrivateKeyEth,
+                    PublicKey = wallet.PublicKeyEth,
+                    WalletAddress = wallet.WalletAddressETH
                 };
                 return Ok(response);
             }
@@ -42,7 +43,7 @@ namespace ETHWalletApi.Controllers
         }
 
         [HttpPost("ETHTransfer")]
-        public async Task<IActionResult> SendTransactionAsync([FromBody] EthNetworkTransactionRequest request)
+        public async Task<IActionResult> SendTransactionAsync([FromBody] TransferRequest request)
         {
             if (request == null)
             {

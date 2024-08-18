@@ -14,7 +14,7 @@ namespace DataAccessLayer.AppDbContext
         public DbSet<TransferHistoryModel> TransferHistoryModels { get; set; }
         public DbSet<TransactionSuccesHistoryModel> TransactionSuccesHistoryModels { get; set; }
         public DbSet<Network> Networks { get; set; }
-        public DbSet<EthWalletModels> EthWalletModelss { get; set; }
+ 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -135,10 +135,6 @@ namespace DataAccessLayer.AppDbContext
             modelBuilder.Entity<WalletModel>()
                 .Property(t => t.LastTransactionAt)
                 .HasColumnType("datetime2");
-
-            modelBuilder.Entity<WalletModel>()
-                .Property(t => t.LastTransactionTime)
-                .HasMaxLength(8);
 
             modelBuilder.Entity<WalletModel>()
                 .Property(t => t.TrxAmount)

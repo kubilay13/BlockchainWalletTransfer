@@ -11,4 +11,5 @@ public interface ITronService
     Task TransferTRXorToken(TransferRequest request,string transactionType);
     Task<TransactionInfoModel> GetTransactionFeeAsync(string transactionHash);
     Task TokenTransfer(TransferRequest request);
+    Task TrxTransfer(TransferRequest request);
 }
