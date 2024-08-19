@@ -3,6 +3,7 @@ using ETHWalletApi.Services;
 using Entities.Models.EthModels;
 using Entities.Models.TronModels;
 using Entities.Models.UserModel;
+using Entities.Dto;
 
 namespace ETHWalletApi.Controllers
 {
@@ -55,9 +56,9 @@ namespace ETHWalletApi.Controllers
         }
 
         [HttpPost("ETH-USDT-TRANSFER")]
-        public async Task<IActionResult> SendUSDTTransaction([FromBody] EthNetworkTransactionRequest request)
+        public async Task<IActionResult> SendUSDTTransaction([FromBody] withdrawdto request)
         {
-            if (request == null || string.IsNullOrEmpty(request.FromAddress) || string.IsNullOrEmpty(request.ToAddress) || request.Amount == null)
+            if (request == null || string.IsNullOrEmpty(request.From) || string.IsNullOrEmpty(request.To) || request.Amount == null)
             {
                 return BadRequest("Geçersiz işlem isteği.");
             }

@@ -1,10 +1,12 @@
 ﻿using DataAccessLayer.AppDbContext;
+using Entities.Dto;
 using Entities.Models.EthModels;
 using Entities.Models.TronModels;
 using Entities.Models.UserModel;
 using Entities.Models.WalletModel;
 using Microsoft.EntityFrameworkCore;
 using Nethereum.Contracts;
+using Nethereum.Contracts.Standards.ERC20.ContractDefinition;
 using Nethereum.Hex.HexConvertors.Extensions;
 using Nethereum.Hex.HexTypes;
 using Nethereum.JsonRpc.Client;
@@ -16,11 +18,11 @@ using Nethereum.Web3;
 
 namespace ETHWalletApi.Services
 {
-    public class TransferFunction: FunctionMessage
-    {
-        public string To { get; set; }
-        public BigDecimal Amount { get; set; }
-    }
+    //public class TransferFunction : FunctionMessage
+    //{
+    //    public string To { get; set; }
+    //    public BigDecimal Amount { get; set; }
+    //}
 
     public class EthService : IEthService
     {
@@ -33,7 +35,7 @@ namespace ETHWalletApi.Services
             _web3 = new Web3("https://sepolia.infura.io/v3/3fcb68529b9e4288a4eb599f266bbb50");
             _httpClient = httpClient;
         }
-        public async Task<WalletModel>CreateETHWalletAsync(UserSignUpModel userSignUpModel)
+        public async Task<WalletModel> CreateETHWalletAsync(UserSignUpModel userSignUpModel)
         {
             var EthKey = EthECKey.GenerateKey();
             var privateKey = EthKey.GetPrivateKeyAsBytes().ToHex();
@@ -136,7 +138,7 @@ namespace ETHWalletApi.Services
                 _applicationDbContext.TransferHistoryModels.Add(EthTransaction);
                 await _applicationDbContext.SaveChangesAsync();
                 var transactionUrl = $"https://sepolia.etherscan.io/tx/{txnHash}";
-                return ("ETH Transfer İşleminiz Başarılı:  "+ transactionUrl);
+                return ("ETH Transfer İşleminiz Başarılı:  " + transactionUrl);
             }
             catch (RpcResponseException ex)
             {
@@ -147,31 +149,33 @@ namespace ETHWalletApi.Services
                 throw new InvalidOperationException("ETH Transfer İşleminde Beklenmeyen Bir Hata Oluştu. ", ex);
             }
         }
-        public async Task<string> SendTransactionAsyncUSDT(EthNetworkTransactionRequest request)
+        public async Task<string> SendTransactionAsyncUSDT(withdrawdto request)
         {
             var bnbcontract = "0x17c3fD32E71b97Ae7EA1B5dCa135846461a8F6B6";
             var usdtcontract = "0x2DCe21ca7F38D7Fbb6Bbf86AC11ec7867A510f24";
-            var privateKey = await GetPrivateKeyByAddressAsync(request.FromAddress);
-            var account = new Nethereum.Web3.Accounts.Account(privateKey);
-            var web3 = new Web3(account, _web3.Client);
-            var amountInWei = Web3.Convert.ToWei(request.Amount.Value);
+            var privateKey = await GetPrivateKeyByAddressAsync(request.From);
+            var account = new Nethereum.Web3.Accounts.Account(privateKey, Chain.Sepolia);
+            var web3 = new Web3(account, "https://sepolia.infura.io/v3/3fcb68529b9e4288a4eb599f266bbb50");
+            var amountInWei = Web3.Convert.ToWei(request.Amount/1000000);
             var currentNonce = await web3.Eth.Transactions.GetTransactionCount.SendRequestAsync(account.Address);
+            var Gasprice=await web3.Eth.GasPrice.SendRequestAsync();
             try
             {
-                var transferFunction = new  TransactionInput
-                {
-                    From = request.FromAddress,
-                    To = request.ToAddress,
-                    Value = new HexBigInteger(amountInWei),
-                    Nonce = currentNonce,
-                    GasPrice = await web3.Eth.GasPrice.SendRequestAsync()
-                };
                 var transferHandler = web3.Eth.GetContractTransactionHandler<TransferFunction>();
-                var transferReceipt = await transferHandler.SendRequestAndWaitForReceiptAsync(usdtcontract/*,functionMessage*/);
-                var transaction = await web3.Eth.Transactions.GetTransactionByHash.SendRequestAsync(transferReceipt.TransactionHash);
-                var transferDecoded = transaction.DecodeTransactionToFunctionMessage<TransferFunction>();
 
-                return transferReceipt.TransactionHash;
+                var transferFunction = new TransferFunction
+                {
+                    FromAddress = request.From,
+                    To = request.To,
+                    AmountToSend =new HexBigInteger(amountInWei),
+                    Nonce = currentNonce,
+                    GasPrice = Gasprice,
+                };
+                var transferReceipt = await transferHandler.SendRequestAsync(usdtcontract, transferFunction);
+                //var transaction = await web3.Eth.Transactions.GetTransactionByHash.SendRequestAsync(transferReceipt.TransactionHash);
+                //var transferDecoded = transaction.DecodeTransactionToFunctionMessage<TransferFunction>();
+
+                return transferReceipt;
             }
             catch (RpcResponseException ex)
             {
@@ -192,6 +196,6 @@ namespace ETHWalletApi.Services
             return wallet.PrivateKeyEth;
         }
 
-        
+
     }
 }

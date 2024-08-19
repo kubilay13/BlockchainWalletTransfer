@@ -43,7 +43,23 @@ namespace DataAccessLayer.AppDbContext
                     LastTransactionAt = DateTime.UtcNow,
                     TransactionLimit = true,
                     Network = "Testnet(Nile)",
-                });
+                }, new WalletModel
+
+                {
+                    Id = 2,
+                    UserId = 0,
+                    Name = "ETHAdminAdress",
+                    Surname = "SurnameAdminTETH",
+                    Email = "user@example.com",
+                    TelNo = "stringstri",
+                    Password = "Password",
+                    WalletName = "ETHAdminAdress",
+                    CreatedAt = DateTime.UtcNow,
+                    LastTransactionAt = DateTime.UtcNow,
+                    TransactionLimit = true,
+                    Network = "TestNet(Sepolia)",
+                }
+                );
 
 
 
@@ -62,6 +78,21 @@ namespace DataAccessLayer.AppDbContext
                     ETHAmount = 0,
                     WalletScanURL = "",
                     WalletId = 1,
+
+                }, new WalletDetailModel
+                {
+                    Id = 2,
+                    UserId = 2,
+                    WalletAddressTron = "TEWJWLwFL3dbMjXtj2smNfto9sXdWquF4N",
+                    PrivateKeyTron = "0107932b30922231adff71b4b7c0b05bc948632f56c2b62f98bd18fefeae8a9e",
+                    TrxAmount = 0,
+                    UsdtAmount = 0,
+                    UsdcAmount = 0,
+                    WalletAddressETH = "0x09Dd4927885EdbC5Ad820Fe489d7409A58ebe6DA",
+                    PrivateKeyEth = "f7753fbb6a94a3f5758acfd83e2c568899220f2ba782b831b14ea5bfc95bc422",
+                    ETHAmount = 0,
+                    WalletScanURL = "",
+                    WalletId = 2,
 
                 }
                 );
