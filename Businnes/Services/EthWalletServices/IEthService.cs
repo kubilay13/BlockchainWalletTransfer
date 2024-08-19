@@ -2,6 +2,7 @@
 using Entities.Models;
 using Org.BouncyCastle.Asn1.Ocsp;
 using Entities.Models.TronModels;
+using Entities.Models.WalletModel;
 namespace ETHWalletApi.Services
 {
     public interface IEthService

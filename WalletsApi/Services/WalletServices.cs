@@ -1,7 +1,6 @@
 ﻿using DataAccessLayer.AppDbContext;
-using Entities.Models;
-using Entities.Models.EthModels;
 using Entities.Models.TronModels;
+using Entities.Models.WalletModel;
 using ETHWalletApi.Services;
 using Microsoft.EntityFrameworkCore;
 using Nethereum.Signer;
@@ -71,7 +70,6 @@ namespace WalletsApi.Services
                 throw new ApplicationException("Tron cüzdanı oluşturma işlemi başarısız oldu.", ex);
             }
         }
-
         public async Task Transfer( TransferRequest request, string Network)
         {
             if (request.Network == "TRX")
@@ -91,7 +89,6 @@ namespace WalletsApi.Services
                 
             }
         }
-
         public async Task<decimal> WalletBalance(string WalletAdress)
         {
             if (WalletAdress.StartsWith("0x") && WalletAdress.Length == 42)

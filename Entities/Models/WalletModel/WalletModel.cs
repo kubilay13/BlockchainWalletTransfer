@@ -1,5 +1,5 @@
 ﻿using Entities.Enums;
-namespace Entities.Models.TronModels
+namespace Entities.Models.WalletModel
 {
     public class WalletModel
     {

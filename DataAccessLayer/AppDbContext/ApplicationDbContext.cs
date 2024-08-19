@@ -1,6 +1,7 @@
-﻿using Entities.Models;
-using Entities.Models.EthModels;
+﻿using Entities.Models.EthModels;
+using Entities.Models.NetworkModel;
 using Entities.Models.TronModels;
+using Entities.Models.WalletModel;
 using Microsoft.EntityFrameworkCore;
 
 namespace DataAccessLayer.AppDbContext

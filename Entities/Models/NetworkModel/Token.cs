@@ -1,7 +1,7 @@
 ﻿using Entities.Enums;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace Entities.Models
+namespace Entities.Models.NetworkModel
 {
     public class Token
     {

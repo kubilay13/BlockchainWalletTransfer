@@ -1,7 +1,4 @@
-﻿
-using Entities.Models.TronModels;
-
-namespace Entities.Models
+﻿namespace Entities.Models.WalletModel
 {
     public class WalletDetailModel
     {

@@ -15,7 +15,7 @@ using Entities.Models.TronModels;
 using Entities.Enums;
 using DataAccessLayer.AppDbContext;
 using System.Text;
-using Entities.Models;
+using Entities.Models.WalletModel;
 
 public class TronService : ITronService
 {

@@ -2,6 +2,7 @@
 using Entities.Models;
 using Entities.Models.EthModels;
 using Entities.Models.TronModels;
+using Entities.Models.WalletModel;
 using Microsoft.EntityFrameworkCore;
 using Nethereum.Contracts;
 using Nethereum.Hex.HexConvertors.Extensions;

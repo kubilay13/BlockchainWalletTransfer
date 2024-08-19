@@ -1,4 +1,4 @@
-﻿namespace Entities.Models
+﻿namespace Entities.Models.EthModels
 {
     public class Tron_EthCreateWalletResponse
     {
