@@ -16,6 +16,7 @@ using Entities.Enums;
 using DataAccessLayer.AppDbContext;
 using System.Text;
 using Entities.Models.WalletModel;
+using Entities.Models.UserModel;
 
 public class TronService : ITronService
 {
@@ -45,7 +46,7 @@ public class TronService : ITronService
         _contractClientFactory = contractClientFactory;
         _configuration = configuration;
     }
-    public async Task<string> CreateWallet(string walletName)
+    public async Task<string> CreateWallet(UserSignUpModel userSignUpModel)
     {
         try
         {
@@ -54,13 +55,16 @@ public class TronService : ITronService
             var address = ecKey.GetPublicAddress();
             var wallet = new WalletModel
             {
-                
-                WalletName = walletName,
+                Name = userSignUpModel.Name,
+                Surname = userSignUpModel.Surname,
+                Email = userSignUpModel.Email,
+                TelNo = userSignUpModel.TelNo,
+                Password = userSignUpModel.Password,
+                WalletName = userSignUpModel.WalletName,
                 CreatedAt = DateTime.UtcNow,
                 LastTransactionAt = DateTime.UtcNow,
                 WalletScanURL = $"https://nile.tronscan.org/#/address/{address}",
                 Network = "Testnet(Nile)"
-
             };
             _applicationDbContext.WalletModels.Add(wallet);
             await _applicationDbContext.SaveChangesAsync();

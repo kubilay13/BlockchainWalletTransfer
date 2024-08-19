@@ -1,6 +1,7 @@
 ﻿using DataAccessLayer.AppDbContext;
 using Entities.Enums;
 using Entities.Models.TronModels;
+using Entities.Models.UserModel;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -16,12 +17,12 @@ public class WalletController : ControllerBase
         _tronService = tronService;
         _applicationDbContext = applicationDbContext;
     }
-    [HttpGet("createwallet(TRX, Network)")]
-    public async Task<string> CreateWallet(string walletName)
+    [HttpPost("CreateWallet-SignUp(TRX, Network)")]
+    public async Task<string> CreateWallet( UserSignUpModel userSignUpModel)
     {
         try
         {
-            var wallet = await _tronService.CreateWallet(walletName);
+            var wallet = await _tronService.CreateWallet( userSignUpModel);
             return wallet;
         }
         catch (Exception ex)

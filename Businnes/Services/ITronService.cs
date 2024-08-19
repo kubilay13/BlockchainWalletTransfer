@@ -1,7 +1,8 @@
 ﻿using Entities.Models.TronModels;
+using Entities.Models.UserModel;
 public interface ITronService
 {
-    Task<string> CreateWallet(string walletName);
+    Task<string> CreateWallet(UserSignUpModel userSignUpModel);
     Task<decimal> GetBalanceAsync(string address);
     Task<decimal> GetBalanceAsyncUsdt(string address, string privatekey);
     Task<decimal> GetBalanceAsyncUsdc(string UsdcBalance, string privatekey);

@@ -2,6 +2,7 @@
 using Entities.Models;
 using Entities.Models.EthModels;
 using Entities.Models.TronModels;
+using Entities.Models.UserModel;
 using Entities.Models.WalletModel;
 using Microsoft.EntityFrameworkCore;
 using Nethereum.Contracts;
@@ -33,7 +34,7 @@ namespace ETHWalletApi.Services
             _web3 = new Web3("https://sepolia.infura.io/v3/3fcb68529b9e4288a4eb599f266bbb50");
             _httpClient = httpClient;
         }
-        public async Task<WalletModel>CreateETHWalletAsync(string walletName)
+        public async Task<WalletModel>CreateETHWalletAsync(UserSignUpModel userSignUpModel)
         {
             var EthKey = EthECKey.GenerateKey();
             var privateKey = EthKey.GetPrivateKeyAsBytes().ToHex();
@@ -47,17 +48,26 @@ namespace ETHWalletApi.Services
             {
                 var walletDetails = new WalletModel
                 {
-                    WalletName = walletName,
+                    Name = userSignUpModel.Name,
+                    Surname = userSignUpModel.Surname,
+                    WalletName = userSignUpModel.WalletName,
                     WalletScanURL = $"https://sepolia.etherscan.io/tx/{address}",
                 };
-                var ethSaveDbWallet = new WalletModel
+                var wallet = new WalletModel
                 {
-                    WalletName = walletName,
+                    Name = userSignUpModel.Name,
+                    Surname = userSignUpModel.Surname,
+                    Email = userSignUpModel.Email,
+                    TelNo = userSignUpModel.TelNo,
+                    Password = userSignUpModel.Password,
+                    WalletName = userSignUpModel.WalletName,
                     CreatedAt = DateTime.UtcNow,
                     LastTransactionAt = DateTime.UtcNow,
-                    WalletScanURL = $"https://sepolia.etherscan.io/tx/{address}",
-                    TransactionLimit = false
+                    WalletScanURL = $"https://nile.tronscan.org/#/address/{address}",
+                    Network = "Testnet(Nile)"
                 };
+                _applicationDbContext.WalletModels.Add(wallet);
+                await _applicationDbContext.SaveChangesAsync();
                 var currency = new WalletDetailModel
                 {
                     PrivateKeyTron = privateKey,
@@ -71,7 +81,7 @@ namespace ETHWalletApi.Services
                 };
                 _applicationDbContext.WalletDetailModels.Add(currency);
                 await _applicationDbContext.SaveChangesAsync();
-                _applicationDbContext.WalletModels.Add(ethSaveDbWallet);
+                
                 try
                 {
                     await _applicationDbContext.SaveChangesAsync();

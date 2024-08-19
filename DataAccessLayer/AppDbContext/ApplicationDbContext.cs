@@ -1,6 +1,6 @@
-﻿using Entities.Models.EthModels;
-using Entities.Models.NetworkModel;
+﻿using Entities.Models.NetworkModel;
 using Entities.Models.TronModels;
+using Entities.Models.UserModel;
 using Entities.Models.WalletModel;
 using Microsoft.EntityFrameworkCore;
 
@@ -17,6 +17,10 @@ namespace DataAccessLayer.AppDbContext
         public DbSet<Network> Networks { get; set; }
 
         public DbSet<WalletDetailModel> WalletDetailModels { get; set; }
+
+        public DbSet<UserSignUpModel> UserSignUpModels { get; set; }
+
+        public DbSet<UserLoginModel> userLoginModels { get; set; }
         
 
 

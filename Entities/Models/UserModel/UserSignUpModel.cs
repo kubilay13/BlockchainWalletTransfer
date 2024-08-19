@@ -5,7 +5,6 @@ namespace Entities.Models.UserModel
     public class UserSignUpModel
     {
         public int Id { get; set; }
-
         [Required]
         [StringLength(50, MinimumLength = 2)]
         public string? Name { get; set; }
@@ -26,5 +25,7 @@ namespace Entities.Models.UserModel
         [Required]
         [StringLength(100, MinimumLength = 6)]
         public string? Password { get; set; }
+
+        public string? WalletName { get; set; }
     }
 }
