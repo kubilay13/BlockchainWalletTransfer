@@ -6,13 +6,13 @@
         public int UserId { get; set; }
         public string? PrivateKeyTron { get; set; }
         public string? WalletAddressTron { get; set; }
-        public string? PrivateKeyEth { get; set; }
-        public string? WalletAddressETH { get; set; }
         public decimal TrxAmount { get; set; }
         public decimal UsdtAmount { get; set; }
         public decimal UsdcAmount { get; set; }
+        public string? PrivateKeyEth { get; set; }
+        public string? WalletAddressETH { get; set; }
         public decimal ETHAmount { get; set; }
-
+        public string? WalletScanURL { get; set; }
         public int WalletId { get; set; }
         public virtual WalletModel Wallet { get; set; }
     }

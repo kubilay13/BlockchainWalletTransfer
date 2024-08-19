@@ -5,9 +5,7 @@ namespace Entities.Models.WalletModel
     public class WalletModel
     {
         public int Id { get; set; }
-        //public int UserId { get; set; }
-
-
+        public int UserId { get; set; }
         [Required]
         [StringLength(50, MinimumLength = 2)]
         public string? Name { get; set; }
@@ -31,7 +29,7 @@ namespace Entities.Models.WalletModel
         public string? WalletName { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime LastTransactionAt { get; set; }
-        public string? WalletScanURL { get; set; }
+
         public bool TransactionLimit { get; set; }
         public string? Network { get; set; }
 

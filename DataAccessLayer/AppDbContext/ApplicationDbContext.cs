@@ -28,35 +28,46 @@ namespace DataAccessLayer.AppDbContext
             modelBuilder.Entity<WalletDetailModel>().HasOne(wd => wd.Wallet).WithMany(w => w.WalletDetails).HasForeignKey(wd => wd.WalletId);
             base.OnModelCreating(modelBuilder);
 
-            //modelBuilder.Entity<WalletModel>().HasData(
-            //    new WalletModel
-            //    {
-            //        Id = 1,
-            //        WalletName = "TRXTestAdress",
-            //        CreatedAt = DateTime.UtcNow,
-            //        LastTransactionAt = DateTime.UtcNow,
-            //        TransactionLimit = false,
-            //    },
-            //    new WalletModel
-            //    {
-            //        Id = 2,
-            //        WalletName = "ETHAdminAdress",
-            //        CreatedAt = DateTime.UtcNow,
-            //        LastTransactionAt = DateTime.UtcNow,
-            //        TransactionLimit = true,
-            //    },
-            //     new WalletModel
-            //     {
-            //         Id = 3,
-            //         WalletName = "TRXAdminAdress",
-            //         CreatedAt = DateTime.UtcNow,
-            //         LastTransactionAt = DateTime.UtcNow,
-            //         TransactionLimit = true,
-            //     }
-            //    );
+            modelBuilder.Entity<WalletModel>().HasData(
+                new WalletModel
+                {
+                    Id = 1,
+                    UserId = 0,
+                    Name = "TRXAdminAdress",
+                    Surname = "SurnameAdminTRX",
+                    Email = "user@example.com",
+                    TelNo = "stringstri",
+                    Password = "Password",
+                    WalletName = "TRXAdminAdress",
+                    CreatedAt = DateTime.UtcNow,
+                    LastTransactionAt = DateTime.UtcNow,
+                    TransactionLimit = true,
+                    Network = "Testnet(Nile)",
+                });
 
 
-            modelBuilder.Entity<Network>().HasData(
+
+            modelBuilder.Entity<WalletDetailModel>().HasData(
+                new WalletDetailModel
+                {
+                    Id = 1,
+                    UserId = 1,
+                    WalletAddressTron = "TEWJWLwFL3dbMjXtj2smNfto9sXdWquF4N",
+                    PrivateKeyTron = "0107932b30922231adff71b4b7c0b05bc948632f56c2b62f98bd18fefeae8a9e",
+                    TrxAmount = 0,
+                    UsdtAmount = 0,
+                    UsdcAmount = 0,
+                    WalletAddressETH = "0x31c1fe443E54d007FD1c8c5E7ae7C2356b374616",
+                    PrivateKeyEth = "0107932b30922231adff71b4b7c0b05bc948632f56c2b62f98bd18fefeae8a9e",
+                    ETHAmount = 0,
+                    WalletScanURL = "",
+                    WalletId = 1,
+
+                }
+                );
+
+
+           modelBuilder.Entity<Network>().HasData(
                 new Network
                 {
                     Id = 1,
@@ -128,7 +139,7 @@ namespace DataAccessLayer.AppDbContext
              .Property(t => t.ETHAmount)
              .HasColumnType("decimal(18, 8)");
 
-            modelBuilder.Entity<WalletModel>()
+            modelBuilder.Entity<WalletDetailModel>()
                 .Property(t => t.WalletScanURL)
                 .HasMaxLength(255);
 

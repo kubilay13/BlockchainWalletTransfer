@@ -79,6 +79,7 @@ namespace WalletsApi.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
+                    UserId = table.Column<int>(type: "int", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     Surname = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     Email = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
@@ -87,7 +88,6 @@ namespace WalletsApi.Migrations
                     WalletName = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
                     LastTransactionAt = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    WalletScanURL = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: true),
                     TransactionLimit = table.Column<bool>(type: "bit", nullable: false),
                     Network = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
@@ -105,13 +105,13 @@ namespace WalletsApi.Migrations
                     UserId = table.Column<int>(type: "int", nullable: false),
                     PrivateKeyTron = table.Column<string>(type: "nvarchar(128)", maxLength: 128, nullable: true),
                     WalletAddressTron = table.Column<string>(type: "nvarchar(34)", maxLength: 34, nullable: false),
-                    PrivateKeyEth = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    PublicKeyEth = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    WalletAddressETH = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     TrxAmount = table.Column<decimal>(type: "decimal(18,8)", nullable: false),
                     UsdtAmount = table.Column<decimal>(type: "decimal(18,8)", nullable: false),
                     UsdcAmount = table.Column<decimal>(type: "decimal(18,8)", nullable: false),
+                    PrivateKeyEth = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    WalletAddressETH = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     ETHAmount = table.Column<decimal>(type: "decimal(18,8)", nullable: false),
+                    WalletScanURL = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: true),
                     WalletId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
@@ -134,6 +134,16 @@ namespace WalletsApi.Migrations
                     { 2, "TEWJWLwFL3dbMjXtj2smNfto9sXdWquF4N", "0107932b30922231adff71b4b7c0b05bc948632f56c2b62f98bd18fefeae8a9e", 10m, "TXYZopYRdj2D9XRtbG411XZZ3kM5VkAeBf", 6, "USDT", null, "TRON", 0 },
                     { 3, "TEWJWLwFL3dbMjXtj2smNfto9sXdWquF4N", "0107932b30922231adff71b4b7c0b05bc948632f56c2b62f98bd18fefeae8a9e", 10m, "TEMVynQpntMqkPxP6wXTW2K7e4sM3cRmWz", 6, "USDC", null, "TRON", 0 }
                 });
+
+            migrationBuilder.InsertData(
+                table: "WalletModels",
+                columns: new[] { "Id", "CreatedAt", "Email", "LastTransactionAt", "Name", "Network", "Password", "Surname", "TelNo", "TransactionLimit", "UserId", "WalletName" },
+                values: new object[] { 1, new DateTime(2024, 8, 19, 13, 21, 21, 617, DateTimeKind.Utc).AddTicks(6980), "user@example.com", new DateTime(2024, 8, 19, 13, 21, 21, 617, DateTimeKind.Utc).AddTicks(6981), "AdminAdress", "Testnet(Nile)", "Password", "SurnameAdmin", "stringstri", true, 0, "TRXAdminAdress" });
+
+            migrationBuilder.InsertData(
+                table: "WalletDetailModels",
+                columns: new[] { "Id", "ETHAmount", "PrivateKeyEth", "PrivateKeyTron", "TrxAmount", "UsdcAmount", "UsdtAmount", "UserId", "WalletAddressETH", "WalletAddressTron", "WalletId", "WalletScanURL" },
+                values: new object[] { 1, 0m, "0107932b30922231adff71b4b7c0b05bc948632f56c2b62f98bd18fefeae8a9e", "0107932b30922231adff71b4b7c0b05bc948632f56c2b62f98bd18fefeae8a9e", 0m, 0m, 0m, 1, "0x31c1fe443E54d007FD1c8c5E7ae7C2356b374616", "TEWJWLwFL3dbMjXtj2smNfto9sXdWquF4N", 1, "" });
 
             migrationBuilder.CreateIndex(
                 name: "IX_WalletDetailModels_WalletId",

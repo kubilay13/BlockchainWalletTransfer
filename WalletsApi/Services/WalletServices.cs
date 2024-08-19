@@ -49,7 +49,6 @@ namespace WalletsApi.Services
                     WalletName = userSignUpModel.WalletName,
                     CreatedAt = DateTime.UtcNow,
                     LastTransactionAt = DateTime.UtcNow,
-                    WalletScanURL = $"https://nile.tronscan.org/#/address/{address}",
                     Network = "Testnet(Nile)"
                 };
                 _applicationDbContext.WalletModels.Add(wallet);
@@ -64,6 +63,7 @@ namespace WalletsApi.Services
                     TrxAmount = 0,
                     UsdcAmount = 0,
                     UsdtAmount = 0,
+                    WalletScanURL = $"https://nile.tronscan.org/#/address/{address}",
                     WalletId = wallet.Id
                 };
                 _applicationDbContext.WalletDetailModels.Add(currency);
@@ -86,13 +86,12 @@ namespace WalletsApi.Services
         }
         public async Task Transfer( TransferRequest request, string Network)
         {
-            if (request.Network == "TRX")
+            if (request.Network == "TRON")
             {
                 if(request.CoinName == "TRX" ||  request.CoinName=="USDT" || request.CoinName=="USDC" || request.CoinName=="USDD")
                 {
                       await _tronService.TokenTransfer(request);
                 }
-               
             }
             else if (request.Network == "ETH")
             {

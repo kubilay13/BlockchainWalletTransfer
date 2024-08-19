@@ -40,7 +40,7 @@ namespace WalletsApi.Controllers
             _tronService = tronService;
             _httpClient = httpClient;
         }
-        [HttpPost("CreateWallet(ETH,TRX)")]
+        [HttpPost("CreateWallet-UserSignUp(ETH,TRX)")]
         public async Task<string> CreateWallet(UserSignUpModel userSignUpModel)
         {
             try
@@ -74,24 +74,37 @@ namespace WalletsApi.Controllers
         [HttpPost("WalletTransfer(ETH,TRX)")]
         public async Task<IActionResult> Transfer([FromBody] TransferRequest request)
         {
-            if (request.Network == "TRX")
+            if (request.Network == "TRON")
             {
-                if (request.CoinName == "TRX" || request.CoinName == "USDT" || request.CoinName == "USDC" || request.CoinName == "USDD")
+                if(request.CoinName == "TRX" )
+                {
+                    await _tronService.TrxTransfer(request);
+                    return Ok($" Transfer İşlemi Başarılı. \n{request.CoinName}");
+                }
+                else if ( request.CoinName == "USDT" || request.CoinName == "USDC" || request.CoinName == "USDD")
                 {
                     await _tronService.TokenTransfer(request);
-                    return Ok($"{request.CoinName} Transfer İşlemi Başarılı.");
+                    return Ok($" Transfer İşlemi Başarılı. \n{request.CoinName}");
                 }
-
             }
             else if (request.Network == "ETH")
             {
-                if (request.CoinName == "ETH" || request.CoinName == "USDT")
+                if (request.CoinName == "ETH")
                 {
                     await _ethService.SendTransactionAsyncETH(request);
                     return Ok($" Transfer İşlemi Başarılı. \n{request.CoinName}");
                 }
+                else if ( request.CoinName == "USDT")
+                {
+                    //await _ethService.SendTransactionAsyncUSDT(request);
+                    return Ok($" Transfer İşlemi Başarılı. \n{request.CoinName}");
+                }
             }
-            throw new NotImplementedException("asdasda");
+            else
+            {
+                throw new NotImplementedException($"İşlem Başarısız. \n{request.CoinName}");
+            }
+            throw new NotImplementedException($"İşlem Başarılı. \n{request.CoinName}");
         }
 
         [HttpPost("AdminLogin")]

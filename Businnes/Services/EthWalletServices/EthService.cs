@@ -50,7 +50,6 @@ namespace ETHWalletApi.Services
                     Name = userSignUpModel.Name,
                     Surname = userSignUpModel.Surname,
                     WalletName = userSignUpModel.WalletName,
-                    WalletScanURL = $"https://sepolia.etherscan.io/tx/{address}",
                 };
                 var wallet = new WalletModel
                 {
@@ -62,7 +61,6 @@ namespace ETHWalletApi.Services
                     WalletName = userSignUpModel.WalletName,
                     CreatedAt = DateTime.UtcNow,
                     LastTransactionAt = DateTime.UtcNow,
-                    WalletScanURL = $"https://nile.tronscan.org/#/address/{address}",
                     Network = "Testnet(Nile)"
                 };
                 _applicationDbContext.WalletModels.Add(wallet);
@@ -72,11 +70,11 @@ namespace ETHWalletApi.Services
                     PrivateKeyTron = privateKey,
                     WalletAddressTron = address,
                     PrivateKeyEth = null,
-                    PublicKeyEth = null,
                     WalletAddressETH = null,
                     TrxAmount = 0,
                     UsdcAmount = 0,
                     UsdtAmount = 0,
+                    WalletScanURL = $"https://nile.tronscan.org/#/address/{address}",
                 };
                 _applicationDbContext.WalletDetailModels.Add(currency);
                 await _applicationDbContext.SaveChangesAsync();

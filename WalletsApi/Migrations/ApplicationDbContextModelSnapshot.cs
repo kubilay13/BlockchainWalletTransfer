@@ -196,9 +196,6 @@ namespace WalletsApi.Migrations
                         .HasMaxLength(128)
                         .HasColumnType("nvarchar(128)");
 
-                    b.Property<string>("PublicKeyEth")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<decimal>("TrxAmount")
                         .HasColumnType("decimal(18, 8)");
 
@@ -222,11 +219,32 @@ namespace WalletsApi.Migrations
                     b.Property<int>("WalletId")
                         .HasColumnType("int");
 
+                    b.Property<string>("WalletScanURL")
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
+
                     b.HasKey("Id");
 
                     b.HasIndex("WalletId");
 
                     b.ToTable("WalletDetailModels");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            ETHAmount = 0m,
+                            PrivateKeyEth = "0107932b30922231adff71b4b7c0b05bc948632f56c2b62f98bd18fefeae8a9e",
+                            PrivateKeyTron = "0107932b30922231adff71b4b7c0b05bc948632f56c2b62f98bd18fefeae8a9e",
+                            TrxAmount = 0m,
+                            UsdcAmount = 0m,
+                            UsdtAmount = 0m,
+                            UserId = 1,
+                            WalletAddressETH = "0x31c1fe443E54d007FD1c8c5E7ae7C2356b374616",
+                            WalletAddressTron = "TEWJWLwFL3dbMjXtj2smNfto9sXdWquF4N",
+                            WalletId = 1,
+                            WalletScanURL = ""
+                        });
                 });
 
             modelBuilder.Entity("Entities.Models.WalletModel.WalletModel", b =>
@@ -274,17 +292,33 @@ namespace WalletsApi.Migrations
                     b.Property<bool>("TransactionLimit")
                         .HasColumnType("bit");
 
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
                     b.Property<string>("WalletName")
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
-                    b.Property<string>("WalletScanURL")
-                        .HasMaxLength(255)
-                        .HasColumnType("nvarchar(255)");
-
                     b.HasKey("Id");
 
                     b.ToTable("WalletModels");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            CreatedAt = new DateTime(2024, 8, 19, 13, 21, 21, 617, DateTimeKind.Utc).AddTicks(6980),
+                            Email = "user@example.com",
+                            LastTransactionAt = new DateTime(2024, 8, 19, 13, 21, 21, 617, DateTimeKind.Utc).AddTicks(6981),
+                            Name = "AdminAdress",
+                            Network = "Testnet(Nile)",
+                            Password = "Password",
+                            Surname = "SurnameAdmin",
+                            TelNo = "stringstri",
+                            TransactionLimit = true,
+                            UserId = 0,
+                            WalletName = "TRXAdminAdress"
+                        });
                 });
 
             modelBuilder.Entity("Entities.Models.WalletModel.WalletDetailModel", b =>
