@@ -1,7 +1,7 @@
 ﻿
 namespace Entities.Models
 {
-    public class CurrencyIdModel
+    public class WalletDetailModel
     {
         public int Id { get; set; }
         public string? PrivateKeyTron { get; set; }

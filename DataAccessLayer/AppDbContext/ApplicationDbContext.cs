@@ -15,7 +15,7 @@ namespace DataAccessLayer.AppDbContext
         public DbSet<TransactionSuccesHistoryModel> TransactionSuccesHistoryModels { get; set; }
         public DbSet<Network> Networks { get; set; }
 
-        public DbSet<CurrencyIdModel> CurrencyIdModels { get; set; }
+        public DbSet<WalletDetailModel> WalletDetailModels { get; set; }
         
 
 
@@ -26,32 +26,32 @@ namespace DataAccessLayer.AppDbContext
             modelBuilder.Entity<TransactionSuccesHistoryModel>().HasKey(t => t.Id);
             base.OnModelCreating(modelBuilder);
 
-            modelBuilder.Entity<WalletModel>().HasData(
-                new WalletModel
-                {
-                    Id = 1,
-                    WalletName = "TRXTestAdress",
-                    CreatedAt = DateTime.UtcNow,
-                    LastTransactionAt = DateTime.UtcNow,
-                    TransactionLimit = false,
-                },
-                new WalletModel
-                {
-                    Id = 2,
-                    WalletName = "ETHAdminAdress",
-                    CreatedAt = DateTime.UtcNow,
-                    LastTransactionAt = DateTime.UtcNow,
-                    TransactionLimit = true,
-                },
-                 new WalletModel
-                 {
-                     Id = 3,
-                     WalletName = "TRXAdminAdress",
-                     CreatedAt = DateTime.UtcNow,
-                     LastTransactionAt = DateTime.UtcNow,
-                     TransactionLimit = true,
-                 }
-                );
+            //modelBuilder.Entity<WalletModel>().HasData(
+            //    new WalletModel
+            //    {
+            //        Id = 1,
+            //        WalletName = "TRXTestAdress",
+            //        CreatedAt = DateTime.UtcNow,
+            //        LastTransactionAt = DateTime.UtcNow,
+            //        TransactionLimit = false,
+            //    },
+            //    new WalletModel
+            //    {
+            //        Id = 2,
+            //        WalletName = "ETHAdminAdress",
+            //        CreatedAt = DateTime.UtcNow,
+            //        LastTransactionAt = DateTime.UtcNow,
+            //        TransactionLimit = true,
+            //    },
+            //     new WalletModel
+            //     {
+            //         Id = 3,
+            //         WalletName = "TRXAdminAdress",
+            //         CreatedAt = DateTime.UtcNow,
+            //         LastTransactionAt = DateTime.UtcNow,
+            //         TransactionLimit = true,
+            //     }
+            //    );
 
 
             modelBuilder.Entity<Network>().HasData(
@@ -93,11 +93,11 @@ namespace DataAccessLayer.AppDbContext
                 );
             //TronWalletModel--
 
-            modelBuilder.Entity<CurrencyIdModel>()
+            modelBuilder.Entity<WalletDetailModel>()
             .Property(t => t.PrivateKeyTron)
             .HasMaxLength(128);
 
-            modelBuilder.Entity<CurrencyIdModel>()
+            modelBuilder.Entity<WalletDetailModel>()
                 .Property(t => t.WalletAddressTron)
                 .HasMaxLength(34)
                 .IsRequired();
@@ -110,19 +110,19 @@ namespace DataAccessLayer.AppDbContext
                 .Property(t => t.LastTransactionAt)
                 .HasColumnType("datetime2");
 
-            modelBuilder.Entity<CurrencyIdModel>()
+            modelBuilder.Entity<WalletDetailModel>()
                 .Property(t => t.TrxAmount)
                 .HasColumnType("decimal(18, 8)");
 
-            modelBuilder.Entity<CurrencyIdModel>()
+            modelBuilder.Entity<WalletDetailModel>()
                .Property(t => t.UsdtAmount)
                .HasColumnType("decimal(18, 8)");
 
-            modelBuilder.Entity<CurrencyIdModel>()
+            modelBuilder.Entity<WalletDetailModel>()
                .Property(t => t.UsdcAmount)
                .HasColumnType("decimal(18, 8)");
 
-            modelBuilder.Entity<CurrencyIdModel>()
+            modelBuilder.Entity<WalletDetailModel>()
              .Property(t => t.ETHAmount)
              .HasColumnType("decimal(18, 8)");
 

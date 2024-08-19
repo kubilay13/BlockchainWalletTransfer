@@ -43,16 +43,16 @@ namespace WalletsApi.Services
                     WalletName = walletName,
                     CreatedAt = DateTime.UtcNow,
                     WalletScanURL = $"https://nile.tronscan.org/#/address/{address}",
-                    status = "Testnet(Nile)"
+                    Network = "Testnet(Nile)"
                 };
-                var CurrencyWallet = new CurrencyIdModel
+                var CurrencyWallet = new WalletDetailModel
                 {
                     PrivateKeyTron = privateKey,
                     WalletAddressTron = address,
                     PrivateKeyEth = ethprivateKey,
                     WalletAddressETH = ethaddress,
                 }; 
-                _applicationDbContext.CurrencyIdModels.Add(CurrencyWallet);
+                _applicationDbContext.WalletDetailModels.Add(CurrencyWallet);
                 _applicationDbContext.WalletModels.Add(wallet);
                 await _applicationDbContext.SaveChangesAsync();
                 var network = await _applicationDbContext.Networks.FirstOrDefaultAsync(n => n.Type == Entities.Enums.NetworkType.Network);

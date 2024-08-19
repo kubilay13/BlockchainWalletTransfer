@@ -16,7 +16,7 @@ public class WalletController : ControllerBase
         _tronService = tronService;
         _applicationDbContext = applicationDbContext;
     }
-    [HttpGet("createwallet(TRX,ETH Network)")]
+    [HttpGet("createwallet(TRX, Network)")]
     public async Task<string> CreateWallet(string walletName)
     {
         try
@@ -66,8 +66,8 @@ public class WalletController : ControllerBase
         }
         try
         {
-            var receiverWallet = await _applicationDbContext.WalletModels
-                .FirstOrDefaultAsync(w => w.WalletAddressTron == request.ReceiverAddress);
+            var receiverWallet = await _applicationDbContext.WalletDetailModels.FirstOrDefaultAsync(w => w.WalletAddressTron == request.ReceiverAddress);
+
             var transactionType = receiverWallet != null
                 ? TransactionType.Deposit
                 : TransactionType.Withdraw;

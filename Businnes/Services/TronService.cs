@@ -15,6 +15,7 @@ using Entities.Models.TronModels;
 using Entities.Enums;
 using DataAccessLayer.AppDbContext;
 using System.Text;
+using Entities.Models;
 
 public class TronService : ITronService
 {
@@ -53,25 +54,38 @@ public class TronService : ITronService
             var address = ecKey.GetPublicAddress();
             var wallet = new WalletModel
             {
+
                 WalletName = walletName,
-                PrivateKeyTron = privateKey,
-                WalletAddressTron = address,
                 CreatedAt = DateTime.UtcNow,
-                CreatedAtTime = DateTime.Now.ToString("HH:mm:ss"),
-                WalletTronScanURL = $"https://nile.tronscan.org/#/address/{address}",
+                LastTransactionAt = DateTime.UtcNow,
+                WalletScanURL = $"https://nile.tronscan.org/#/address/{address}",
                 Network = "Testnet(Nile)"
+
             };
             _applicationDbContext.WalletModels.Add(wallet);
+            await _applicationDbContext.SaveChangesAsync();
+            var currency = new WalletDetailModel
+            {
+                PrivateKeyTron = privateKey,
+                WalletAddressTron = address,
+                PrivateKeyEth = null,
+                PublicKeyEth = null,
+                WalletAddressETH = null,
+                TrxAmount = 0,
+                UsdcAmount = 0,
+                UsdtAmount = 0,
+            };
+            _applicationDbContext.WalletDetailModels.Add(currency);
             await _applicationDbContext.SaveChangesAsync();
             var network = await _applicationDbContext.Networks.FirstOrDefaultAsync(n => n.Type == NetworkType.Network);
             string adminAddress = network.AdminWallet;
             await SendTronAsync(adminAddress, address, 20000000);
             var responseBuilder = new StringBuilder();
             responseBuilder.AppendLine($"WalletName: {wallet.WalletName}");
-            responseBuilder.AppendLine($"Tron Private Key: {wallet.PrivateKeyTron}");
-            responseBuilder.AppendLine($"Tron Wallet Address: {wallet.WalletAddressTron}");
-            responseBuilder.AppendLine($"Ethereum Private Key: {wallet.PrivateKeyEth}");
-            responseBuilder.AppendLine($"Ethereum Wallet Address: {wallet.WalletAddressETH}");
+            responseBuilder.AppendLine($"Tron Private Key: {currency.PrivateKeyTron}");
+            responseBuilder.AppendLine($"Tron Wallet Address: {currency.WalletAddressTron}");
+            responseBuilder.AppendLine($"Ethereum Private Key: {currency.PrivateKeyEth}");
+            responseBuilder.AppendLine($"Ethereum Wallet Address: {currency.WalletAddressETH}");
             var response = responseBuilder.ToString();
             return response;
         }
@@ -95,7 +109,7 @@ public class TronService : ITronService
             {
                 throw new ApplicationException("TRX gönderimi başarısız oldu.");
             }
-            var wallet = await _applicationDbContext.WalletModels.FirstOrDefaultAsync(w => w.WalletAddressTron == receiverAddress);
+            var wallet = await _applicationDbContext.WalletDetailModels.FirstOrDefaultAsync(w => w.WalletAddressTron == receiverAddress);
             if (wallet != null)
             {
                 wallet.TrxAmount += amount / 1000000;
@@ -222,8 +236,8 @@ public class TronService : ITronService
                 var network = await _applicationDbContext.Networks.FirstOrDefaultAsync(n => n.Type == NetworkType.Network && n.Name == request.CoinName);
                 var _comission = _network!.Commission;
                 var _amount = UnitConversion.Convert.ToWei(request.Amount, (int)_network.Decimal);
-                var senderAddress = await _applicationDbContext.WalletModels.FirstOrDefaultAsync(w => w.WalletAddressTron == request.SenderAddress);
-                var trxamount = await _applicationDbContext.WalletModels.FirstOrDefaultAsync(n => n.TrxAmount == request.Amount);
+                var senderAddress = await _applicationDbContext.WalletDetailModels.FirstOrDefaultAsync(w => w.WalletAddressTron == request.SenderAddress);
+                var trxamount = await _applicationDbContext.WalletDetailModels.FirstOrDefaultAsync(n => n.TrxAmount == request.Amount);
                 string adminAddress = network.AdminWallet;
                 if (_amount > 0)
                 {
@@ -283,12 +297,12 @@ public class TronService : ITronService
                     if (transactionHash != null)
                     {
                         senderAddress.TrxAmount -= request.Amount;
-                        _applicationDbContext.WalletModels.Update(senderAddress);
-                        var receiverAddress = await _applicationDbContext.WalletModels.FirstOrDefaultAsync(w => w.WalletAddressTron == request.ReceiverAddress);
+                        _applicationDbContext.WalletDetailModels.Update(senderAddress);
+                        var receiverAddress = await _applicationDbContext.WalletDetailModels.FirstOrDefaultAsync(w => w.WalletAddressTron == request.ReceiverAddress);
                         if (receiverAddress != null)
                         {
                             receiverAddress.TrxAmount += request.Amount;
-                            _applicationDbContext.WalletModels.Update(receiverAddress);
+                            _applicationDbContext.WalletDetailModels.Update(receiverAddress);
                         }
                         await _applicationDbContext.SaveChangesAsync();
                     }
@@ -311,7 +325,7 @@ public class TronService : ITronService
     {
         var network = await _applicationDbContext.Networks.FirstOrDefaultAsync(n => n.Type == NetworkType.Network && n.Name == request.CoinName);
         var senderprivatekey = await GetPrivateKeyFromDatabase(request.SenderAddress);
-        var wallet = await _applicationDbContext.WalletModels.FirstOrDefaultAsync(q => q.WalletAddressTron == request.SenderAddress);
+        var wallet = await _applicationDbContext.WalletDetailModels.FirstOrDefaultAsync(q => q.WalletAddressTron == request.SenderAddress);
         decimal commissionPercentage = network.Commission;
         decimal commission = request.Amount - commissionPercentage;
         if (request.CoinName == "USDT")
@@ -467,7 +481,7 @@ public class TronService : ITronService
         var Adminresult = await _transactionClient.BroadcastTransactionAsync(AdmintransactionSigned);
         await Task.CompletedTask;
     }
-    private async Task WalletTransferQuery(TransferRequest request, WalletModel wallet)
+    private async Task WalletTransferQuery(TransferRequest request, WalletDetailModel wallet)
     {
         if (request.SenderAddress == request.ReceiverAddress)
         {
@@ -493,7 +507,7 @@ public class TronService : ITronService
     }
     private async Task<string> GetPrivateKeyFromDatabase(string senderadress)
     {
-        var wallet = await _applicationDbContext.WalletModels.FirstOrDefaultAsync(q => q.WalletAddressTron == senderadress);
+        var wallet = await _applicationDbContext.WalletDetailModels.FirstOrDefaultAsync(q => q.WalletAddressTron == senderadress);
         return wallet?.PrivateKeyTron!;
     }
     private async Task UpdateValue(TransferRequest request, long scaledAmount, string senderPrivateKey)
@@ -506,7 +520,7 @@ public class TronService : ITronService
     private async Task<bool> TransferControl(TransferRequest request)
     {
         var Commission = await _applicationDbContext.Networks.FirstOrDefaultAsync(w => w.Name == request.CoinName);
-        var senderWallet = await _applicationDbContext.WalletModels.FirstOrDefaultAsync(w => w.WalletAddressTron == request.SenderAddress);
+        var senderWallet = await _applicationDbContext.WalletDetailModels.FirstOrDefaultAsync(w => w.WalletAddressTron == request.SenderAddress);
         var _comission = Commission!.Commission;
         if (request.TransactionType != TransactionType.Deposit)
         {
@@ -531,7 +545,7 @@ public class TronService : ITronService
         {
             throw new ApplicationException($"Yetersiz bakiye.Bakiye {request.Amount + _comission} tutarından fazla olmalıdır.");
         }
-        var receiverWallet = await _applicationDbContext.WalletModels.FirstOrDefaultAsync(w => w.WalletAddressTron == request.ReceiverAddress);
+        var receiverWallet = await _applicationDbContext.WalletDetailModels.FirstOrDefaultAsync(w => w.WalletAddressTron == request.ReceiverAddress);
         return true;
     }
     private string GetTransactionHash(Transaction signedTransaction)

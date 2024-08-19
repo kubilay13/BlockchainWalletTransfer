@@ -64,7 +64,7 @@ namespace TronWalletApi.Services.TronWalletService
             _logger.LogInformation("Wallet miktarları güncelleniyor.");
             try
             {
-                var wallets = await _applicationDbContext.CurrencyIdModels.ToListAsync();
+                var wallets = await _applicationDbContext.WalletDetailModels.ToListAsync();
                 if (wallets != null)
                 {
                     foreach (var wallet in wallets)
@@ -114,7 +114,7 @@ namespace TronWalletApi.Services.TronWalletService
                                     await Task.Delay(TimeSpan.FromSeconds(10));
                                 }
                             }
-                            _applicationDbContext.WalletModels.Update(wallet);
+                            _applicationDbContext.WalletDetailModels.Update(wallet);
                             await _applicationDbContext.SaveChangesAsync();
                             _logger.LogInformation("Cüzdan bakiyesi ve NetworkFee başarıyla güncellendi.");
                         }

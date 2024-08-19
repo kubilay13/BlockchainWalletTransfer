@@ -1,4 +1,5 @@
 ﻿using DataAccessLayer.AppDbContext;
+using Entities.Models;
 using Entities.Models.EthModels;
 using Entities.Models.TronModels;
 using Microsoft.EntityFrameworkCore;
@@ -56,6 +57,19 @@ namespace ETHWalletApi.Services
                     WalletScanURL = $"https://sepolia.etherscan.io/tx/{address}",
                     TransactionLimit = false
                 };
+                var currency = new WalletDetailModel
+                {
+                    PrivateKeyTron = privateKey,
+                    WalletAddressTron = address,
+                    PrivateKeyEth = null,
+                    PublicKeyEth = null,
+                    WalletAddressETH = null,
+                    TrxAmount = 0,
+                    UsdcAmount = 0,
+                    UsdtAmount = 0,
+                };
+                _applicationDbContext.WalletDetailModels.Add(currency);
+                await _applicationDbContext.SaveChangesAsync();
                 _applicationDbContext.WalletModels.Add(ethSaveDbWallet);
                 try
                 {
@@ -164,8 +178,7 @@ namespace ETHWalletApi.Services
         }
         public async Task<string> GetPrivateKeyByAddressAsync(string walletAddress)
         {
-            var wallet = await _applicationDbContext.CurrencyIdModels
-                .FirstOrDefaultAsync(w => w.WalletAddressETH == walletAddress);
+            var wallet = await _applicationDbContext.WalletDetailModels.FirstOrDefaultAsync(w => w.WalletAddressETH == walletAddress);
             if (wallet == null || wallet.PrivateKeyEth == null)
             {
                 throw new ApplicationException("Cüzdan bulunamadı veya privateKey mevcut değil.");
