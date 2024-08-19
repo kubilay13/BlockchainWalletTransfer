@@ -1,9 +1,8 @@
-﻿using Entities.Models.NetworkModel;
+﻿using Entities.Models.AdminModel;
+using Entities.Models.NetworkModel;
 using Entities.Models.TronModels;
-using Entities.Models.UserModel;
 using Entities.Models.WalletModel;
 using Microsoft.EntityFrameworkCore;
-
 namespace DataAccessLayer.AppDbContext
 {
     public class ApplicationDbContext : DbContext
@@ -13,22 +12,18 @@ namespace DataAccessLayer.AppDbContext
         }
         public DbSet<WalletModel> WalletModels { get; set; }
         public DbSet<TransferHistoryModel> TransferHistoryModels { get; set; }
-        public DbSet<TransactionSuccesHistoryModel> TransactionSuccesHistoryModels { get; set; }
         public DbSet<Network> Networks { get; set; }
-
         public DbSet<WalletDetailModel> WalletDetailModels { get; set; }
+        public DbSet<AdminLoginModel> AdminLoginModels { get; set; }
 
         //public DbSet<UserSignUpModel> UserSignUpModels { get; set; }
 
         //public DbSet<UserLoginModel> userLoginModels { get; set; }
 
-
-
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<WalletModel>().HasKey(t => t.Id);
             modelBuilder.Entity<TransferHistoryModel>().HasKey(t => t.Id);
-            modelBuilder.Entity<TransactionSuccesHistoryModel>().HasKey(t => t.Id);
             modelBuilder.Entity<WalletModel>().HasMany(w => w.WalletDetails).WithOne(wd => wd.Wallet).HasForeignKey(wd => wd.WalletId).OnDelete(DeleteBehavior.Cascade);
             modelBuilder.Entity<WalletDetailModel>().HasOne(wd => wd.Wallet).WithMany(w => w.WalletDetails).HasForeignKey(wd => wd.WalletId);
             base.OnModelCreating(modelBuilder);
@@ -184,51 +179,6 @@ namespace DataAccessLayer.AppDbContext
             modelBuilder.Entity<WalletModel>()
               .Property(t => t.WalletName)
               .HasMaxLength(100);
-
-            //TransactionSuccesHistoryModel--
-
-            modelBuilder.Entity<TransactionSuccesHistoryModel>()
-            .Property(t => t.SendingAddress)
-            .HasMaxLength(64)
-            .IsRequired();
-
-            modelBuilder.Entity<TransactionSuccesHistoryModel>()
-                .Property(t => t.ReceivedAddress)
-                .HasMaxLength(64)
-                .IsRequired();
-
-            modelBuilder.Entity<TransactionSuccesHistoryModel>()
-                .Property(t => t.TransactionHash)
-                .HasMaxLength(256)
-                .IsRequired();
-
-            modelBuilder.Entity<TransactionSuccesHistoryModel>()
-                .Property(t => t.CoinType)
-                .HasMaxLength(10);
-
-            modelBuilder.Entity<TransactionSuccesHistoryModel>()
-                .Property(t => t.TransactionNetwork)
-                .HasMaxLength(10);
-
-            modelBuilder.Entity<TransactionSuccesHistoryModel>()
-                .Property(t => t.TransactionDate)
-                .HasColumnType("datetime2");
-
-            modelBuilder.Entity<TransactionSuccesHistoryModel>()
-                .Property(t => t.TransactionDateTime)
-                .HasMaxLength(8);
-
-            modelBuilder.Entity<TransactionSuccesHistoryModel>()
-                .Property(t => t.Commission)
-                .HasColumnType("decimal(18, 8)");
-
-            modelBuilder.Entity<TransactionSuccesHistoryModel>()
-                .Property(t => t.NetworkFee)
-                .HasColumnType("decimal(18, 8)");
-
-            modelBuilder.Entity<TransactionSuccesHistoryModel>()
-                .Property(t => t.TransactionStatus)
-                .IsRequired();
         }
     }
 }

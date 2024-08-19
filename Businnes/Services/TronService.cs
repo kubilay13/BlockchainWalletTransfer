@@ -90,6 +90,8 @@ public class TronService : ITronService
             responseBuilder.AppendLine($"WalletName: {wallet.WalletName}");
             responseBuilder.AppendLine($"Tron Private Key: {currency.PrivateKeyTron}");
             responseBuilder.AppendLine($"Tron Wallet Address: {currency.WalletAddressTron}");
+            responseBuilder.AppendLine($"ETH Private Key: {currency.PrivateKeyEth}");
+            responseBuilder.AppendLine($"ETH Wallet Address: {currency.WalletAddressETH}");
             var response = responseBuilder.ToString();
             return response;
         }
@@ -230,12 +232,12 @@ public class TronService : ITronService
                 {
                     throw new ApplicationException("Alıcı Cüzdan Adresiyle Gönderici Adres Aynılar.");
                 }
-                var _transferLimit = await TransferControl(request);
+                //var _transferLimit = await TransferControl(request);
 
-                if (!_transferLimit)
-                {
-                    throw new ApplicationException("Transfer işlemi başarısız oldu.");
-                }
+                //if (!_transferLimit)
+                //{
+                //    throw new ApplicationException("Transfer işlemi başarısız oldu.");
+                //}
                 var _network = await _applicationDbContext.Networks.FirstOrDefaultAsync(w => w.Name == request.CoinName);
                 var network = await _applicationDbContext.Networks.FirstOrDefaultAsync(n => n.Type == NetworkType.Network && n.Name == request.CoinName);
                 var _comission = _network!.Commission;
@@ -521,37 +523,37 @@ public class TronService : ITronService
         var signedTransaction = transactionClient.GetTransactionSign(transactionExtension.Transaction, senderPrivateKey);
         var result = await transactionClient.BroadcastTransactionAsync(signedTransaction);
     }
-    private async Task<bool> TransferControl(TransferRequest request)
-    {
-        var Commission = await _applicationDbContext.Networks.FirstOrDefaultAsync(w => w.Name == request.CoinName);
-        var senderWallet = await _applicationDbContext.WalletDetailModels.FirstOrDefaultAsync(w => w.WalletAddressTron == request.SenderAddress);
-        var _comission = Commission!.Commission;
-        if (request.TransactionType != TransactionType.Deposit)
-        {
-            var twentyFourHoursAgo = DateTime.UtcNow.AddHours(-24);
-            var dailyTransfers = await _applicationDbContext.TransferHistoryModels
-                .Where(t => t.SendingAddress == request.SenderAddress && t.TransactionDate >= twentyFourHoursAgo && t.TransactionStatus == true)
-                .SumAsync(t => t.TransactionAmount);
-            if (dailyTransfers + request.Amount > 1000)
-            {
-                throw new ApplicationException("Günlük transfer sınırını aştınız.");
-            }
-        }
-        if (senderWallet == null)
-        {
-            throw new ApplicationException($"Gönderen adres {request.SenderAddress} bulunamadı.");
-        }
-        if (request.Amount <= 0)
-        {
-            throw new ApplicationException("Gönderilecek miktar 0'dan büyük olmalıdır.");
-        }
-        if (senderWallet.TrxAmount < request.Amount /*+_comission*/)
-        {
-            throw new ApplicationException($"Yetersiz bakiye.Bakiye {request.Amount + _comission} tutarından fazla olmalıdır.");
-        }
-        var receiverWallet = await _applicationDbContext.WalletDetailModels.FirstOrDefaultAsync(w => w.WalletAddressTron == request.ReceiverAddress);
-        return true;
-    }
+    //private async Task<bool> TransferControl(TransferRequest request)
+    //{
+    //    //var Commission = await _applicationDbContext.Networks.FirstOrDefaultAsync(w => w.Name == request.CoinName);
+    //    //var senderWallet = await _applicationDbContext.WalletDetailModels.FirstOrDefaultAsync(w => w.WalletAddressTron == request.SenderAddress);
+    //    //var _comission = Commission!.Commission;
+    //    //if (request.TransactionType != TransactionType.Deposit)
+    //    //{
+    //    //    var twentyFourHoursAgo = DateTime.UtcNow.AddHours(-24);
+    //    //    var dailyTransfers = await _applicationDbContext.TransferHistoryModels
+    //    //        .Where(t => t.SendingAddress == request.SenderAddress && t.TransactionDate >= twentyFourHoursAgo && t.TransactionStatus == true)
+    //    //        .SumAsync(t => t.TransactionAmount);
+    //    //    if (dailyTransfers + request.Amount > 1000)
+    //    //    {
+    //    //        throw new ApplicationException("Günlük transfer sınırını aştınız.");
+    //    //    }
+    //    //}
+    //    //if (senderWallet == null)
+    //    //{
+    //    //    throw new ApplicationException($"Gönderen adres {request.SenderAddress} bulunamadı.");
+    //    //}
+    //    //if (request.Amount <= 0)
+    //    //{
+    //    //    throw new ApplicationException("Gönderilecek miktar 0'dan büyük olmalıdır.");
+    //    //}
+    //    //if (senderWallet.TrxAmount < request.Amount /*+_comission*/)
+    //    //{
+    //    //    throw new ApplicationException($"Yetersiz bakiye.Bakiye {request.Amount + _comission} tutarından fazla olmalıdır.");
+    //    //}
+    //    //var receiverWallet = await _applicationDbContext.WalletDetailModels.FirstOrDefaultAsync(w => w.WalletAddressTron == request.ReceiverAddress);
+    //    //return true;
+    //}
     private string GetTransactionHash(Transaction signedTransaction)
     {
         using (var sha256 = System.Security.Cryptography.SHA256.Create())

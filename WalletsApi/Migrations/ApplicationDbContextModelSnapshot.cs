@@ -22,7 +22,7 @@ namespace WalletsApi.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("Entities.Models.EthModels.EthWalletModels", b =>
+            modelBuilder.Entity("Entities.Models.AdminModel.AdminLoginModel", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -30,33 +30,18 @@ namespace WalletsApi.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<decimal>("ETHAmount")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<string>("Network")
+                    b.Property<string>("Password")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("PrivateKey")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("PublicKey")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("WalletAddress")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("WalletETHScanURL")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("WalletName")
+                    b.Property<string>("Username")
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
-                    b.ToTable("EthWalletModelss");
+                    b.ToTable("AdminLoginModels");
                 });
 
-            modelBuilder.Entity("Entities.Models.Network", b =>
+            modelBuilder.Entity("Entities.Models.NetworkModel.Network", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -133,76 +118,6 @@ namespace WalletsApi.Migrations
                         });
                 });
 
-            modelBuilder.Entity("Entities.Models.TronModels.TransactionSuccesHistoryModel", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("CoinType")
-                        .HasMaxLength(10)
-                        .HasColumnType("nvarchar(10)");
-
-                    b.Property<decimal>("Commission")
-                        .HasColumnType("decimal(18, 8)");
-
-                    b.Property<string>("Network")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<decimal>("NetworkFee")
-                        .HasColumnType("decimal(18, 8)");
-
-                    b.Property<string>("ReceivedAddress")
-                        .IsRequired()
-                        .HasMaxLength(64)
-                        .HasColumnType("nvarchar(64)");
-
-                    b.Property<string>("ReceiverTransactionUrl")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("SenderTransactionUrl")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("SendingAddress")
-                        .IsRequired()
-                        .HasMaxLength(64)
-                        .HasColumnType("nvarchar(64)");
-
-                    b.Property<decimal>("TransactionAmount")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<DateTime>("TransactionDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("TransactionDateTime")
-                        .HasMaxLength(8)
-                        .HasColumnType("nvarchar(8)");
-
-                    b.Property<string>("TransactionHash")
-                        .IsRequired()
-                        .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
-
-                    b.Property<string>("TransactionNetwork")
-                        .HasMaxLength(10)
-                        .HasColumnType("nvarchar(10)");
-
-                    b.Property<bool>("TransactionStatus")
-                        .HasColumnType("bit");
-
-                    b.Property<int>("TransactionType")
-                        .HasColumnType("int");
-
-                    b.Property<string>("TransactionUrl")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("TransactionSuccesHistoryModels");
-                });
-
             modelBuilder.Entity("Entities.Models.TronModels.TransferHistoryModel", b =>
                 {
                     b.Property<int>("Id")
@@ -263,7 +178,7 @@ namespace WalletsApi.Migrations
                     b.ToTable("TransferHistoryModels");
                 });
 
-            modelBuilder.Entity("Entities.Models.TronModels.WalletModel", b =>
+            modelBuilder.Entity("Entities.Models.WalletModel.WalletDetailModel", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -271,25 +186,8 @@ namespace WalletsApi.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("CreatedAtTime")
-                        .HasMaxLength(8)
-                        .HasColumnType("nvarchar(8)");
-
                     b.Property<decimal>("ETHAmount")
                         .HasColumnType("decimal(18, 8)");
-
-                    b.Property<DateTime>("LastTransactionAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("LastTransactionTime")
-                        .HasMaxLength(8)
-                        .HasColumnType("nvarchar(8)");
-
-                    b.Property<string>("Network")
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("PrivateKeyEth")
                         .HasColumnType("nvarchar(max)");
@@ -298,8 +196,8 @@ namespace WalletsApi.Migrations
                         .HasMaxLength(128)
                         .HasColumnType("nvarchar(128)");
 
-                    b.Property<bool>("TransactionLimit")
-                        .HasColumnType("bit");
+                    b.Property<string>("PublicKeyEth")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<decimal>("TrxAmount")
                         .HasColumnType("decimal(18, 8)");
@@ -310,6 +208,9 @@ namespace WalletsApi.Migrations
                     b.Property<decimal>("UsdtAmount")
                         .HasColumnType("decimal(18, 8)");
 
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
                     b.Property<string>("WalletAddressETH")
                         .HasColumnType("nvarchar(max)");
 
@@ -318,77 +219,88 @@ namespace WalletsApi.Migrations
                         .HasMaxLength(34)
                         .HasColumnType("nvarchar(34)");
 
-                    b.Property<string>("WalletEthScanUrl")
+                    b.Property<int>("WalletId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("WalletId");
+
+                    b.ToTable("WalletDetailModels");
+                });
+
+            modelBuilder.Entity("Entities.Models.WalletModel.WalletModel", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<DateTime>("LastTransactionAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<string>("Network")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Password")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("Surname")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<string>("TelNo")
+                        .IsRequired()
+                        .HasMaxLength(15)
+                        .HasColumnType("nvarchar(15)");
+
+                    b.Property<bool>("TransactionLimit")
+                        .HasColumnType("bit");
 
                     b.Property<string>("WalletName")
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
-                    b.Property<string>("WalletTronScanURL")
+                    b.Property<string>("WalletScanURL")
                         .HasMaxLength(255)
                         .HasColumnType("nvarchar(255)");
 
                     b.HasKey("Id");
 
                     b.ToTable("WalletModels");
+                });
 
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            CreatedAt = new DateTime(2024, 8, 18, 1, 20, 14, 112, DateTimeKind.Utc).AddTicks(7225),
-                            CreatedAtTime = "04:20:14",
-                            ETHAmount = 0m,
-                            LastTransactionAt = new DateTime(2024, 8, 18, 1, 20, 14, 112, DateTimeKind.Utc).AddTicks(7225),
-                            LastTransactionTime = "04:20:14",
-                            Network = "Testnet(Nile)",
-                            PrivateKeyTron = "5a87ccab1b8b8f2d86c24ad6f278d8030be5a17d056588242ef377d9c3ddeb8e",
-                            TransactionLimit = false,
-                            TrxAmount = 0m,
-                            UsdcAmount = 0m,
-                            UsdtAmount = 0m,
-                            WalletAddressTron = "TXTVwsUMsWrWsvd61VRcE9Bsk4WbEY9DGv",
-                            WalletName = "TRXTestAdress",
-                            WalletTronScanURL = "https://nile.tronscan.org/#/address/TXTVwsUMsWrWsvd61VRcE9Bsk4WbEY9DGv"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            CreatedAt = new DateTime(2024, 8, 18, 1, 20, 14, 112, DateTimeKind.Utc).AddTicks(7234),
-                            CreatedAtTime = "04:20:14",
-                            ETHAmount = 0m,
-                            LastTransactionAt = new DateTime(2024, 8, 18, 1, 20, 14, 112, DateTimeKind.Utc).AddTicks(7234),
-                            LastTransactionTime = "04:20:14",
-                            Network = "Testnet(Sepolia)",
-                            PrivateKeyEth = "f7753fbb6a94a3f5758acfd83e2c568899220f2ba782b831b14ea5bfc95bc422",
-                            TransactionLimit = true,
-                            TrxAmount = 0m,
-                            UsdcAmount = 0m,
-                            UsdtAmount = 0m,
-                            WalletAddressETH = "0x09Dd4927885EdbC5Ad820Fe489d7409A58ebe6DA",
-                            WalletAddressTron = "null",
-                            WalletName = "ETHAdminAdress",
-                            WalletTronScanURL = "https://etherscan.io/address/0x09Dd4927885EdbC5Ad820Fe489d7409A58ebe6DA"
-                        },
-                        new
-                        {
-                            Id = 3,
-                            CreatedAt = new DateTime(2024, 8, 18, 1, 20, 14, 112, DateTimeKind.Utc).AddTicks(7241),
-                            CreatedAtTime = "04:20:14",
-                            ETHAmount = 0m,
-                            LastTransactionAt = new DateTime(2024, 8, 18, 1, 20, 14, 112, DateTimeKind.Utc).AddTicks(7241),
-                            LastTransactionTime = "04:20:14",
-                            Network = "Testnet(Nile)",
-                            PrivateKeyTron = "0107932b30922231adff71b4b7c0b05bc948632f56c2b62f98bd18fefeae8a9e",
-                            TransactionLimit = true,
-                            TrxAmount = 0m,
-                            UsdcAmount = 0m,
-                            UsdtAmount = 0m,
-                            WalletAddressTron = "TEWJWLwFL3dbMjXtj2smNfto9sXdWquF4N",
-                            WalletName = "TRXAdminAdress",
-                            WalletTronScanURL = "https://nile.tronscan.org/#/address/TEWJWLwFL3dbMjXtj2smNfto9sXdWquF4N"
-                        });
+            modelBuilder.Entity("Entities.Models.WalletModel.WalletDetailModel", b =>
+                {
+                    b.HasOne("Entities.Models.WalletModel.WalletModel", "Wallet")
+                        .WithMany("WalletDetails")
+                        .HasForeignKey("WalletId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Wallet");
+                });
+
+            modelBuilder.Entity("Entities.Models.WalletModel.WalletModel", b =>
+                {
+                    b.Navigation("WalletDetails");
                 });
 #pragma warning restore 612, 618
         }

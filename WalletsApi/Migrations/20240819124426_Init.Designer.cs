@@ -9,10 +9,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
-namespace TronWalletApi.Migrations
+namespace WalletsApi.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240819103341_Init")]
+    [Migration("20240819124426_Init")]
     partial class Init
     {
         /// <inheritdoc />
@@ -20,10 +20,29 @@ namespace TronWalletApi.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "8.0.7")
+                .HasAnnotation("ProductVersion", "8.0.8")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
+
+            modelBuilder.Entity("Entities.Models.AdminModel.AdminLoginModel", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Password")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Username")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("AdminLoginModels");
+                });
 
             modelBuilder.Entity("Entities.Models.NetworkModel.Network", b =>
                 {
@@ -100,76 +119,6 @@ namespace TronWalletApi.Migrations
                             Networks = "TRON",
                             Type = 0
                         });
-                });
-
-            modelBuilder.Entity("Entities.Models.TronModels.TransactionSuccesHistoryModel", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("CoinType")
-                        .HasMaxLength(10)
-                        .HasColumnType("nvarchar(10)");
-
-                    b.Property<decimal>("Commission")
-                        .HasColumnType("decimal(18, 8)");
-
-                    b.Property<string>("Network")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<decimal>("NetworkFee")
-                        .HasColumnType("decimal(18, 8)");
-
-                    b.Property<string>("ReceivedAddress")
-                        .IsRequired()
-                        .HasMaxLength(64)
-                        .HasColumnType("nvarchar(64)");
-
-                    b.Property<string>("ReceiverTransactionUrl")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("SenderTransactionUrl")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("SendingAddress")
-                        .IsRequired()
-                        .HasMaxLength(64)
-                        .HasColumnType("nvarchar(64)");
-
-                    b.Property<decimal>("TransactionAmount")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<DateTime>("TransactionDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("TransactionDateTime")
-                        .HasMaxLength(8)
-                        .HasColumnType("nvarchar(8)");
-
-                    b.Property<string>("TransactionHash")
-                        .IsRequired()
-                        .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
-
-                    b.Property<string>("TransactionNetwork")
-                        .HasMaxLength(10)
-                        .HasColumnType("nvarchar(10)");
-
-                    b.Property<bool>("TransactionStatus")
-                        .HasColumnType("bit");
-
-                    b.Property<int>("TransactionType")
-                        .HasColumnType("int");
-
-                    b.Property<string>("TransactionUrl")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("TransactionSuccesHistoryModels");
                 });
 
             modelBuilder.Entity("Entities.Models.TronModels.TransferHistoryModel", b =>

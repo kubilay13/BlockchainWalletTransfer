@@ -1,5 +1,4 @@
 ﻿using DataAccessLayer.AppDbContext;
-using Entities.Models;
 using Entities.Models.EthModels;
 using Entities.Models.TronModels;
 using Entities.Models.UserModel;
@@ -81,7 +80,6 @@ namespace ETHWalletApi.Services
                 };
                 _applicationDbContext.WalletDetailModels.Add(currency);
                 await _applicationDbContext.SaveChangesAsync();
-                
                 try
                 {
                     await _applicationDbContext.SaveChangesAsync();
@@ -151,7 +149,6 @@ namespace ETHWalletApi.Services
                 throw new InvalidOperationException("ETH Transfer İşleminde Beklenmeyen Bir Hata Oluştu. ", ex);
             }
         }
-
         public async Task<string> SendTransactionAsyncUSDT(EthNetworkTransactionRequest request)
         {
             var bnbcontract = "0x17c3fD32E71b97Ae7EA1B5dCa135846461a8F6B6";

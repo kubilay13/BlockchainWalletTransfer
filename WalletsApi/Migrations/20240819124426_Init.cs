@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #pragma warning disable CA1814 // Prefer jagged arrays over multidimensional
 
-namespace TronWalletApi.Migrations
+namespace WalletsApi.Migrations
 {
     /// <inheritdoc />
     public partial class Init : Migration
@@ -13,6 +13,20 @@ namespace TronWalletApi.Migrations
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.CreateTable(
+                name: "AdminLoginModels",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Username = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Password = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_AdminLoginModels", x => x.Id);
+                });
+
             migrationBuilder.CreateTable(
                 name: "Networks",
                 columns: table => new
@@ -32,34 +46,6 @@ namespace TronWalletApi.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Networks", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "TransactionSuccesHistoryModels",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    SendingAddress = table.Column<string>(type: "nvarchar(64)", maxLength: 64, nullable: false),
-                    ReceivedAddress = table.Column<string>(type: "nvarchar(64)", maxLength: 64, nullable: false),
-                    TransactionHash = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
-                    CoinType = table.Column<string>(type: "nvarchar(10)", maxLength: 10, nullable: true),
-                    TransactionNetwork = table.Column<string>(type: "nvarchar(10)", maxLength: 10, nullable: true),
-                    TransactionAmount = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    TransactionDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    TransactionDateTime = table.Column<string>(type: "nvarchar(8)", maxLength: 8, nullable: true),
-                    Commission = table.Column<decimal>(type: "decimal(18,8)", nullable: false),
-                    NetworkFee = table.Column<decimal>(type: "decimal(18,8)", nullable: false),
-                    SenderTransactionUrl = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    ReceiverTransactionUrl = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    TransactionUrl = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    TransactionStatus = table.Column<bool>(type: "bit", nullable: false),
-                    TransactionType = table.Column<int>(type: "int", nullable: false),
-                    Network = table.Column<string>(type: "nvarchar(max)", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_TransactionSuccesHistoryModels", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -159,10 +145,10 @@ namespace TronWalletApi.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "Networks");
+                name: "AdminLoginModels");
 
             migrationBuilder.DropTable(
-                name: "TransactionSuccesHistoryModels");
+                name: "Networks");
 
             migrationBuilder.DropTable(
                 name: "TransferHistoryModels");

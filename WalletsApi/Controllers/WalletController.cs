@@ -1,8 +1,11 @@
 ﻿using DataAccessLayer.AppDbContext;
+using Entities.Models.AdminModel;
 using Entities.Models.EthModels;
 using Entities.Models.TronModels;
+using Entities.Models.UserModel;
 using ETHWalletApi.Services;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json.Linq;
 using System.Net.Http;
 using System.Numerics;
@@ -24,11 +27,12 @@ namespace WalletsApi.Controllers
     public class WalletController : ControllerBase
     {
         private readonly IWalletService _walletService;
-        private readonly ITronService  _tronService;
+        private readonly ITronService _tronService;
         private readonly IEthService _ethService;
         private readonly ApplicationDbContext _applicationDbContext;
         private readonly HttpClient _httpClient;
-        public WalletController(ApplicationDbContext applicationDbContext,IWalletService walletService, ITronService tronService, HttpClient httpClient,IEthService ethService)
+    
+        public WalletController(ApplicationDbContext applicationDbContext, IWalletService walletService, ITronService tronService, HttpClient httpClient, IEthService ethService)
         {
             _ethService = ethService;
             _walletService = walletService;
@@ -37,11 +41,11 @@ namespace WalletsApi.Controllers
             _httpClient = httpClient;
         }
         [HttpPost("CreateWallet(ETH,TRX)")]
-        public async Task<string> CreateWallet(string walletName)
+        public async Task<string> CreateWallet(UserSignUpModel userSignUpModel)
         {
             try
             {
-                var wallet = await _walletService.CreateWallet(walletName);
+                var wallet = await _walletService.CreateWallet(userSignUpModel);
                 return wallet;
             }
             catch (Exception ex)
@@ -54,12 +58,7 @@ namespace WalletsApi.Controllers
         {
             try
             {
-                if (WalletAdress.StartsWith("0x") && WalletAdress.Length == 42)
-                {
-                    
-                    return await ETHWalletBalance(WalletAdress);
-                }
-                else
+                if (WalletAdress.StartsWith("T"))
                 {
                     var balance = await _tronService.GetBalanceAsync(WalletAdress);
                     return balance;
@@ -69,10 +68,11 @@ namespace WalletsApi.Controllers
             {
                 return 0;
             }
+            return 0;
         }
 
         [HttpPost("WalletTransfer(ETH,TRX)")]
-        public async Task<IActionResult>Transfer([FromBody] TransferRequest request)
+        public async Task<IActionResult> Transfer([FromBody] TransferRequest request)
         {
             if (request.Network == "TRX")
             {
@@ -94,49 +94,20 @@ namespace WalletsApi.Controllers
             throw new NotImplementedException("asdasda");
         }
 
-        private async Task<decimal> ETHWalletBalance(string address)
+        [HttpPost("AdminLogin")]
+        public async Task<IActionResult> AdminLogin(AdminLoginModel adminLoginModel)
         {
-            try
+            var admin = await _applicationDbContext.AdminLoginModels.SingleOrDefaultAsync(a => a.Username == adminLoginModel.Username);
+            if (admin == null)
             {
-                string infuraUrl = "https://sepolia.infura.io/v3/3fcb68529b9e4288a4eb599f266bbb50";
-
-                var requestBody = new
-                {
-                    jsonrpc = "2.0",
-                    method = "eth_getBalance",
-                    @params = new object[] { address, "latest" },
-                    id = 1
-                };
-
-                var json = Newtonsoft.Json.JsonConvert.SerializeObject(requestBody);
-                var content = new StringContent(json, Encoding.UTF8, "application/json");
-
-                HttpResponseMessage response = await _httpClient.PostAsync(infuraUrl, content);
-                response.EnsureSuccessStatusCode();
-                string responseBody = await response.Content.ReadAsStringAsync();
-
-                JObject jsonResponse = JObject.Parse(responseBody);
-
-                // "result" alanını kontrol edin
-                string balanceHex = jsonResponse["result"]?.ToString();
-
-                if (string.IsNullOrEmpty(balanceHex))
-                {
-                    Console.WriteLine("Error: Received an empty or null balanceHex.");
-                    return 0;
-                }
-
-                // Bu noktaya kadar kontrol edin
-                BigInteger balanceWei = BigInteger.Parse(balanceHex.TrimStart('0'), System.Globalization.NumberStyles.HexNumber);
-                decimal balanceEth = (decimal)balanceWei / 1e18m;
-                return balanceEth;
+                return BadRequest("Kullanıcı adı bulunamadı.");
             }
-            catch (Exception ex)
+            if (admin.Password != adminLoginModel.Password)
             {
-                // Hata detaylarını kaydedin
-                Console.WriteLine($"Error in ETHWalletBalance: {ex.Message}");
-                return 0;
+                return BadRequest("Yanlış şifre.");
             }
+            return Ok("Giriş başarılı.");
         }
     }
 }
+

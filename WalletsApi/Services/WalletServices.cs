@@ -1,5 +1,7 @@
 ﻿using DataAccessLayer.AppDbContext;
+using Entities.Models.AdminModel;
 using Entities.Models.TronModels;
+using Entities.Models.UserModel;
 using Entities.Models.WalletModel;
 using ETHWalletApi.Services;
 using Microsoft.EntityFrameworkCore;
@@ -26,7 +28,7 @@ namespace WalletsApi.Services
             _tronService= tronService;
             _ethService= ethService;
         }
-        public async Task<string> CreateWallet(string walletName)
+        public async Task<string> CreateWallet(UserSignUpModel userSignUpModel)
         {
             try
             {
@@ -39,29 +41,42 @@ namespace WalletsApi.Services
                 var address = ecKey.GetPublicAddress();
                 var wallet = new WalletModel
                 {
-                    WalletName = walletName,
+                    Name = userSignUpModel.Name,
+                    Surname = userSignUpModel.Surname,
+                    Email = userSignUpModel.Email,
+                    TelNo = userSignUpModel.TelNo,
+                    Password = userSignUpModel.Password,
+                    WalletName = userSignUpModel.WalletName,
                     CreatedAt = DateTime.UtcNow,
+                    LastTransactionAt = DateTime.UtcNow,
                     WalletScanURL = $"https://nile.tronscan.org/#/address/{address}",
                     Network = "Testnet(Nile)"
                 };
-                var CurrencyWallet = new WalletDetailModel
+                _applicationDbContext.WalletModels.Add(wallet);
+                await _applicationDbContext.SaveChangesAsync();
+                var currency = new WalletDetailModel
                 {
+                    UserId = wallet.Id,
                     PrivateKeyTron = privateKey,
                     WalletAddressTron = address,
                     PrivateKeyEth = ethprivateKey,
+                    PublicKeyEth = null,
                     WalletAddressETH = ethaddress,
-                }; 
-                _applicationDbContext.WalletDetailModels.Add(CurrencyWallet);
-                _applicationDbContext.WalletModels.Add(wallet);
+                    TrxAmount = 0,
+                    UsdcAmount = 0,
+                    UsdtAmount = 0,
+                    WalletId = wallet.Id
+                };
+                _applicationDbContext.WalletDetailModels.Add(currency);
                 await _applicationDbContext.SaveChangesAsync();
                 var network = await _applicationDbContext.Networks.FirstOrDefaultAsync(n => n.Type == Entities.Enums.NetworkType.Network);
                 string adminAddress = network.AdminWallet;
                 var responseBuilder = new StringBuilder();
                 responseBuilder.AppendLine($"WalletName: {wallet.WalletName}");
-                responseBuilder.AppendLine($"Tron Private Key: {CurrencyWallet.PrivateKeyTron}");
-                responseBuilder.AppendLine($"Tron Wallet Address: {CurrencyWallet.WalletAddressTron}");
-                responseBuilder.AppendLine($"Ethereum Private Key: {CurrencyWallet.PrivateKeyEth}");
-                responseBuilder.AppendLine($"Ethereum Wallet Address: {CurrencyWallet.WalletAddressETH}");
+                responseBuilder.AppendLine($"Tron Private Key: {currency.PrivateKeyTron}");
+                responseBuilder.AppendLine($"Tron Wallet Address: {currency.WalletAddressTron}");
+                responseBuilder.AppendLine($"Ethereum Private Key: {currency.PrivateKeyEth}");
+                responseBuilder.AppendLine($"Ethereum Wallet Address: {currency.WalletAddressETH}");
                 var response = responseBuilder.ToString();
                 return response;
             }
@@ -138,6 +153,19 @@ namespace WalletsApi.Services
             {
                 throw new ApplicationException("hata");
             }
+        }
+        public async Task<string> AdminLogin(AdminLoginModel adminLoginModel)
+        {
+            var admin = await _applicationDbContext.AdminLoginModels.SingleOrDefaultAsync(a => a.Username == adminLoginModel.Username);
+            if (admin == null)
+            {
+                return ("Kullanıcı adı bulunamadı.");
+            }
+            if (admin.Password != adminLoginModel.Password)
+            {
+                return ("Yanlış şifre.");
+            }
+            return ("Giriş başarılı.");
         }
     }
 
