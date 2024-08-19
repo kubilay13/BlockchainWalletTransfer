@@ -1,9 +1,12 @@
 ﻿
+using Entities.Models.TronModels;
+
 namespace Entities.Models
 {
     public class WalletDetailModel
     {
         public int Id { get; set; }
+        public int UserId { get; set; }
         public string? PrivateKeyTron { get; set; }
         public string? WalletAddressTron { get; set; }
         public string? PrivateKeyEth { get; set; }
@@ -13,5 +16,8 @@ namespace Entities.Models
         public decimal UsdtAmount { get; set; }
         public decimal UsdcAmount { get; set; }
         public decimal ETHAmount { get; set; }
+
+        public int WalletId { get; set; }
+        public virtual WalletModel Wallet { get; set; }
     }
 }

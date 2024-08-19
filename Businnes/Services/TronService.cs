@@ -54,7 +54,7 @@ public class TronService : ITronService
             var address = ecKey.GetPublicAddress();
             var wallet = new WalletModel
             {
-
+                
                 WalletName = walletName,
                 CreatedAt = DateTime.UtcNow,
                 LastTransactionAt = DateTime.UtcNow,
@@ -66,6 +66,7 @@ public class TronService : ITronService
             await _applicationDbContext.SaveChangesAsync();
             var currency = new WalletDetailModel
             {
+                UserId = wallet.UserId,
                 PrivateKeyTron = privateKey,
                 WalletAddressTron = address,
                 PrivateKeyEth = null,
@@ -74,6 +75,7 @@ public class TronService : ITronService
                 TrxAmount = 0,
                 UsdcAmount = 0,
                 UsdtAmount = 0,
+                WalletId = wallet.Id
             };
             _applicationDbContext.WalletDetailModels.Add(currency);
             await _applicationDbContext.SaveChangesAsync();

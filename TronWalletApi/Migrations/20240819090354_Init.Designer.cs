@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace TronWalletApi.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240819084210_Init")]
+    [Migration("20240819090354_Init")]
     partial class Init
     {
         /// <inheritdoc />
@@ -252,6 +252,9 @@ namespace TronWalletApi.Migrations
                     b.Property<bool>("TransactionLimit")
                         .HasColumnType("bit");
 
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
                     b.Property<string>("WalletName")
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
@@ -295,6 +298,9 @@ namespace TronWalletApi.Migrations
                     b.Property<decimal>("UsdtAmount")
                         .HasColumnType("decimal(18, 8)");
 
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
                     b.Property<string>("WalletAddressETH")
                         .HasColumnType("nvarchar(max)");
 
@@ -303,9 +309,30 @@ namespace TronWalletApi.Migrations
                         .HasMaxLength(34)
                         .HasColumnType("nvarchar(34)");
 
+                    b.Property<int>("WalletId")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
 
-                    b.ToTable("CurrencyIdModels");
+                    b.HasIndex("WalletId");
+
+                    b.ToTable("WalletDetailModels");
+                });
+
+            modelBuilder.Entity("Entities.Models.WalletDetailModel", b =>
+                {
+                    b.HasOne("Entities.Models.TronModels.WalletModel", "Wallet")
+                        .WithMany("WalletDetails")
+                        .HasForeignKey("WalletId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Wallet");
+                });
+
+            modelBuilder.Entity("Entities.Models.TronModels.WalletModel", b =>
+                {
+                    b.Navigation("WalletDetails");
                 });
 #pragma warning restore 612, 618
         }

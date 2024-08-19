@@ -14,27 +14,6 @@ namespace TronWalletApi.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "CurrencyIdModels",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    PrivateKeyTron = table.Column<string>(type: "nvarchar(128)", maxLength: 128, nullable: true),
-                    WalletAddressTron = table.Column<string>(type: "nvarchar(34)", maxLength: 34, nullable: false),
-                    PrivateKeyEth = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    PublicKeyEth = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    WalletAddressETH = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    TrxAmount = table.Column<decimal>(type: "decimal(18,8)", nullable: false),
-                    UsdtAmount = table.Column<decimal>(type: "decimal(18,8)", nullable: false),
-                    UsdcAmount = table.Column<decimal>(type: "decimal(18,8)", nullable: false),
-                    ETHAmount = table.Column<decimal>(type: "decimal(18,8)", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_CurrencyIdModels", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Networks",
                 columns: table => new
                 {
@@ -114,6 +93,7 @@ namespace TronWalletApi.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
+                    UserId = table.Column<int>(type: "int", nullable: false),
                     WalletName = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
                     LastTransactionAt = table.Column<DateTime>(type: "datetime2", nullable: false),
@@ -126,6 +106,35 @@ namespace TronWalletApi.Migrations
                     table.PrimaryKey("PK_WalletModels", x => x.Id);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "WalletDetailModels",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    UserId = table.Column<int>(type: "int", nullable: false),
+                    PrivateKeyTron = table.Column<string>(type: "nvarchar(128)", maxLength: 128, nullable: true),
+                    WalletAddressTron = table.Column<string>(type: "nvarchar(34)", maxLength: 34, nullable: false),
+                    PrivateKeyEth = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    PublicKeyEth = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    WalletAddressETH = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    TrxAmount = table.Column<decimal>(type: "decimal(18,8)", nullable: false),
+                    UsdtAmount = table.Column<decimal>(type: "decimal(18,8)", nullable: false),
+                    UsdcAmount = table.Column<decimal>(type: "decimal(18,8)", nullable: false),
+                    ETHAmount = table.Column<decimal>(type: "decimal(18,8)", nullable: false),
+                    WalletId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_WalletDetailModels", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_WalletDetailModels_WalletModels_WalletId",
+                        column: x => x.WalletId,
+                        principalTable: "WalletModels",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
             migrationBuilder.InsertData(
                 table: "Networks",
                 columns: new[] { "Id", "AdminWallet", "AdminWalletPrivateKey", "Commission", "Contract", "Decimal", "Name", "NetworkId", "Networks", "Type" },
@@ -135,14 +144,16 @@ namespace TronWalletApi.Migrations
                     { 2, "TEWJWLwFL3dbMjXtj2smNfto9sXdWquF4N", "0107932b30922231adff71b4b7c0b05bc948632f56c2b62f98bd18fefeae8a9e", 10m, "TXYZopYRdj2D9XRtbG411XZZ3kM5VkAeBf", 6, "USDT", null, "TRON", 0 },
                     { 3, "TEWJWLwFL3dbMjXtj2smNfto9sXdWquF4N", "0107932b30922231adff71b4b7c0b05bc948632f56c2b62f98bd18fefeae8a9e", 10m, "TEMVynQpntMqkPxP6wXTW2K7e4sM3cRmWz", 6, "USDC", null, "TRON", 0 }
                 });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_WalletDetailModels_WalletId",
+                table: "WalletDetailModels",
+                column: "WalletId");
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropTable(
-                name: "CurrencyIdModels");
-
             migrationBuilder.DropTable(
                 name: "Networks");
 
@@ -151,6 +162,9 @@ namespace TronWalletApi.Migrations
 
             migrationBuilder.DropTable(
                 name: "TransferHistoryModels");
+
+            migrationBuilder.DropTable(
+                name: "WalletDetailModels");
 
             migrationBuilder.DropTable(
                 name: "WalletModels");

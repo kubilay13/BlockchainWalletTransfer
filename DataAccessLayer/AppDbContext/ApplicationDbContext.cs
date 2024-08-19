@@ -24,6 +24,8 @@ namespace DataAccessLayer.AppDbContext
             modelBuilder.Entity<WalletModel>().HasKey(t => t.Id);
             modelBuilder.Entity<TransferHistoryModel>().HasKey(t => t.Id);
             modelBuilder.Entity<TransactionSuccesHistoryModel>().HasKey(t => t.Id);
+            modelBuilder.Entity<WalletModel>().HasMany(w => w.WalletDetails).WithOne(wd => wd.Wallet).HasForeignKey(wd => wd.WalletId).OnDelete(DeleteBehavior.Cascade);
+            modelBuilder.Entity<WalletDetailModel>().HasOne(wd => wd.Wallet).WithMany(w => w.WalletDetails).HasForeignKey(wd => wd.WalletId);
             base.OnModelCreating(modelBuilder);
 
             //modelBuilder.Entity<WalletModel>().HasData(
