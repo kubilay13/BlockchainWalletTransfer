@@ -70,7 +70,7 @@ public class TronService : ITronService
             await _applicationDbContext.SaveChangesAsync();
             var currency = new WalletDetailModel
             {
-                UserId = wallet.UserId,
+                UserId = wallet.Id,
                 PrivateKeyTron = privateKey,
                 WalletAddressTron = address,
                 PrivateKeyEth = null,
@@ -90,8 +90,6 @@ public class TronService : ITronService
             responseBuilder.AppendLine($"WalletName: {wallet.WalletName}");
             responseBuilder.AppendLine($"Tron Private Key: {currency.PrivateKeyTron}");
             responseBuilder.AppendLine($"Tron Wallet Address: {currency.WalletAddressTron}");
-            responseBuilder.AppendLine($"Ethereum Private Key: {currency.PrivateKeyEth}");
-            responseBuilder.AppendLine($"Ethereum Wallet Address: {currency.WalletAddressETH}");
             var response = responseBuilder.ToString();
             return response;
         }

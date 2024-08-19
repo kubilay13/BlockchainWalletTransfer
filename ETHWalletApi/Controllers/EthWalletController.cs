@@ -2,6 +2,7 @@
 using ETHWalletApi.Services;
 using Entities.Models.EthModels;
 using Entities.Models.TronModels;
+using Entities.Models.UserModel;
 
 namespace ETHWalletApi.Controllers
 {
@@ -17,16 +18,16 @@ namespace ETHWalletApi.Controllers
         }
 
         [HttpPost("CreateETHWallet")]
-        public async Task<IActionResult> CreateWalletAsync([FromBody] string walletName)
+        public async Task<IActionResult> CreateWalletAsync([FromBody] UserSignUpModel userSignUpModel)
         {
-            if (string.IsNullOrEmpty(walletName))
+            if (string.IsNullOrEmpty(userSignUpModel.WalletName))
             {
-                return BadRequest("Wallet name is required.");
+                return BadRequest("Cüzdan Adı Giriniz..");
             }
 
             try
             {
-                var walletDetails = await _ethService.CreateETHWalletAsync(walletName);
+                var walletDetails = await _ethService.CreateETHWalletAsync(userSignUpModel);
                 return Ok(walletDetails);
             }
             catch (Exception ex)
@@ -40,7 +41,7 @@ namespace ETHWalletApi.Controllers
         {
             if (request == null)
             {
-                return BadRequest("Transaction request is required.");
+                return BadRequest("İşlem İsteği null");
             }
             try
             {
@@ -53,7 +54,7 @@ namespace ETHWalletApi.Controllers
             }
         }
 
-        [HttpPost("send-usdt")]
+        [HttpPost("ETH-USDT-TRANSFER")]
         public async Task<IActionResult> SendUSDTTransaction([FromBody] EthNetworkTransactionRequest request)
         {
             if (request == null || string.IsNullOrEmpty(request.FromAddress) || string.IsNullOrEmpty(request.ToAddress) || request.Amount == null)

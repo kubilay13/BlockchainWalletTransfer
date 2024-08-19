@@ -18,10 +18,10 @@ namespace DataAccessLayer.AppDbContext
 
         public DbSet<WalletDetailModel> WalletDetailModels { get; set; }
 
-        public DbSet<UserSignUpModel> UserSignUpModels { get; set; }
+        //public DbSet<UserSignUpModel> UserSignUpModels { get; set; }
 
-        public DbSet<UserLoginModel> userLoginModels { get; set; }
-        
+        //public DbSet<UserLoginModel> userLoginModels { get; set; }
+
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

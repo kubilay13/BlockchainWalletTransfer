@@ -5,7 +5,7 @@ namespace Entities.Models.WalletModel
     public class WalletModel
     {
         public int Id { get; set; }
-        public int UserId { get; set; }
+        //public int UserId { get; set; }
 
 
         [Required]
