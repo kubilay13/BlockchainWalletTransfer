@@ -60,7 +60,6 @@ namespace WalletsApi.Services
                     PrivateKeyTron = privateKey,
                     WalletAddressTron = address,
                     PrivateKeyEth = ethprivateKey,
-                    PublicKeyEth = null,
                     WalletAddressETH = ethaddress,
                     TrxAmount = 0,
                     UsdcAmount = 0,
