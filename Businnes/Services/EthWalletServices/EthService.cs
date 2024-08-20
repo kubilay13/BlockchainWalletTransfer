@@ -1,18 +1,16 @@
 ﻿using DataAccessLayer.AppDbContext;
 using Entities.Dto;
-using Entities.Models.EthModels;
+using Entities.Models.AdminModel;
 using Entities.Models.TronModels;
 using Entities.Models.UserModel;
 using Entities.Models.WalletModel;
 using Microsoft.EntityFrameworkCore;
-using Nethereum.Contracts;
 using Nethereum.Contracts.Standards.ERC20.ContractDefinition;
 using Nethereum.Hex.HexConvertors.Extensions;
 using Nethereum.Hex.HexTypes;
 using Nethereum.JsonRpc.Client;
 using Nethereum.RPC.Eth.DTOs;
 using Nethereum.Signer;
-using Nethereum.Util;
 using Nethereum.Web3;
 
 
@@ -23,7 +21,6 @@ namespace ETHWalletApi.Services
     //    public string To { get; set; }
     //    public BigDecimal Amount { get; set; }
     //}
-
     public class EthService : IEthService
     {
         private readonly Web3 _web3;
@@ -35,7 +32,7 @@ namespace ETHWalletApi.Services
             _web3 = new Web3("https://sepolia.infura.io/v3/3fcb68529b9e4288a4eb599f266bbb50");
             _httpClient = httpClient;
         }
-        public async Task<WalletModel> CreateETHWalletAsync(UserSignUpModel userSignUpModel)
+        public async Task<WalletModel> CreateAccountETHWalletAsync(UserSignUpModel userSignUpModel)
         {
             var EthKey = EthECKey.GenerateKey();
             var privateKey = EthKey.GetPrivateKeyAsBytes().ToHex();
@@ -195,7 +192,34 @@ namespace ETHWalletApi.Services
             }
             return wallet.PrivateKeyEth;
         }
-
-
+        public async Task<string> AdminLogin(AdminLoginModel adminLoginModel)
+        {
+            var admin = await _applicationDbContext.AdminLoginModels.SingleOrDefaultAsync(a => a.Username == adminLoginModel.Username);
+            if (admin == null)
+            {
+                return ("Kullanıcı adı bulunamadı.");
+            }
+            if (admin.Password != adminLoginModel.Password)
+            {
+                return ("Yanlış şifre.");
+            }
+            return ("Giriş başarılı.");
+        }
+        public async Task<string> UserLogin(UserLoginRequestDto userLoginRequestDto)
+        {
+            var userlogin = await _applicationDbContext.userLoginModels.SingleOrDefaultAsync(a => a.UserMailAdress == userLoginRequestDto.Email);
+            if (userlogin == null)
+            {
+                return ("Kayıtlı Mail Bulunamadı.");
+            }
+            else
+            {
+                if (userlogin.Password != userLoginRequestDto.Password)
+                {
+                    return ("yanlış şifre girdiniz.");
+                }
+            }
+            return ("giriş başarılı hogeldiniz.");
+        }
     }
 }

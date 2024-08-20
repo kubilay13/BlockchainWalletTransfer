@@ -28,7 +28,7 @@ namespace ETHWalletApi.Controllers
 
             try
             {
-                var walletDetails = await _ethService.CreateETHWalletAsync(userSignUpModel);
+                var walletDetails = await _ethService.CreateAccountETHWalletAsync(userSignUpModel);
                 return Ok(walletDetails);
             }
             catch (Exception ex)

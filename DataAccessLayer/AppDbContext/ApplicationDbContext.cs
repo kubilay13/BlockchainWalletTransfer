@@ -1,6 +1,7 @@
 ﻿using Entities.Models.AdminModel;
 using Entities.Models.NetworkModel;
 using Entities.Models.TronModels;
+using Entities.Models.UserModel;
 using Entities.Models.WalletModel;
 using Microsoft.EntityFrameworkCore;
 namespace DataAccessLayer.AppDbContext
@@ -16,9 +17,9 @@ namespace DataAccessLayer.AppDbContext
         public DbSet<WalletDetailModel> WalletDetailModels { get; set; }
         public DbSet<AdminLoginModel> AdminLoginModels { get; set; }
 
-        //public DbSet<UserSignUpModel> UserSignUpModels { get; set; }
+        public DbSet<UserSignUpModel> UserSignUpModels { get; set; }
 
-        //public DbSet<UserLoginModel> userLoginModels { get; set; }
+        public DbSet<UserLoginModel> userLoginModels { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

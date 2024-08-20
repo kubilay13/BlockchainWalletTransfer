@@ -1,9 +1,11 @@
 ﻿using DataAccessLayer.AppDbContext;
+using Entities.Dto;
 using Entities.Models.AdminModel;
 using Entities.Models.TronModels;
 using Entities.Models.UserModel;
 using Entities.Models.WalletModel;
 using ETHWalletApi.Services;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Nethereum.Signer;
 using Newtonsoft.Json.Linq;
@@ -95,9 +97,13 @@ namespace WalletsApi.Services
             }
             else if (request.Network == "ETH")
             {
-                if( request.CoinName == "ETH" || request.CoinName == "USDT")
+                if( request.CoinName == "ETH")
                 {
                     await _ethService.SendTransactionAsyncETH(request);
+                }
+                else if(request.CoinName == "USDT")
+                {
+                    //await _ethService.SendTransactionAsyncETHUsdt(request);
                 }
                 
             }
@@ -164,6 +170,22 @@ namespace WalletsApi.Services
                 return ("Yanlış şifre.");
             }
             return ("Giriş başarılı.");
+        }
+        public async Task<string> UserLogin( UserLoginRequestDto userLoginRequestDto)
+        {
+            var userlogin = await _applicationDbContext.userLoginModels.SingleOrDefaultAsync(a => a.UserMailAdress == userLoginRequestDto.Email);
+            if (userlogin == null)
+            {
+                return ("Kayıtlı Mail Bulunamadı.");
+            }
+            else
+            {
+                if (userlogin.Password != userLoginRequestDto.Password)
+                {
+                    return ("yanlış şifre girdiniz.");
+                }
+            }
+            return ("giriş başarılı hogeldiniz.");
         }
     }
 

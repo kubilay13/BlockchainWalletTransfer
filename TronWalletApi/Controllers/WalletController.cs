@@ -22,7 +22,7 @@ public class WalletController : ControllerBase
     {
         try
         {
-            var wallet = await _tronService.CreateWallet( userSignUpModel);
+            var wallet = await _tronService.CreateWalletTRON( userSignUpModel);
             return wallet;
         }
         catch (Exception ex)

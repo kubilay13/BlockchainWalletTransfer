@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #pragma warning disable CA1814 // Prefer jagged arrays over multidimensional
 
-namespace ETHWalletApi.Migrations
+namespace WalletsApi.Migrations
 {
     /// <inheritdoc />
     public partial class Init : Migration
@@ -140,8 +140,8 @@ namespace ETHWalletApi.Migrations
                 columns: new[] { "Id", "CreatedAt", "Email", "LastTransactionAt", "Name", "Network", "Password", "Surname", "TelNo", "TransactionLimit", "UserId", "WalletName" },
                 values: new object[,]
                 {
-                    { 1, new DateTime(2024, 8, 19, 13, 53, 40, 997, DateTimeKind.Utc).AddTicks(8170), "user@example.com", new DateTime(2024, 8, 19, 13, 53, 40, 997, DateTimeKind.Utc).AddTicks(8172), "TRXAdminAdress", "Testnet(Nile)", "Password", "SurnameAdminTRX", "stringstri", true, 0, "TRXAdminAdress" },
-                    { 2, new DateTime(2024, 8, 19, 13, 53, 40, 997, DateTimeKind.Utc).AddTicks(8176), "user@example.com", new DateTime(2024, 8, 19, 13, 53, 40, 997, DateTimeKind.Utc).AddTicks(8177), "ETHAdminAdress", "TestNet(Sepolia)", "Password", "SurnameAdminTETH", "stringstri", true, 0, "ETHAdminAdress" }
+                    { 1, new DateTime(2024, 8, 20, 7, 48, 4, 793, DateTimeKind.Utc).AddTicks(240), "user@example.com", new DateTime(2024, 8, 20, 7, 48, 4, 793, DateTimeKind.Utc).AddTicks(243), "TRXAdminAdress", "Testnet(Nile)", "Password", "SurnameAdminTRX", "stringstri", true, 0, "TRXAdminAdress" },
+                    { 2, new DateTime(2024, 8, 20, 7, 48, 4, 793, DateTimeKind.Utc).AddTicks(247), "user@example.com", new DateTime(2024, 8, 20, 7, 48, 4, 793, DateTimeKind.Utc).AddTicks(248), "ETHAdminAdress", "TestNet(Sepolia)", "Password", "SurnameAdminTETH", "stringstri", true, 0, "ETHAdminAdress" }
                 });
 
             migrationBuilder.InsertData(

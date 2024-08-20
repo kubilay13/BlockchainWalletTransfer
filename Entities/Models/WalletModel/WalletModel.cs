@@ -14,6 +14,8 @@ namespace Entities.Models.WalletModel
         [StringLength(50, MinimumLength = 2)]
         public string? Surname { get; set; }
 
+        public string? AccountName { get; set; }
+
         [Required]
         [EmailAddress]
         [StringLength(100)]

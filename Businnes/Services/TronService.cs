@@ -17,6 +17,8 @@ using DataAccessLayer.AppDbContext;
 using System.Text;
 using Entities.Models.WalletModel;
 using Entities.Models.UserModel;
+using Entities.Models.AdminModel;
+using Entities.Dto;
 
 public class TronService : ITronService
 {
@@ -46,7 +48,7 @@ public class TronService : ITronService
         _contractClientFactory = contractClientFactory;
         _configuration = configuration;
     }
-    public async Task<string> CreateWallet(UserSignUpModel userSignUpModel)
+    public async Task<string> CreateWalletTRON(UserSignUpModel userSignUpModel)
     {
         try
         {
@@ -55,16 +57,15 @@ public class TronService : ITronService
             var address = ecKey.GetPublicAddress();
             var wallet = new WalletModel
             {
-               
                 Name = userSignUpModel.Name,
                 Surname = userSignUpModel.Surname,
+                AccountName= userSignUpModel.AccountName,
                 Email = userSignUpModel.Email,
                 TelNo = userSignUpModel.TelNo,
                 Password = userSignUpModel.Password,
                 WalletName = userSignUpModel.WalletName,
                 CreatedAt = DateTime.UtcNow,
                 LastTransactionAt = DateTime.UtcNow,
-            
                 Network = "Testnet(Nile)"
             };
             _applicationDbContext.WalletModels.Add(wallet);
@@ -605,6 +606,35 @@ public class TronService : ITronService
             throw new ApplicationException($"İşlem ücretini alma sırasında bir hata oluştu: {ex.Message}", ex);
         }
     }
+    public async Task<string> AdminLogin(AdminLoginModel adminLoginModel)
+    {
+        var admin = await _applicationDbContext.AdminLoginModels.SingleOrDefaultAsync(a => a.Username == adminLoginModel.Username);
+        if (admin == null)
+        {
+            return ("Kullanıcı adı bulunamadı.");
+        }
+        if (admin.Password != adminLoginModel.Password)
+        {
+            return ("Yanlış şifre.");
+        }
+        return ("Giriş başarılı.");
+    }
+    public async Task<string>UserLogin(UserLoginRequestDto userLoginRequestDto)
+    {
+        var userlogin=await _applicationDbContext.userLoginModels.SingleOrDefaultAsync(a=>a.UserMailAdress==userLoginRequestDto.Email);
+        if(userlogin==null)
+        {
+            return ("Kayıtlı Mail Bulunamadı.");
+        }else
+        {
+            if (userlogin.Password != userLoginRequestDto.Password)
+            {
+                return ("yanlış şifre girdiniz.");
+            }
+        }
+        return ("giriş başarılı hogeldiniz.");
+    }
+
 }
 
 

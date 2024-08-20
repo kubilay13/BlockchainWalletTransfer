@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace WalletsApi.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240819132122_Init")]
+    [Migration("20240820074805_Init")]
     partial class Init
     {
         /// <inheritdoc />
@@ -247,6 +247,21 @@ namespace WalletsApi.Migrations
                             WalletAddressTron = "TEWJWLwFL3dbMjXtj2smNfto9sXdWquF4N",
                             WalletId = 1,
                             WalletScanURL = ""
+                        },
+                        new
+                        {
+                            Id = 2,
+                            ETHAmount = 0m,
+                            PrivateKeyEth = "f7753fbb6a94a3f5758acfd83e2c568899220f2ba782b831b14ea5bfc95bc422",
+                            PrivateKeyTron = "0107932b30922231adff71b4b7c0b05bc948632f56c2b62f98bd18fefeae8a9e",
+                            TrxAmount = 0m,
+                            UsdcAmount = 0m,
+                            UsdtAmount = 0m,
+                            UserId = 2,
+                            WalletAddressETH = "0x09Dd4927885EdbC5Ad820Fe489d7409A58ebe6DA",
+                            WalletAddressTron = "TEWJWLwFL3dbMjXtj2smNfto9sXdWquF4N",
+                            WalletId = 2,
+                            WalletScanURL = ""
                         });
                 });
 
@@ -310,17 +325,32 @@ namespace WalletsApi.Migrations
                         new
                         {
                             Id = 1,
-                            CreatedAt = new DateTime(2024, 8, 19, 13, 21, 21, 617, DateTimeKind.Utc).AddTicks(6980),
+                            CreatedAt = new DateTime(2024, 8, 20, 7, 48, 4, 793, DateTimeKind.Utc).AddTicks(240),
                             Email = "user@example.com",
-                            LastTransactionAt = new DateTime(2024, 8, 19, 13, 21, 21, 617, DateTimeKind.Utc).AddTicks(6981),
-                            Name = "AdminAdress",
+                            LastTransactionAt = new DateTime(2024, 8, 20, 7, 48, 4, 793, DateTimeKind.Utc).AddTicks(243),
+                            Name = "TRXAdminAdress",
                             Network = "Testnet(Nile)",
                             Password = "Password",
-                            Surname = "SurnameAdmin",
+                            Surname = "SurnameAdminTRX",
                             TelNo = "stringstri",
                             TransactionLimit = true,
                             UserId = 0,
                             WalletName = "TRXAdminAdress"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            CreatedAt = new DateTime(2024, 8, 20, 7, 48, 4, 793, DateTimeKind.Utc).AddTicks(247),
+                            Email = "user@example.com",
+                            LastTransactionAt = new DateTime(2024, 8, 20, 7, 48, 4, 793, DateTimeKind.Utc).AddTicks(248),
+                            Name = "ETHAdminAdress",
+                            Network = "TestNet(Sepolia)",
+                            Password = "Password",
+                            Surname = "SurnameAdminTETH",
+                            TelNo = "stringstri",
+                            TransactionLimit = true,
+                            UserId = 0,
+                            WalletName = "ETHAdminAdress"
                         });
                 });
 

@@ -1,8 +1,10 @@
 ﻿using DataAccessLayer.AppDbContext;
+using Entities.Dto;
 using Entities.Models.AdminModel;
 using Entities.Models.EthModels;
 using Entities.Models.TronModels;
 using Entities.Models.UserModel;
+using Entities.Models.WalletModel;
 using ETHWalletApi.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -14,14 +16,6 @@ using WalletsApi.Services;
 
 namespace WalletsApi.Controllers
 {
-    public class TransferRequestDto
-    {
-        public TransferRequest TransferRequest { get; set; }
-        public string Network { get; set; }
-        public string Coin { get; set; }
-        public EthNetworkTransactionRequest EthNetworkTransactionRequest { get; set; }
-    }
-
     [Route("api/[controller]")]
     [ApiController]
     public class WalletController : ControllerBase
@@ -120,6 +114,20 @@ namespace WalletsApi.Controllers
                 return BadRequest("Yanlış şifre.");
             }
             return Ok("Giriş başarılı.");
+        }
+        [HttpPost("UserLogin")]
+        public async Task<IActionResult> UserLogin(UserLoginRequestDto userLoginRequestDto)
+        {
+            var result = await _tronService.UserLogin(userLoginRequestDto);
+            if (result == "Kayıtlı Mail Bulunamadı.")
+            {
+                return BadRequest(result);
+            }
+            if (result == "Yanlış şifre girdiniz.")
+            {
+                return Unauthorized(result); 
+            }
+            return Ok(result); 
         }
     }
 }
