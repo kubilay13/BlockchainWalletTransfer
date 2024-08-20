@@ -18,7 +18,8 @@ using System.Text;
 using Entities.Models.WalletModel;
 using Entities.Models.UserModel;
 using Entities.Models.AdminModel;
-using Entities.Dto;
+using Entities.Dto.TronDto;
+using Entities.Dto.WalletApiDto;
 
 public class TronService : ITronService
 {

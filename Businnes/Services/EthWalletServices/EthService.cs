@@ -1,5 +1,7 @@
 ﻿using DataAccessLayer.AppDbContext;
 using Entities.Dto;
+using Entities.Dto.TronDto;
+using Entities.Dto.WalletApiDto;
 using Entities.Models.AdminModel;
 using Entities.Models.TronModels;
 using Entities.Models.UserModel;
@@ -146,7 +148,7 @@ namespace ETHWalletApi.Services
                 throw new InvalidOperationException("ETH Transfer İşleminde Beklenmeyen Bir Hata Oluştu. ", ex);
             }
         }
-        public async Task<string> SendTransactionAsyncUSDT(withdrawdto request)
+        public async Task<string> SendTransactionAsyncUSDT(EthUsdtDto request)
         {
             var bnbcontract = "0x17c3fD32E71b97Ae7EA1B5dCa135846461a8F6B6";
             var usdtcontract = "0x2DCe21ca7F38D7Fbb6Bbf86AC11ec7867A510f24";

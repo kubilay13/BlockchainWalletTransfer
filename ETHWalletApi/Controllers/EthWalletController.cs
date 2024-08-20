@@ -1,9 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using ETHWalletApi.Services;
 using Entities.Models.EthModels;
-using Entities.Models.TronModels;
 using Entities.Models.UserModel;
 using Entities.Dto;
+using Entities.Dto.TronDto;
 
 namespace ETHWalletApi.Controllers
 {
@@ -56,7 +56,7 @@ namespace ETHWalletApi.Controllers
         }
 
         [HttpPost("ETH-USDT-TRANSFER")]
-        public async Task<IActionResult> SendUSDTTransaction([FromBody] withdrawdto request)
+        public async Task<IActionResult> SendUSDTTransaction([FromBody] EthUsdtDto request)
         {
             if (request == null || string.IsNullOrEmpty(request.From) || string.IsNullOrEmpty(request.To) || request.Amount == null)
             {

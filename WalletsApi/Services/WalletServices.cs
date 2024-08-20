@@ -1,7 +1,7 @@
 ﻿using DataAccessLayer.AppDbContext;
-using Entities.Dto;
+using Entities.Dto.TronDto;
+using Entities.Dto.WalletApiDto;
 using Entities.Models.AdminModel;
-using Entities.Models.TronModels;
 using Entities.Models.UserModel;
 using Entities.Models.WalletModel;
 using ETHWalletApi.Services;

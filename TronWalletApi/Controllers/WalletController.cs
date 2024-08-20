@@ -1,6 +1,6 @@
 ﻿using DataAccessLayer.AppDbContext;
+using Entities.Dto.TronDto;
 using Entities.Enums;
-using Entities.Models.TronModels;
 using Entities.Models.UserModel;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;

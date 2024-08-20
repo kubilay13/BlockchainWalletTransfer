@@ -1,8 +1,8 @@
 ﻿using Nethereum.Contracts;
 
-namespace Entities.Models.EthModels
+namespace Entities.Dto.EthereumDto
 {
-    public class EthNetworkTransactionRequest:FunctionMessage
+    public class EthNetworkTransactionRequest : FunctionMessage
     {
         public string? FromAddress { get; set; }
         public string? ToAddress { get; set; }

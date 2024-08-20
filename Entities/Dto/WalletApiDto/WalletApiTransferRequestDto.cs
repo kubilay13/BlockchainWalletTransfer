@@ -1,7 +1,7 @@
-﻿using Entities.Models.EthModels;
-using Entities.Models.TronModels;
+﻿using Entities.Dto.EthereumDto;
+using Entities.Dto.TronDto;
 
-namespace Entities.Dto
+namespace Entities.Dto.WalletApiDto
 {
     public class WalletApiTransferRequestDto
     {
