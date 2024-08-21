@@ -9,6 +9,7 @@
         public decimal TrxAmount { get; set; }
         public decimal UsdtAmount { get; set; }
         public decimal UsdcAmount { get; set; }
+        public decimal UsddAmount { get; set; }
         public string? PrivateKeyEth { get; set; }
         public string? WalletAddressETH { get; set; }
         public decimal ETHAmount { get; set; }
