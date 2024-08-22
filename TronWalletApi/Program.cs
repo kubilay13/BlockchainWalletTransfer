@@ -7,6 +7,8 @@ using Serilog;
 using Serilog.Sinks.SystemConsole.Themes;
 using Business.Services.TronService;
 using DataAccessLayer.AppDbContext;
+using Business.Services.WalletPrivatekeyToPasswords;
+using Google.Api;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -27,6 +29,7 @@ builder.Services.AddDbContext<ApplicationDbContext>(option =>
         s => s.MigrationsAssembly(typeof(Program).GetTypeInfo().Assembly.GetName().Name));
 });
 
+builder.Services.AddTransient<IWalletPrivatekeyToPassword, WalletPrivatekeyToPassword>();
 builder.Services.AddScoped<ITronWalletService, TronWalletService>();
 
 var tronNetOptions = builder.Configuration.GetSection("TronNet").Get<TronNetOptions>();

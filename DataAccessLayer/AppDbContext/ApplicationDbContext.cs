@@ -62,8 +62,6 @@ namespace DataAccessLayer.AppDbContext
                 }
                 );
 
-
-
             modelBuilder.Entity<WalletDetailModel>().HasData(
                 new WalletDetailModel
                 {
@@ -151,7 +149,7 @@ namespace DataAccessLayer.AppDbContext
 
             modelBuilder.Entity<WalletDetailModel>()
             .Property(t => t.PrivateKeyTron)
-            .HasMaxLength(256);
+            .HasMaxLength(4000);
 
             modelBuilder.Entity<WalletDetailModel>()
                 .Property(t => t.WalletAddressTron)

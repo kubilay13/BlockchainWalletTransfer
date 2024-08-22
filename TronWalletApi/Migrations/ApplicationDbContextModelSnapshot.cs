@@ -265,11 +265,12 @@ namespace TronWalletApi.Migrations
                         .HasColumnType("decimal(18, 8)");
 
                     b.Property<string>("PrivateKeyEth")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(4000)
+                        .HasColumnType("nvarchar(4000)");
 
                     b.Property<string>("PrivateKeyTron")
-                        .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
+                        .HasMaxLength(4000)
+                        .HasColumnType("nvarchar(4000)");
 
                     b.Property<decimal>("TrxAmount")
                         .HasColumnType("decimal(18, 8)");
@@ -287,7 +288,9 @@ namespace TronWalletApi.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("WalletAddressETH")
-                        .HasColumnType("nvarchar(max)");
+                        .IsRequired()
+                        .HasMaxLength(4000)
+                        .HasColumnType("nvarchar(4000)");
 
                     b.Property<string>("WalletAddressTron")
                         .IsRequired()
@@ -405,9 +408,9 @@ namespace TronWalletApi.Migrations
                         new
                         {
                             Id = 1,
-                            CreatedAt = new DateTime(2024, 8, 22, 9, 3, 52, 182, DateTimeKind.Utc).AddTicks(9953),
+                            CreatedAt = new DateTime(2024, 8, 22, 9, 46, 19, 509, DateTimeKind.Utc).AddTicks(3096),
                             Email = "user@example.com",
-                            LastTransactionAt = new DateTime(2024, 8, 22, 9, 3, 52, 182, DateTimeKind.Utc).AddTicks(9956),
+                            LastTransactionAt = new DateTime(2024, 8, 22, 9, 46, 19, 509, DateTimeKind.Utc).AddTicks(3098),
                             Name = "TRXAdminAdress",
                             Network = "Testnet(Nile)",
                             Password = "Password",
@@ -420,9 +423,9 @@ namespace TronWalletApi.Migrations
                         new
                         {
                             Id = 2,
-                            CreatedAt = new DateTime(2024, 8, 22, 9, 3, 52, 182, DateTimeKind.Utc).AddTicks(9959),
+                            CreatedAt = new DateTime(2024, 8, 22, 9, 46, 19, 509, DateTimeKind.Utc).AddTicks(3102),
                             Email = "user@example.com",
-                            LastTransactionAt = new DateTime(2024, 8, 22, 9, 3, 52, 182, DateTimeKind.Utc).AddTicks(9959),
+                            LastTransactionAt = new DateTime(2024, 8, 22, 9, 46, 19, 509, DateTimeKind.Utc).AddTicks(3102),
                             Name = "ETHAdminAdress",
                             Network = "TestNet(Sepolia)",
                             Password = "Password",

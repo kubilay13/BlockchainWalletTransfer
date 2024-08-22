@@ -21,6 +21,7 @@ using Entities.Models.AdminModel;
 using Entities.Dto.TronDto;
 using Entities.Dto.WalletApiDto;
 using System.Security.Cryptography;
+using Business.Services.WalletPrivatekeyToPasswords;
 
 public class TronService : ITronService
 {
@@ -33,7 +34,8 @@ public class TronService : ITronService
     private readonly HttpClient _httpClient;
     private readonly ILogger<TronService> _logger;
     private readonly IContractClientFactory _contractClientFactory;
-    public TronService(HttpClient client, ITronClient tronClient, ApplicationDbContext applicationDbContext, IWalletClient walletClient, ITransactionClient transactionClient, HttpClient httpClient, ILogger<TronService> logger, IContractClientFactory contractClientFactory, IConfiguration configuration)
+    private readonly IWalletPrivatekeyToPassword _walletPrivatekeyToPassword;
+    public TronService(HttpClient client, ITronClient tronClient, ApplicationDbContext applicationDbContext, IWalletClient walletClient, ITransactionClient transactionClient, HttpClient httpClient, ILogger<TronService> logger, IContractClientFactory contractClientFactory, IConfiguration configuration,IWalletPrivatekeyToPassword walletPrivatekeyToPassword)
     {
         _client = client;
         _client.BaseAddress = new Uri("https://nile.trongrid.io");
@@ -49,6 +51,7 @@ public class TronService : ITronService
         _logger = logger;
         _contractClientFactory = contractClientFactory;
         _configuration = configuration;
+        _walletPrivatekeyToPassword=walletPrivatekeyToPassword;
     }
     public async Task<string> CreateWalletTRON(UserSignUpModel userSignUpModel)
     {
@@ -57,7 +60,6 @@ public class TronService : ITronService
             var ecKey = TronECKey.GenerateKey(TronNetwork.MainNet);
             var privateKey = ecKey.GetPrivateKey();
             var address = ecKey.GetPublicAddress();
-
             var wallet = new WalletModel
             {
                 Name = userSignUpModel.Name,
@@ -73,7 +75,7 @@ public class TronService : ITronService
             };
             _applicationDbContext.WalletModels.Add(wallet);
             await _applicationDbContext.SaveChangesAsync();
-            byte[] encryptedPrivateKey = EncryptPrivateKey(privateKey);
+            byte[] encryptedPrivateKey = _walletPrivatekeyToPassword.EncryptPrivateKey(Convert.ToString(privateKey));
             string base64PrivateKey = Convert.ToBase64String(encryptedPrivateKey);
 
             var currency = new WalletDetailModel
@@ -81,8 +83,8 @@ public class TronService : ITronService
                 UserId = wallet.Id,
                 PrivateKeyTron = base64PrivateKey,
                 WalletAddressTron = address,
-                PrivateKeyEth = null,
-                WalletAddressETH = null,
+                PrivateKeyEth = "null",
+                WalletAddressETH = "null",
                 TrxAmount = 0,
                 UsdcAmount = 0,
                 UsdtAmount = 0,
@@ -110,18 +112,7 @@ public class TronService : ITronService
             throw new ApplicationException("Tron cüzdanı oluşturma işlemi başarısız oldu.", ex);
         }
     }
-
-    public byte[] EncryptPrivateKey(string privateKey)
-    {
-        byte[] privateKeyBytes = Encoding.UTF8.GetBytes(privateKey);
-        return ProtectedData.Protect(privateKeyBytes, null, DataProtectionScope.CurrentUser);
-    }
-
-    public string DecryptPrivateKey(byte[] encryptedPrivateKey)
-    {
-        byte[] decryptedBytes = ProtectedData.Unprotect(encryptedPrivateKey, null, DataProtectionScope.CurrentUser);
-        return Encoding.UTF8.GetString(decryptedBytes);
-    }
+   
     public async Task SendTronAsync(string senderAddress, string receiverAddress, long amount)
     {
         try
@@ -180,72 +171,7 @@ public class TronService : ITronService
             throw new ApplicationException("API ile iletişim sırasında bir hata oluştu.", ex);
         }
     }
-    public async Task<decimal> GetBalanceAsyncUsdt(string UsdtBalance, string privatekey)
-    {
-        try
-        {
-            var account = _walletClient.GetAccount(privatekey);
-            var protocol = _contractClientFactory.CreateClient(ContractProtocol.TRC20);
-            var usdtbalance = await protocol.BalanceOfAsync(_configuration.GetValue<string>("TRONNetworkContract:Usdt"), account);
-            if (usdtbalance != null)
-            {
-                return usdtbalance;
-            }
-            else
-            {
-                throw new ApplicationException("API'den beklenen 'balance' özelliği bulunamadı veya geçerli bir değer değil.");
-            }
-        }
-        catch (HttpRequestException ex)
-        {
-            throw new ApplicationException("API ile iletişim sırasında bir hata oluştu.", ex);
-        }
-    }
-    public async Task<decimal> GetBalanceAsyncUsdc(string UsdcBalance, string privatekey)
-    {
-        var acount = _walletClient.GetAccount(privatekey);
-        var protocol = _contractClientFactory.CreateClient(ContractProtocol.TRC20);
-        var usdcbalance = await protocol.BalanceOfAsync(_configuration.GetValue<string>("TRONNetworkContract:Usdc"), acount);
-        if (usdcbalance != null)
-        {
-            return usdcbalance;
-        }
-        else
-        {
-            throw new ApplicationException("API ile iletişim sırasında bir hata oluştu.");
-        }
-    }
-    public async Task<decimal> GetBalanceAsyncUsdd(string UsdcBalance, string privatekey)
-    {
-        var acount = _walletClient.GetAccount(privatekey);
-        var protocol = _contractClientFactory.CreateClient(ContractProtocol.TRC20);
-        var usddbalance = await protocol.BalanceOfAsync(_configuration.GetValue<string>("TRONNetworkContract:Usdd"), acount);
-        if (usddbalance != null)
-        {
-            return usddbalance;
-        }
-        else
-        {
-            throw new ApplicationException("API ile iletişim sırasında bir hata oluştu.");
-        }
-    }
-    public async Task<decimal> GetBalanceAsyncTrx(string address)
-    {
-        string url = $"https://api.trongrid.io/v1/accounts/{address}";
-        var response = await _client.GetStringAsync(url);
-        var json = JObject.Parse(response);
-        decimal balance = json["data"][0]["balance"].Value<decimal>() / 1000000m;
-        return balance;
-    }
-    public async Task<decimal> GetTronUsdApiPriceAsync()
-    {
-        string url = "https://api.coingecko.com/api/v3/simple/price?ids=tron&vs_currencies=usd";
-        var response = await _client.GetStringAsync(url);
-        var json = JObject.Parse(response);
-        decimal tronPriceInUsd = json["tron"]["usd"].Value<decimal>();
-        return tronPriceInUsd;
-    }
-    public async Task TransferTRXorToken(TransferRequest request,string transactiontype)
+    public async Task TransferTRXorToken(TransferRequest request, string transactiontype)
     {
         switch (request!.CoinName!.ToUpper())
         {
@@ -436,6 +362,71 @@ public class TronService : ITronService
         {
             throw new ApplicationException("Coin İsimlerini Düzgün Griniz.");
         }
+    }
+    public async Task<decimal> GetBalanceAsyncUsdt(string UsdtBalance, string privatekey)
+    {
+        try
+        {
+            var account = _walletClient.GetAccount(privatekey);
+            var protocol = _contractClientFactory.CreateClient(ContractProtocol.TRC20);
+            var usdtbalance = await protocol.BalanceOfAsync(_configuration.GetValue<string>("TRONNetworkContract:Usdt"), account);
+            if (usdtbalance != null)
+            {
+                return usdtbalance;
+            }
+            else
+            {
+                throw new ApplicationException("API'den beklenen 'balance' özelliği bulunamadı veya geçerli bir değer değil.");
+            }
+        }
+        catch (HttpRequestException ex)
+        {
+            throw new ApplicationException("API ile iletişim sırasında bir hata oluştu.", ex);
+        }
+    }
+    public async Task<decimal> GetBalanceAsyncUsdc(string UsdcBalance, string privatekey)
+    {
+        var acount = _walletClient.GetAccount(privatekey);
+        var protocol = _contractClientFactory.CreateClient(ContractProtocol.TRC20);
+        var usdcbalance = await protocol.BalanceOfAsync(_configuration.GetValue<string>("TRONNetworkContract:Usdc"), acount);
+        if (usdcbalance != null)
+        {
+            return usdcbalance;
+        }
+        else
+        {
+            throw new ApplicationException("API ile iletişim sırasında bir hata oluştu.");
+        }
+    }
+    public async Task<decimal> GetBalanceAsyncUsdd(string UsdcBalance, string privatekey)
+    {
+        var acount = _walletClient.GetAccount(privatekey);
+        var protocol = _contractClientFactory.CreateClient(ContractProtocol.TRC20);
+        var usddbalance = await protocol.BalanceOfAsync(_configuration.GetValue<string>("TRONNetworkContract:Usdd"), acount);
+        if (usddbalance != null)
+        {
+            return usddbalance;
+        }
+        else
+        {
+            throw new ApplicationException("API ile iletişim sırasında bir hata oluştu.");
+        }
+    }
+    public async Task<decimal> GetBalanceAsyncTrx(string address)
+    {
+        string url = $"https://api.trongrid.io/v1/accounts/{address}";
+        var response = await _client.GetStringAsync(url);
+        var json = JObject.Parse(response);
+        decimal balance = json["data"][0]["balance"].Value<decimal>() / 1000000m;
+        return balance;
+    }
+    public async Task<decimal> GetTronUsdApiPriceAsync()
+    {
+        string url = "https://api.coingecko.com/api/v3/simple/price?ids=tron&vs_currencies=usd";
+        var response = await _client.GetStringAsync(url);
+        var json = JObject.Parse(response);
+        decimal tronPriceInUsd = json["tron"]["usd"].Value<decimal>();
+        return tronPriceInUsd;
     }
     private async Task WalletSaveHistoryUsdc(TransferRequest request)   
     {
@@ -651,7 +642,6 @@ public class TronService : ITronService
         var signedTransaction = transactionClient.GetTransactionSign(transactionExtension.Transaction, senderPrivateKey);
         var result = await transactionClient.BroadcastTransactionAsync(signedTransaction);
     }
-
     //private async Task<bool> TransferLimitControl(TransferRequest request)
     //{
     //    //var Commission = await _applicationDbContext.Networks.FirstOrDefaultAsync(w => w.Name == request.CoinName);
@@ -745,7 +735,6 @@ public class TronService : ITronService
         }
         return ("Giriş başarılı.");
     }
-
     public async Task<string>UserLogin(UserLoginRequestDto userLoginRequestDto)
     {
         var userlogin=await _applicationDbContext.userLoginModels.SingleOrDefaultAsync(a=>a.UserMailAdress==userLoginRequestDto.Email);
