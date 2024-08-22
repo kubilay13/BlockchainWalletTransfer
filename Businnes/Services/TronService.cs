@@ -113,7 +113,6 @@ public class TronService : ITronService
             throw new ApplicationException("Tron cüzdanı oluşturma işlemi başarısız oldu.", ex);
         }
     }
-   
     public async Task SendTronAsync(string senderAddress, string receiverAddress, long amount)
     {
         try
@@ -531,11 +530,11 @@ public class TronService : ITronService
     private async Task WalletSaveHistoryUsdd(TransferRequest request)
     {
         var network = await _applicationDbContext.Networks.FirstOrDefaultAsync(n => n.Type == NetworkType.Network && n.Name == request.CoinName);
-        decimal commissionPercentage = network.Commission;
+        /*decimal commissionPercentage = network.Commission*/;
         var senderprivatekey = await GetPrivateKeyFromDatabase(request.SenderAddress);
         var account = _walletClient.GetAccount(senderprivatekey);
-        decimal commission = request.Amount - commissionPercentage;
-        var feeAmount = 5 * 1000000L;
+        //decimal commission = request.Amount - commissionPercentage;
+        var feeAmount = 15 * 1000000L;
         var contractClient = _contractClientFactory.CreateClient(ContractProtocol.TRC20);
         var transferResult = await contractClient.TransferAsync(network.Contract, account, request.ReceiverAddress,Convert.ToDecimal(request.Amount) , string.Empty, feeAmount);
         if (transferResult == null)
@@ -548,7 +547,7 @@ public class TronService : ITronService
                 TransactionNetwork = "TRC20",
                 TransactionAmount = request.Amount,
                 TransactionDate = DateTime.UtcNow,
-                Commission = commissionPercentage,
+                //Commission = commissionPercentage,
                 NetworkFee = 0,
                 TransactionUrl = $"https://nile.tronscan.org/#/transaction/{transferResult}",
                 TransactionStatus = false,
@@ -569,7 +568,7 @@ public class TronService : ITronService
                 TransactionNetwork = "TRC20",
                 TransactionAmount = request.Amount,
                 TransactionDate = DateTime.UtcNow,
-                Commission = commissionPercentage,
+                //Commission = commissionPercentage,
                 NetworkFee = 0,
                 TransactionUrl = $"https://nile.tronscan.org/#/transaction/{transferResult}",
                 TransactionStatus = true,
