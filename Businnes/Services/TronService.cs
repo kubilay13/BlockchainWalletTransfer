@@ -593,8 +593,15 @@ public class TronService : ITronService
         var senderPrivateKey = await GetPrivateKeyFromDatabase(request.SenderAddress);
         var AdmintransactionClient = _tronClient.GetTransaction();
         var AdminsignedTransaction = await _transactionClient.CreateTransactionAsync(request.SenderAddress, network.AdminWallet, (long)transactionCommission * 1000000);
-        var account = _walletClient.GetAccount(senderPrivateKey);
-        var AdmintransactionSigned = _transactionClient.GetTransactionSign(AdminsignedTransaction.Transaction, senderPrivateKey);
+        var senderAddress = await _applicationDbContext.WalletDetailModels.FirstOrDefaultAsync(w => w.WalletAddressTron == request.SenderAddress);
+        if (senderAddress == null)
+        {
+            throw new ApplicationException("Gönderici cüzdan adresi bulunamadı.");
+        }
+        byte[] encryptedPrivateKeyBytes = Convert.FromBase64String(senderAddress.PrivateKeyTron);
+        string decryptedPrivateKey = _walletPrivatekeyToPassword.DecryptPrivateKey(encryptedPrivateKeyBytes);
+        var account = _walletClient.GetAccount(decryptedPrivateKey);
+        var AdmintransactionSigned = _transactionClient.GetTransactionSign(AdminsignedTransaction.Transaction, decryptedPrivateKey);
         var Adminresult = await _transactionClient.BroadcastTransactionAsync(AdmintransactionSigned);
         await Task.CompletedTask;
     }
