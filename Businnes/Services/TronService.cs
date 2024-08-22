@@ -20,6 +20,7 @@ using Entities.Models.UserModel;
 using Entities.Models.AdminModel;
 using Entities.Dto.TronDto;
 using Entities.Dto.WalletApiDto;
+using System.Security.Cryptography;
 
 public class TronService : ITronService
 {
@@ -56,6 +57,7 @@ public class TronService : ITronService
             var ecKey = TronECKey.GenerateKey(TronNetwork.MainNet);
             var privateKey = ecKey.GetPrivateKey();
             var address = ecKey.GetPublicAddress();
+
             var wallet = new WalletModel
             {
                 Name = userSignUpModel.Name,
@@ -71,10 +73,13 @@ public class TronService : ITronService
             };
             _applicationDbContext.WalletModels.Add(wallet);
             await _applicationDbContext.SaveChangesAsync();
+            byte[] encryptedPrivateKey = EncryptPrivateKey(privateKey);
+            string base64PrivateKey = Convert.ToBase64String(encryptedPrivateKey);
+
             var currency = new WalletDetailModel
             {
                 UserId = wallet.Id,
-                PrivateKeyTron = privateKey,
+                PrivateKeyTron = base64PrivateKey,
                 WalletAddressTron = address,
                 PrivateKeyEth = null,
                 WalletAddressETH = null,
@@ -104,6 +109,18 @@ public class TronService : ITronService
         {
             throw new ApplicationException("Tron cüzdanı oluşturma işlemi başarısız oldu.", ex);
         }
+    }
+
+    public byte[] EncryptPrivateKey(string privateKey)
+    {
+        byte[] privateKeyBytes = Encoding.UTF8.GetBytes(privateKey);
+        return ProtectedData.Protect(privateKeyBytes, null, DataProtectionScope.CurrentUser);
+    }
+
+    public string DecryptPrivateKey(byte[] encryptedPrivateKey)
+    {
+        byte[] decryptedBytes = ProtectedData.Unprotect(encryptedPrivateKey, null, DataProtectionScope.CurrentUser);
+        return Encoding.UTF8.GetString(decryptedBytes);
     }
     public async Task SendTronAsync(string senderAddress, string receiverAddress, long amount)
     {
@@ -420,7 +437,7 @@ public class TronService : ITronService
             throw new ApplicationException("Coin İsimlerini Düzgün Griniz.");
         }
     }
-    private async Task WalletSaveHistoryUsdc(TransferRequest request)
+    private async Task WalletSaveHistoryUsdc(TransferRequest request)   
     {
         var network = await _applicationDbContext.Networks.FirstOrDefaultAsync(n => n.Type == NetworkType.Network && n.Name == request.CoinName);
         decimal commissionPercentage = network.Commission;
@@ -535,9 +552,9 @@ public class TronService : ITronService
         var senderprivatekey = await GetPrivateKeyFromDatabase(request.SenderAddress);
         var account = _walletClient.GetAccount(senderprivatekey);
         decimal commission = request.Amount - commissionPercentage;
-        var UsddfeeAmount = 27 * 1000000L;
+        var feeAmount = 5 * 1000000L;
         var contractClient = _contractClientFactory.CreateClient(ContractProtocol.TRC20);
-        var transferResult = await contractClient.TransferAsync(network.Contract, account, request.ReceiverAddress, request.Amount, string.Empty, UsddfeeAmount);
+        var transferResult = await contractClient.TransferAsync(network.Contract, account, request.ReceiverAddress,Convert.ToDecimal(request.Amount) , string.Empty, feeAmount);
         if (transferResult == null)
         {
             var historyModel = new TransferHistoryModel
@@ -634,6 +651,7 @@ public class TronService : ITronService
         var signedTransaction = transactionClient.GetTransactionSign(transactionExtension.Transaction, senderPrivateKey);
         var result = await transactionClient.BroadcastTransactionAsync(signedTransaction);
     }
+
     //private async Task<bool> TransferLimitControl(TransferRequest request)
     //{
     //    //var Commission = await _applicationDbContext.Networks.FirstOrDefaultAsync(w => w.Name == request.CoinName);
@@ -727,6 +745,7 @@ public class TronService : ITronService
         }
         return ("Giriş başarılı.");
     }
+
     public async Task<string>UserLogin(UserLoginRequestDto userLoginRequestDto)
     {
         var userlogin=await _applicationDbContext.userLoginModels.SingleOrDefaultAsync(a=>a.UserMailAdress==userLoginRequestDto.Email);

@@ -137,7 +137,7 @@ namespace TronWalletApi.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     UserId = table.Column<int>(type: "int", nullable: false),
-                    PrivateKeyTron = table.Column<string>(type: "nvarchar(128)", maxLength: 128, nullable: true),
+                    PrivateKeyTron = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     WalletAddressTron = table.Column<string>(type: "nvarchar(34)", maxLength: 34, nullable: false),
                     TrxAmount = table.Column<decimal>(type: "decimal(18,8)", nullable: false),
                     UsdtAmount = table.Column<decimal>(type: "decimal(18,8)", nullable: false),
@@ -167,7 +167,8 @@ namespace TronWalletApi.Migrations
                 {
                     { 1, "TEWJWLwFL3dbMjXtj2smNfto9sXdWquF4N", "0107932b30922231adff71b4b7c0b05bc948632f56c2b62f98bd18fefeae8a9e", 10m, null, 6, "TRX", null, "TRON", 0 },
                     { 2, "TEWJWLwFL3dbMjXtj2smNfto9sXdWquF4N", "0107932b30922231adff71b4b7c0b05bc948632f56c2b62f98bd18fefeae8a9e", 10m, "TXYZopYRdj2D9XRtbG411XZZ3kM5VkAeBf", 6, "USDT", null, "TRON", 0 },
-                    { 3, "TEWJWLwFL3dbMjXtj2smNfto9sXdWquF4N", "0107932b30922231adff71b4b7c0b05bc948632f56c2b62f98bd18fefeae8a9e", 10m, "TEMVynQpntMqkPxP6wXTW2K7e4sM3cRmWz", 6, "USDC", null, "TRON", 0 }
+                    { 3, "TEWJWLwFL3dbMjXtj2smNfto9sXdWquF4N", "0107932b30922231adff71b4b7c0b05bc948632f56c2b62f98bd18fefeae8a9e", 10m, "TEMVynQpntMqkPxP6wXTW2K7e4sM3cRmWz", 6, "USDC", null, "TRON", 0 },
+                    { 4, "TEWJWLwFL3dbMjXtj2smNfto9sXdWquF4N", "0107932b30922231adff71b4b7c0b05bc948632f56c2b62f98bd18fefeae8a9e", 10m, "TFT7sNiNDGZcqL7z7dwXUPpxrx1Ewk8iGL", 18, "USDD", null, "TRON", 0 }
                 });
 
             migrationBuilder.InsertData(
@@ -175,8 +176,8 @@ namespace TronWalletApi.Migrations
                 columns: new[] { "Id", "AccountName", "CreatedAt", "Email", "LastTransactionAt", "Name", "Network", "Password", "Surname", "TelNo", "TransactionLimit", "UserId", "WalletName" },
                 values: new object[,]
                 {
-                    { 1, null, new DateTime(2024, 8, 21, 9, 35, 31, 529, DateTimeKind.Utc).AddTicks(5706), "user@example.com", new DateTime(2024, 8, 21, 9, 35, 31, 529, DateTimeKind.Utc).AddTicks(5717), "TRXAdminAdress", "Testnet(Nile)", "Password", "SurnameAdminTRX", "stringstri", true, 0, "TRXAdminAdress" },
-                    { 2, null, new DateTime(2024, 8, 21, 9, 35, 31, 529, DateTimeKind.Utc).AddTicks(5787), "user@example.com", new DateTime(2024, 8, 21, 9, 35, 31, 529, DateTimeKind.Utc).AddTicks(5787), "ETHAdminAdress", "TestNet(Sepolia)", "Password", "SurnameAdminTETH", "stringstri", true, 0, "ETHAdminAdress" }
+                    { 1, null, new DateTime(2024, 8, 22, 9, 3, 52, 182, DateTimeKind.Utc).AddTicks(9953), "user@example.com", new DateTime(2024, 8, 22, 9, 3, 52, 182, DateTimeKind.Utc).AddTicks(9956), "TRXAdminAdress", "Testnet(Nile)", "Password", "SurnameAdminTRX", "stringstri", true, 0, "TRXAdminAdress" },
+                    { 2, null, new DateTime(2024, 8, 22, 9, 3, 52, 182, DateTimeKind.Utc).AddTicks(9959), "user@example.com", new DateTime(2024, 8, 22, 9, 3, 52, 182, DateTimeKind.Utc).AddTicks(9959), "ETHAdminAdress", "TestNet(Sepolia)", "Password", "SurnameAdminTETH", "stringstri", true, 0, "ETHAdminAdress" }
                 });
 
             migrationBuilder.InsertData(

@@ -17,17 +17,27 @@ public class WalletController : ControllerBase
         _tronService = tronService;
         _applicationDbContext = applicationDbContext;
     }
-    [HttpPost("CreateWallet-SignUp(TRX, Network)")]
-    public async Task<string> CreateWallet( UserSignUpModel userSignUpModel)
+    [HttpPost("CreateWallet-SignUp(TRX Network)")]
+    public async Task<IActionResult> CreateWallet( UserSignUpModel userSignUpModel)
     {
         try
         {
-            var wallet = await _tronService.CreateWalletTRON( userSignUpModel);
-            return wallet;
+            string walletResponse = await _tronService.CreateWalletTRON(userSignUpModel);
+            return Ok(new
+            {
+                Success = true,
+                Message = "Cüzdan başarıyla oluşturuldu.",
+                WalletInfo = walletResponse
+            });
         }
         catch (Exception ex)
         {
-            return "Cüzdan Oluşurken Beklenmedik Hata Oluştu.";
+            return StatusCode(500, new
+            {
+                Success = false,
+                Message = "Cüzdan oluşturulurken beklenmedik bir hata oluştu.",
+                Error = ex.Message
+            });
         }
     }
     [HttpGet("balance")]
