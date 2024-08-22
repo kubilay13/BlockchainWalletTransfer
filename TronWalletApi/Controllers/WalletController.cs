@@ -65,7 +65,7 @@ public class WalletController : ControllerBase
             return StatusCode(500, $"Sunucu hatası: {ex.Message}");
         }
     }
-    [HttpPost("Transfer(TRX,USDT,USDC)")]
+    [HttpPost("Transfer(TRX,USDT,USDC,USDD)")]
     public async Task<IActionResult> Transfer([FromBody] TransferRequest request)
     {
         if (request == null ||
