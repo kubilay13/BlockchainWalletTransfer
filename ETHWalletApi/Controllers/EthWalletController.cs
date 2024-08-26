@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using ETHWalletApi.Services;
-using Entities.Models.EthModels;
 using Entities.Models.UserModel;
 using Entities.Dto.TronDto;
 using Entities.Dto.EthereumDto;
@@ -56,7 +55,6 @@ namespace ETHWalletApi.Controllers
                 return StatusCode(500, $"Internal server error: {ex.Message}");
             }
         }
-
         [HttpPost("ETH-USDT-TRANSFER")]
         public async Task<IActionResult> SendUSDTTransaction([FromBody] EthUsdtDto request)
         {

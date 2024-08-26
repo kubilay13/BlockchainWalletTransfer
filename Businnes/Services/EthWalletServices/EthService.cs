@@ -108,8 +108,11 @@ namespace ETHWalletApi.Services
         }
         public async Task<string> SendTransactionAsyncETH(TransferRequest request)
         {
+            var senderAddress = await _applicationDbContext.WalletDetailModels.FirstOrDefaultAsync(w => w.WalletAddressETH == request.SenderAddress);
+            byte[] encryptedPrivateKeyBytes = Convert.FromBase64String(senderAddress.PrivateKeyEth);
+            string decryptedPrivateKey = _walletPrivatekeyToPassword.DecryptPrivateKey(encryptedPrivateKeyBytes);
             var privateKey = await GetPrivateKeyByAddressAsync(request.SenderAddress);
-            var account = new Nethereum.Web3.Accounts.Account(privateKey);
+            var account = new Nethereum.Web3.Accounts.Account(decryptedPrivateKey);
             var web3 = new Web3(account, _web3.Client);
             var amountInWei = Web3.Convert.ToWei(request.Amount);
             var currentNonce = await web3.Eth.Transactions.GetTransactionCount.SendRequestAsync(account.Address);
@@ -160,7 +163,7 @@ namespace ETHWalletApi.Services
         }
         public async Task<string> SendTransactionAsyncUSDT(EthUsdtDto request)
         {
-            var bnbcontract = "0x17c3fD32E71b97Ae7EA1B5dCa135846461a8F6B6";
+            //var bnbcontract = "0x17c3fD32E71b97Ae7EA1B5dCa135846461a8F6B6";
             var usdtcontract = "0x2DCe21ca7F38D7Fbb6Bbf86AC11ec7867A510f24";
             var privateKey = await GetPrivateKeyByAddressAsync(request.From);
             var account = new Nethereum.Web3.Accounts.Account(privateKey, Chain.Sepolia);
