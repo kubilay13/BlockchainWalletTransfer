@@ -1,4 +1,5 @@
-﻿using DataAccessLayer.AppDbContext;
+﻿using Business.Services.WalletPrivatekeyToPasswords;
+using DataAccessLayer.AppDbContext;
 using Entities.Dto.EthereumDto;
 using Entities.Dto.TronDto;
 using Entities.Dto.WalletApiDto;
@@ -28,11 +29,13 @@ namespace ETHWalletApi.Services
         private readonly Web3 _web3;
         private readonly ApplicationDbContext _applicationDbContext;
         private readonly HttpClient _httpClient;
-        public EthService(ApplicationDbContext applicationDbContext, HttpClient httpClient)
+        private readonly IWalletPrivatekeyToPassword _walletPrivatekeyToPassword;
+        public EthService(ApplicationDbContext applicationDbContext, HttpClient httpClient,IWalletPrivatekeyToPassword walletPrivatekeyToPassword)
         {
             _applicationDbContext = applicationDbContext;
             _web3 = new Web3("https://sepolia.infura.io/v3/3fcb68529b9e4288a4eb599f266bbb50");
             _httpClient = httpClient;
+            _walletPrivatekeyToPassword = walletPrivatekeyToPassword;
         }
         public async Task<WalletModel> CreateAccountETHWalletAsync(UserSignUpModel userSignUpModel)
         {
@@ -46,6 +49,8 @@ namespace ETHWalletApi.Services
             }
             else
             {
+                byte[] encryptedPrivateKey = _walletPrivatekeyToPassword.EncryptPrivateKey(Convert.ToString(privateKey));
+                string base64PrivateKey = Convert.ToBase64String(encryptedPrivateKey);
                 var walletDetails = new WalletModel
                 {
                     Name = userSignUpModel.Name,
@@ -54,8 +59,10 @@ namespace ETHWalletApi.Services
                 };
                 var wallet = new WalletModel
                 {
+                    UserId = userSignUpModel.Id,
                     Name = userSignUpModel.Name,
                     Surname = userSignUpModel.Surname,
+                    AccountName = userSignUpModel.AccountName,
                     Email = userSignUpModel.Email,
                     TelNo = userSignUpModel.TelNo,
                     Password = userSignUpModel.Password,
@@ -68,14 +75,17 @@ namespace ETHWalletApi.Services
                 await _applicationDbContext.SaveChangesAsync();
                 var currency = new WalletDetailModel
                 {
-                    PrivateKeyTron = privateKey,
-                    WalletAddressTron = address,
-                    PrivateKeyEth = null,
-                    WalletAddressETH = null,
+                    UserId = wallet.Id,
+                    PrivateKeyTron = "null",
+                    WalletAddressTron = "null",
+                    PrivateKeyEth = base64PrivateKey,
+                    WalletAddressETH = address,
                     TrxAmount = 0,
                     UsdcAmount = 0,
                     UsdtAmount = 0,
-                    WalletScanURL = $"https://nile.tronscan.org/#/address/{address}",
+                    UsddAmount = 0,
+                    WalletScanURL = $"https://sepolia.etherscan.io/address/{address}",
+                    WalletId = wallet.Id,
                 };
                 _applicationDbContext.WalletDetailModels.Add(currency);
                 await _applicationDbContext.SaveChangesAsync();

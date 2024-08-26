@@ -21,19 +21,21 @@ namespace ETHWalletApi.Controllers
         [HttpPost("CreateETHWallet")]
         public async Task<IActionResult> CreateWalletAsync([FromBody] UserSignUpModel userSignUpModel)
         {
-            if (string.IsNullOrEmpty(userSignUpModel.WalletName))
+            if (userSignUpModel.Name==null || userSignUpModel.Surname==null || userSignUpModel.AccountName==null || userSignUpModel.Email==null || userSignUpModel.TelNo==null || userSignUpModel.Password==null || userSignUpModel.WalletName==null)
             {
-                return BadRequest("Cüzdan Adı Giriniz..");
+                return BadRequest("Boş Alan Bırakmayınız.");
             }
-
-            try
+            else
             {
-                var walletDetails = await _ethService.CreateAccountETHWalletAsync(userSignUpModel);
-                return Ok(walletDetails);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, $"Internal server error: {ex.Message}");
+                try
+                {
+                    var walletDetails = await _ethService.CreateAccountETHWalletAsync(userSignUpModel);
+                    return Ok($"Cüzdan Başarılı Şekilde Oluşturuldu. Cüzdan Adı: {userSignUpModel.WalletName}");
+                }
+                catch (Exception ex)
+                {
+                    return StatusCode(500, $"Internal server error: {ex.Message}");
+                }
             }
         }
 

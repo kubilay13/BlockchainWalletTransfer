@@ -1,15 +1,13 @@
+using Business.Services.WalletPrivatekeyToPasswords;
 using DataAccessLayer.AppDbContext;
 using ETHWalletApi.Services;
 using Google.Api;
 using Microsoft.EntityFrameworkCore;
 using System.Reflection;
-
 var builder = WebApplication.CreateBuilder(args);
-
 var nodeUrl = "https://sepolia.infura.io/v3/3fcb68529b9e4288a4eb599f266bbb50"; 
-
-
 builder.Services.AddScoped<IEthService, EthService>();
+builder.Services.AddScoped<IWalletPrivatekeyToPassword,WalletPrivatekeyToPassword>();
 builder.Services.AddControllers();
 builder.Services.AddHttpClient();
 builder.Services.AddEndpointsApiExplorer();

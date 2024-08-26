@@ -9,10 +9,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
-namespace TronWalletApi.Migrations
+namespace ETHWalletApi.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240826112233_Init")]
+    [Migration("20240826122219_Init")]
     partial class Init
     {
         /// <inheritdoc />
@@ -408,9 +408,9 @@ namespace TronWalletApi.Migrations
                         new
                         {
                             Id = 1,
-                            CreatedAt = new DateTime(2024, 8, 26, 11, 22, 32, 914, DateTimeKind.Utc).AddTicks(5536),
+                            CreatedAt = new DateTime(2024, 8, 26, 12, 22, 18, 628, DateTimeKind.Utc).AddTicks(5927),
                             Email = "user@example.com",
-                            LastTransactionAt = new DateTime(2024, 8, 26, 11, 22, 32, 914, DateTimeKind.Utc).AddTicks(5539),
+                            LastTransactionAt = new DateTime(2024, 8, 26, 12, 22, 18, 628, DateTimeKind.Utc).AddTicks(5930),
                             Name = "TRXAdminAdress",
                             Network = "Testnet(Nile)",
                             Password = "Password",
@@ -423,9 +423,9 @@ namespace TronWalletApi.Migrations
                         new
                         {
                             Id = 2,
-                            CreatedAt = new DateTime(2024, 8, 26, 11, 22, 32, 914, DateTimeKind.Utc).AddTicks(5544),
+                            CreatedAt = new DateTime(2024, 8, 26, 12, 22, 18, 628, DateTimeKind.Utc).AddTicks(5935),
                             Email = "user@example.com",
-                            LastTransactionAt = new DateTime(2024, 8, 26, 11, 22, 32, 914, DateTimeKind.Utc).AddTicks(5544),
+                            LastTransactionAt = new DateTime(2024, 8, 26, 12, 22, 18, 628, DateTimeKind.Utc).AddTicks(5936),
                             Name = "ETHAdminAdress",
                             Network = "TestNet(Sepolia)",
                             Password = "Password",
