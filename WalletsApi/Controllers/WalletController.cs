@@ -54,7 +54,7 @@ namespace WalletsApi.Controllers
             {
                 if (WalletAdress.StartsWith("T"))
                 {
-                    var balance = await _tronService.GetBalanceAsync(WalletAdress);
+                    var balance = await _tronService.GetBalanceAsyncTron(WalletAdress);
                     return balance;
                 };
             }

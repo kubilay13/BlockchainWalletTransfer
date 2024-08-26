@@ -40,31 +40,6 @@ public class WalletController : ControllerBase
             });
         }
     }
-    [HttpGet("balance")]
-    public async Task<IActionResult> GetBalance([FromQuery] string address)
-    {
-        if (string.IsNullOrEmpty(address))
-        {
-            return BadRequest("Adres gerekli.");
-        }
-        try
-        {
-            var balance = await _tronService.GetBalanceAsync(address);
-            var trxUsdPrice = await _tronService.GetTronUsdApiPriceAsync();
-            var balanceInUsd = balance * trxUsdPrice;
-
-            return Ok(new
-            {
-                address,
-                balance = $"{balance} TRX",
-                balanceInUsd = $"{balanceInUsd} USD"
-            });
-        }
-        catch (Exception ex)
-        {
-            return StatusCode(500, $"Sunucu hatası: {ex.Message}");
-        }
-    }
     [HttpPost("Transfer(TRX,USDT,USDC,USDD)")]
     public async Task<IActionResult> Transfer([FromBody] TransferRequest request)
     {
@@ -100,7 +75,52 @@ public class WalletController : ControllerBase
             return StatusCode(500, $"Sunucu hatası: {ex.Message}");
         }
     }
+    [HttpGet("WalletAllBalance")]
+    public async Task<IActionResult> GetAllAssets(string address)
+    {
+        if (string.IsNullOrEmpty(address))
+        {
+            return BadRequest("Cüzdan adresi boş olamaz.");
+        }
+        try
+        {
+            var assetsList = await _tronService.GetAllWalletBalanceAsyncTron(address);
+            return Ok(assetsList);
+        }
+        catch (ApplicationException ex)
+        {
+            return BadRequest(new { message = ex.Message });
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, new { message = "Bir hata oluştu. Lütfen daha sonra tekrar deneyiniz.", error = ex.Message });
+        }
+    }
+    [HttpGet("TronBalance")]
+    public async Task<IActionResult> GetBalance([FromQuery] string address)
+    {
+        if (string.IsNullOrEmpty(address))
+        {
+            return BadRequest("Adres gerekli.");
+        }
+        try
+        {
+            var balance = await _tronService.GetBalanceAsyncTron(address);
+            var trxUsdPrice = await _tronService.GetTronUsdApiPriceAsync();
+            var balanceInUsd = balance * trxUsdPrice;
 
+            return Ok(new
+            {
+                address,
+                balance = $"{balance} TRX",
+                balanceInUsd = $"{balanceInUsd} USD"
+            });
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, $"Sunucu hatası: {ex.Message}");
+        }
+    }
 
     //[HttpPost("TokenTransfer")]
     //public async Task<IActionResult> TokenTransfer([FromBody] TransferRequest request)

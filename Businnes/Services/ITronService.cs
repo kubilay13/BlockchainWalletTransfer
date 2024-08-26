@@ -7,11 +7,12 @@ using Entities.Models.WalletModel;
 public interface ITronService
 {
     Task<string> CreateWalletTRON(UserSignUpModel userSignUpModel);
-    Task<decimal> GetBalanceAsync(string address);
-    Task<decimal> GetBalanceAsyncUsdt(string address, string privatekey);
-    Task<decimal> GetBalanceAsyncUsdc(string UsdcBalance, string privatekey);
+    Task<decimal> GetBalanceAsyncTron(string address);
+    Task<List<AssetBalance>> GetAllWalletBalanceAsyncTron(string address);
+    Task<decimal> GetBalanceAsyncUsdtBackgroundService(string address, string privatekey);
+    Task<decimal> GetBalanceAsyncUsdcBackgroundService(string UsdcBalance, string privatekey);
+    Task<decimal> GetBalanceAsyncTrxBackgroundService(string address);
     Task<decimal> GetTronUsdApiPriceAsync();
-    Task<decimal> GetBalanceAsyncTrx(string address);
     Task SendTronAsync(string senderAddress, string receiverAddress, long amount);
     Task TransferTRXorToken(TransferRequest request,string transactionType);
     Task<TransactionInfoModel> GetTransactionFeeAsync(string transactionHash);
@@ -19,4 +20,5 @@ public interface ITronService
     Task TrxTransfer(TransferRequest request);
     Task<string> AdminLogin(AdminLoginModel adminLoginModel);
     Task<string> UserLogin(UserLoginRequestDto userLoginRequestDto);
+    
 }

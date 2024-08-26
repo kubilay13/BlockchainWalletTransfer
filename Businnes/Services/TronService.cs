@@ -145,10 +145,11 @@ public class TronService : ITronService
             throw;
         }
     }
-    public async Task<decimal> GetBalanceAsync(string address)
+    public async Task<decimal> GetBalanceAsyncTron(string address)
     {
         try
         {
+          
             var hexAddress = Base58Encoder.DecodeFromBase58Check(address).ToHexString();
             string apiUrl = $"/wallet/getaccount?address={hexAddress}";
             var response = await _client.GetAsync(apiUrl);
@@ -165,6 +166,75 @@ public class TronService : ITronService
             {
                 throw new ApplicationException("API'den beklenen 'balance' özelliği bulunamadı veya geçerli bir değer değil.");
             }
+        }
+        catch (HttpRequestException ex)
+        {
+            throw new ApplicationException("API ile iletişim sırasında bir hata oluştu.", ex);
+        }
+    }
+    public async Task<List<AssetBalance>> GetAllWalletBalanceAsyncTron(string address)
+    {
+        try
+        {
+            // Cüzdanın base58 adresini hex'e çevir
+            var hexAddress = Base58Encoder.DecodeFromBase58Check(address).ToHexString();
+
+            // TRON API'ye istek yap
+            string apiUrl = $"/v1/accounts/{hexAddress}";
+            var response = await _client.GetAsync(apiUrl);
+            response.EnsureSuccessStatusCode();
+
+            // Yanıtı oku
+            var responseBody = await response.Content.ReadAsStringAsync();
+            Console.WriteLine("Response Body:");
+            Console.WriteLine(responseBody);
+
+            // JSON yanıtını ayrıştır ve varlık bilgilerini al
+            var jsonObject = JObject.Parse(responseBody);
+            var assetsList = new List<AssetBalance>();
+
+            if (jsonObject["data"] != null && jsonObject["data"].HasValues)
+            {
+                var data = jsonObject["data"][0];
+
+                // TRX bakiyesini ekle
+                if (data["balance"] != null)
+                {
+                    decimal trxBalance = decimal.Parse(data["balance"].ToString()) / 1000000m;
+                    assetsList.Add(new AssetBalance { AssetName = "TRX", Balance = trxBalance });
+                }
+
+                // TRC10 tokenlerini ekle
+                if (data["assetV2"] != null)
+                {
+                    foreach (var asset in data["assetV2"])
+                    {
+                        string assetName = asset["key"].ToString();
+                        decimal assetBalance = decimal.Parse(asset["value"].ToString()) / 1000000m;
+                        assetsList.Add(new AssetBalance { AssetName = assetName, Balance = assetBalance });
+                    }
+                }
+
+                // TRC20 tokenlerini ekle
+                if (data["trc20"] != null)
+                {
+                    foreach (var trc20Token in data["trc20"])
+                    {
+                        foreach (var property in trc20Token.Children<JProperty>())
+                        {
+                            string assetName = property.Name;
+                            decimal assetBalance = decimal.Parse(property.Value.ToString()) / 1000000m;
+                            assetsList.Add(new AssetBalance { AssetName = assetName, Balance = assetBalance });
+                        }
+                    }
+                }
+            }
+            else
+            {
+                throw new ApplicationException("Cüzdana ait varlık bilgileri bulunamadı.");
+            }
+
+            return assetsList;
         }
         catch (HttpRequestException ex)
         {
@@ -354,7 +424,7 @@ public class TronService : ITronService
             throw new ApplicationException("Coin İsimlerini Düzgün Griniz.");
         }
     }
-    public async Task<decimal> GetBalanceAsyncUsdt(string UsdtBalance, string privatekey)
+    public async Task<decimal> GetBalanceAsyncUsdtBackgroundService(string UsdtBalance, string privatekey)
     {
         try
         {
@@ -375,7 +445,7 @@ public class TronService : ITronService
             throw new ApplicationException("API ile iletişim sırasında bir hata oluştu.", ex);
         }
     }
-    public async Task<decimal> GetBalanceAsyncUsdc(string UsdcBalance, string privatekey)
+    public async Task<decimal> GetBalanceAsyncUsdcBackgroundService(string UsdcBalance, string privatekey)
     {
         var acount = _walletClient.GetAccount(privatekey);
         var protocol = _contractClientFactory.CreateClient(ContractProtocol.TRC20);
@@ -389,7 +459,7 @@ public class TronService : ITronService
             throw new ApplicationException("API ile iletişim sırasında bir hata oluştu.");
         }
     }
-    public async Task<decimal> GetBalanceAsyncUsdd(string UsdcBalance, string privatekey)
+    public async Task<decimal> GetBalanceAsyncUsddBackgroundService(string UsdcBalance, string privatekey)
     {
         var acount = _walletClient.GetAccount(privatekey);
         var protocol = _contractClientFactory.CreateClient(ContractProtocol.TRC20);
@@ -403,7 +473,7 @@ public class TronService : ITronService
             throw new ApplicationException("API ile iletişim sırasında bir hata oluştu.");
         }
     }
-    public async Task<decimal> GetBalanceAsyncTrx(string address)
+    public async Task<decimal> GetBalanceAsyncTrxBackgroundService(string address)
     {
         string url = $"https://api.trongrid.io/v1/accounts/{address}";
         var response = await _client.GetStringAsync(url);
@@ -640,7 +710,6 @@ public class TronService : ITronService
         var signedTransaction = transactionClient.GetTransactionSign(transactionExtension.Transaction, senderPrivateKey);
         var result = await transactionClient.BroadcastTransactionAsync(signedTransaction);
     }
-
     //private async Task<bool> TransferLimitControl(TransferRequest request)
     //{
     //    //var Commission = await _applicationDbContext.Networks.FirstOrDefaultAsync(w => w.Name == request.CoinName);

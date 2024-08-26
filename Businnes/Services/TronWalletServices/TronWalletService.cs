@@ -71,13 +71,13 @@ namespace TronWalletApi.Services.TronWalletService
                     {
                         try
                         {
-                            var balance = await _tronService.GetBalanceAsync(wallet.WalletAddressTron!);
-                            wallet.TrxAmount = balance;
+                            var balance = await _tronService.GetBalanceAsyncTron(wallet.WalletAddressTron!);
+                            wallet.TrxAmount =Convert.ToDecimal(balance);
 
-                            var UsdtBalance = await _tronService.GetBalanceAsyncUsdt(wallet.WalletAddressTron, wallet.PrivateKeyTron);
+                            var UsdtBalance = await _tronService.GetBalanceAsyncUsdtBackgroundService(wallet.WalletAddressTron, wallet.PrivateKeyTron);
                             wallet.UsdtAmount = UsdtBalance;
 
-                            var UsdcBalance = await _tronService.GetBalanceAsyncUsdc(wallet.WalletAddressTron, wallet.PrivateKeyTron);
+                            var UsdcBalance = await _tronService.GetBalanceAsyncUsdcBackgroundService(wallet.WalletAddressTron, wallet.PrivateKeyTron);
                             wallet.UsdcAmount = UsdcBalance;
 
                             var transferHistories = await _applicationDbContext.TransferHistoryModels
