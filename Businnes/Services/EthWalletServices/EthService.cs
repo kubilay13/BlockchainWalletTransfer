@@ -19,11 +19,6 @@ using Nethereum.Web3;
 
 namespace ETHWalletApi.Services
 {
-    //public class TransferFunction : FunctionMessage
-    //{
-    //    public string To { get; set; }
-    //    public BigDecimal Amount { get; set; }
-    //}
     public class EthService : IEthService
     {
         private readonly Web3 _web3;
@@ -183,12 +178,9 @@ namespace ETHWalletApi.Services
 
             var account = new Nethereum.Web3.Accounts.Account(_privateKey, Chain.Sepolia);
             var web3 = new Web3(account, "https://sepolia.infura.io/v3/3fcb68529b9e4288a4eb599f266bbb50");
-
-            // Miktarı doğru hesapladığınızdan emin olun (USDT 6 desimal kullanıyor olabilir)
             var amountInWei = Web3.Convert.ToWei(request.Amount, 6);
             var currentNonce = await web3.Eth.Transactions.GetTransactionCount.SendRequestAsync(account.Address);
             var gasPrice = await web3.Eth.GasPrice.SendRequestAsync();
-
             try
             {
                 var transferHandler = web3.Eth.GetContractTransactionHandler<TransferFunction>();
@@ -213,7 +205,6 @@ namespace ETHWalletApi.Services
                 throw new InvalidOperationException("ETH Transfer İşleminde Beklenmeyen Bir Hata Oluştu.", ex);
             }
         }
-
         public async Task<string> GetPrivateKeyByAddressAsync(string walletAddress)
         {
             var wallet = await _applicationDbContext.WalletDetailModels.FirstOrDefaultAsync(w => w.WalletAddressETH == walletAddress);
