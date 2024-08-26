@@ -1,4 +1,4 @@
-﻿namespace Entities.Dto
+﻿namespace Entities.Dto.EthereumDto
 {
     public class EthUsdtDto
     {

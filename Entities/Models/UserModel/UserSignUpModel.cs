@@ -1,9 +1,11 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace Entities.Models.UserModel
 {
     public class UserSignUpModel
     {
+        [JsonIgnore]
         public int Id { get; set; }
         [Required]
         [StringLength(50, MinimumLength = 2)]

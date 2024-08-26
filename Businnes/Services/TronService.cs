@@ -20,7 +20,6 @@ using Entities.Models.UserModel;
 using Entities.Models.AdminModel;
 using Entities.Dto.TronDto;
 using Entities.Dto.WalletApiDto;
-using System.Security.Cryptography;
 using Business.Services.WalletPrivatekeyToPasswords;
 
 public class TronService : ITronService
@@ -149,7 +148,6 @@ public class TronService : ITronService
     {
         try
         {
-          
             var hexAddress = Base58Encoder.DecodeFromBase58Check(address).ToHexString();
             string apiUrl = $"/wallet/getaccount?address={hexAddress}";
             var response = await _client.GetAsync(apiUrl);
@@ -176,34 +174,22 @@ public class TronService : ITronService
     {
         try
         {
-            // Cüzdanın base58 adresini hex'e çevir
             var hexAddress = Base58Encoder.DecodeFromBase58Check(address).ToHexString();
-
-            // TRON API'ye istek yap
             string apiUrl = $"/v1/accounts/{hexAddress}";
             var response = await _client.GetAsync(apiUrl);
             response.EnsureSuccessStatusCode();
-
-            // Yanıtı oku
             var responseBody = await response.Content.ReadAsStringAsync();
-            Console.WriteLine("Response Body:");
-            Console.WriteLine(responseBody);
-
-            // JSON yanıtını ayrıştır ve varlık bilgilerini al
             var jsonObject = JObject.Parse(responseBody);
             var assetsList = new List<AssetBalance>();
-
             if (jsonObject["data"] != null && jsonObject["data"].HasValues)
             {
                 var data = jsonObject["data"][0];
-
-                // TRX bakiyesini ekle
                 if (data["balance"] != null)
                 {
                     decimal trxBalance = decimal.Parse(data["balance"].ToString()) / 1000000m;
                     assetsList.Add(new AssetBalance { AssetName = "TRX", Balance = trxBalance });
+        
                 }
-
                 // TRC10 tokenlerini ekle
                 if (data["assetV2"] != null)
                 {
@@ -214,7 +200,6 @@ public class TronService : ITronService
                         assetsList.Add(new AssetBalance { AssetName = assetName, Balance = assetBalance });
                     }
                 }
-
                 // TRC20 tokenlerini ekle
                 if (data["trc20"] != null)
                 {

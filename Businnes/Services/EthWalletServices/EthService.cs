@@ -1,5 +1,5 @@
 ﻿using DataAccessLayer.AppDbContext;
-using Entities.Dto;
+using Entities.Dto.EthereumDto;
 using Entities.Dto.TronDto;
 using Entities.Dto.WalletApiDto;
 using Entities.Models.AdminModel;

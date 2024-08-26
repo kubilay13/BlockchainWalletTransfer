@@ -2,8 +2,8 @@
 using ETHWalletApi.Services;
 using Entities.Models.EthModels;
 using Entities.Models.UserModel;
-using Entities.Dto;
 using Entities.Dto.TronDto;
+using Entities.Dto.EthereumDto;
 
 namespace ETHWalletApi.Controllers
 {
