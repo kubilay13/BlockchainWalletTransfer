@@ -342,21 +342,9 @@ public class TronService : ITronService
         var wallet = await _applicationDbContext.WalletDetailModels.FirstOrDefaultAsync(q => q.WalletAddressTron == request.SenderAddress);
         decimal commissionPercentage = network.Commission;
         decimal commission = request.Amount - commissionPercentage;
-        if (request.CoinName == "USDT")
+        if (request.CoinName == "USDC")
         {
-            await WalletTransferQuery(request, wallet);
-            if (wallet.TrxAmount >= commission)
-            {
-                if (wallet.UsdtAmount != 0)
-                {
-                    await WalletSaveHistoryUsdt(request);
-                }
-            }
-        }
-        else if (request.CoinName == "USDC")
-        {
-            var contractClient = _contractClientFactory.CreateClient(ContractProtocol.TRC20);
-            var account = _walletClient.GetAccount(senderprivatekey);
+            
             if (wallet.TrxAmount >= commission)
             {
                 if (wallet.UsdcAmount != 0)
@@ -372,14 +360,13 @@ public class TronService : ITronService
         }
         else if (request.CoinName == "USDT")
         {
-            var contractClient = _contractClientFactory.CreateClient(ContractProtocol.TRC20);
-            var account = _walletClient.GetAccount(senderprivatekey);
+           
             if (wallet.TrxAmount >= commission)
             {
                 if (wallet.UsdtAmount != 0)
                 {
                     await WalletTokenAdminComission(request);
-                    await WalletSaveHistoryUsdc(request);
+                    await WalletSaveHistoryUsdt(request);
                 }
                 else
                 {
@@ -389,13 +376,12 @@ public class TronService : ITronService
         }
         else if (request.CoinName == "USDD")
         {
-            var contractClient = _contractClientFactory.CreateClient(ContractProtocol.TRC20);
-            var account = _walletClient.GetAccount(senderprivatekey);
+
             if (wallet.TrxAmount >= commission)
             {
                 if (wallet.UsddAmount != 0)
                 {
-                    //await WalletTokenAdminComission(request);
+                    await WalletTokenAdminComission(request);
                     await WalletSaveHistoryUsdd(request);
                 }
                 else
@@ -476,10 +462,13 @@ public class TronService : ITronService
     }
     private async Task WalletSaveHistoryUsdc(TransferRequest request)   
     {
+        var senderAddress = await _applicationDbContext.WalletDetailModels.FirstOrDefaultAsync(w => w.WalletAddressTron == request.SenderAddress);
+        byte[] encryptedPrivateKeyBytes = Convert.FromBase64String(senderAddress.PrivateKeyTron);
+        string decryptedPrivateKey = _walletPrivatekeyToPassword.DecryptPrivateKey(encryptedPrivateKeyBytes);
         var network = await _applicationDbContext.Networks.FirstOrDefaultAsync(n => n.Type == NetworkType.Network && n.Name == request.CoinName);
         decimal commissionPercentage = network.Commission;
         var senderprivatekey = await GetPrivateKeyFromDatabase(request.SenderAddress);
-        var account = _walletClient.GetAccount(senderprivatekey);
+        var account = _walletClient.GetAccount(Convert.ToString(decryptedPrivateKey));
         decimal commission = request.Amount - commissionPercentage;
         var UsdcFeeAmount = 40 * 1000000L;
         var contractClient = _contractClientFactory.CreateClient(ContractProtocol.TRC20);
@@ -530,12 +519,15 @@ public class TronService : ITronService
     }
     private async Task WalletSaveHistoryUsdt(TransferRequest request)
     {
+        var senderAddress = await _applicationDbContext.WalletDetailModels.FirstOrDefaultAsync(w => w.WalletAddressTron == request.SenderAddress);
+        byte[] encryptedPrivateKeyBytes = Convert.FromBase64String(senderAddress.PrivateKeyTron);
+        string decryptedPrivateKey = _walletPrivatekeyToPassword.DecryptPrivateKey(encryptedPrivateKeyBytes);
         var network = await _applicationDbContext.Networks.FirstOrDefaultAsync(n => n.Type == NetworkType.Network && n.Name == request.CoinName);
         decimal commissionPercentage = network.Commission;
         var senderprivatekey = await GetPrivateKeyFromDatabase(request.SenderAddress);
-        var account = _walletClient.GetAccount(senderprivatekey);
+        var account = _walletClient.GetAccount(Convert.ToString(decryptedPrivateKey));
         decimal commission = request.Amount - commissionPercentage;
-        var UsdtfeeAmount = 5 * 1000000L;
+        var UsdtfeeAmount = 35 * 1000000L;
         var contractClient = _contractClientFactory.CreateClient(ContractProtocol.TRC20);
         var transferResult = await contractClient.TransferAsync(network.Contract, account, request.ReceiverAddress, request.Amount, string.Empty, UsdtfeeAmount);
         if (transferResult == null)
@@ -584,14 +576,17 @@ public class TronService : ITronService
     }
     private async Task WalletSaveHistoryUsdd(TransferRequest request)
     {
+        var senderAddress = await _applicationDbContext.WalletDetailModels.FirstOrDefaultAsync(w => w.WalletAddressTron == request.SenderAddress);
+        byte[] encryptedPrivateKeyBytes = Convert.FromBase64String(senderAddress.PrivateKeyTron);
+        string decryptedPrivateKey = _walletPrivatekeyToPassword.DecryptPrivateKey(encryptedPrivateKeyBytes);
         var network = await _applicationDbContext.Networks.FirstOrDefaultAsync(n => n.Type == NetworkType.Network && n.Name == request.CoinName);
-        /*decimal commissionPercentage = network.Commission*/;
+        decimal commissionPercentage = network.Commission;
         var senderprivatekey = await GetPrivateKeyFromDatabase(request.SenderAddress);
-        var account = _walletClient.GetAccount(senderprivatekey);
-        //decimal commission = request.Amount - commissionPercentage;
-        var feeAmount = 15 * 1000000L;
+        var account = _walletClient.GetAccount(Convert.ToString(decryptedPrivateKey));
+        decimal commission = request.Amount - commissionPercentage;
+        var usddfeeAmount = 35 * 1000000L;
         var contractClient = _contractClientFactory.CreateClient(ContractProtocol.TRC20);
-        var transferResult = await contractClient.TransferAsync(network.Contract, account, request.ReceiverAddress,Convert.ToDecimal(request.Amount) , string.Empty, feeAmount);
+        var transferResult = await contractClient.TransferAsync(network.Contract, account, request.ReceiverAddress,request.Amount, string.Empty, usddfeeAmount);
         if (transferResult == null)
         {
             var historyModel = new TransferHistoryModel
@@ -602,7 +597,7 @@ public class TronService : ITronService
                 TransactionNetwork = "TRC20",
                 TransactionAmount = request.Amount,
                 TransactionDate = DateTime.UtcNow,
-                //Commission = commissionPercentage,
+                Commission = commissionPercentage,
                 NetworkFee = 0,
                 TransactionUrl = $"https://nile.tronscan.org/#/transaction/{transferResult}",
                 TransactionStatus = false,
@@ -623,7 +618,7 @@ public class TronService : ITronService
                 TransactionNetwork = "TRC20",
                 TransactionAmount = request.Amount,
                 TransactionDate = DateTime.UtcNow,
-                //Commission = commissionPercentage,
+                Commission = commissionPercentage,
                 NetworkFee = 0,
                 TransactionUrl = $"https://nile.tronscan.org/#/transaction/{transferResult}",
                 TransactionStatus = true,
@@ -719,7 +714,7 @@ public class TronService : ITronService
     //    //{
     //    //    throw new ApplicationException("Gönderilecek miktar 0'dan büyük olmalıdır.");
     //    //}
-    //    //if (senderWallet.TrxAmount < request.Amount /*+_comission*/)
+    //    //if (senderWallet.TrxAmount < request.Amount /*+_comission)
     //    //{
     //    //    throw new ApplicationException($"Yetersiz bakiye.Bakiye {request.Amount + _comission} tutarından fazla olmalıdır.");
     //    //}

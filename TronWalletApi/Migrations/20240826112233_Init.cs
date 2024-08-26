@@ -142,9 +142,9 @@ namespace TronWalletApi.Migrations
                     TrxAmount = table.Column<decimal>(type: "decimal(18,8)", nullable: false),
                     UsdtAmount = table.Column<decimal>(type: "decimal(18,8)", nullable: false),
                     UsdcAmount = table.Column<decimal>(type: "decimal(18,8)", nullable: false),
-                    UsddAmount = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    PrivateKeyEth = table.Column<string>(type: "nvarchar(4000)", maxLength: 4000, nullable: true),
-                    WalletAddressETH = table.Column<string>(type: "nvarchar(4000)", maxLength: 4000, nullable: false),
+                    UsddAmount = table.Column<decimal>(type: "decimal(18,8)", nullable: false),
+                    PrivateKeyEth = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    WalletAddressETH = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     ETHAmount = table.Column<decimal>(type: "decimal(18,8)", nullable: false),
                     WalletScanURL = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: true),
                     WalletId = table.Column<int>(type: "int", nullable: false)
@@ -176,8 +176,8 @@ namespace TronWalletApi.Migrations
                 columns: new[] { "Id", "AccountName", "CreatedAt", "Email", "LastTransactionAt", "Name", "Network", "Password", "Surname", "TelNo", "TransactionLimit", "UserId", "WalletName" },
                 values: new object[,]
                 {
-                    { 1, null, new DateTime(2024, 8, 22, 9, 46, 19, 509, DateTimeKind.Utc).AddTicks(3096), "user@example.com", new DateTime(2024, 8, 22, 9, 46, 19, 509, DateTimeKind.Utc).AddTicks(3098), "TRXAdminAdress", "Testnet(Nile)", "Password", "SurnameAdminTRX", "stringstri", true, 0, "TRXAdminAdress" },
-                    { 2, null, new DateTime(2024, 8, 22, 9, 46, 19, 509, DateTimeKind.Utc).AddTicks(3102), "user@example.com", new DateTime(2024, 8, 22, 9, 46, 19, 509, DateTimeKind.Utc).AddTicks(3102), "ETHAdminAdress", "TestNet(Sepolia)", "Password", "SurnameAdminTETH", "stringstri", true, 0, "ETHAdminAdress" }
+                    { 1, null, new DateTime(2024, 8, 26, 11, 22, 32, 914, DateTimeKind.Utc).AddTicks(5536), "user@example.com", new DateTime(2024, 8, 26, 11, 22, 32, 914, DateTimeKind.Utc).AddTicks(5539), "TRXAdminAdress", "Testnet(Nile)", "Password", "SurnameAdminTRX", "stringstri", true, 0, "TRXAdminAdress" },
+                    { 2, null, new DateTime(2024, 8, 26, 11, 22, 32, 914, DateTimeKind.Utc).AddTicks(5544), "user@example.com", new DateTime(2024, 8, 26, 11, 22, 32, 914, DateTimeKind.Utc).AddTicks(5544), "ETHAdminAdress", "TestNet(Sepolia)", "Password", "SurnameAdminTETH", "stringstri", true, 0, "ETHAdminAdress" }
                 });
 
             migrationBuilder.InsertData(

@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace TronWalletApi.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240822094620_Init")]
+    [Migration("20240826112233_Init")]
     partial class Init
     {
         /// <inheritdoc />
@@ -268,8 +268,7 @@ namespace TronWalletApi.Migrations
                         .HasColumnType("decimal(18, 8)");
 
                     b.Property<string>("PrivateKeyEth")
-                        .HasMaxLength(4000)
-                        .HasColumnType("nvarchar(4000)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("PrivateKeyTron")
                         .HasMaxLength(4000)
@@ -282,7 +281,7 @@ namespace TronWalletApi.Migrations
                         .HasColumnType("decimal(18, 8)");
 
                     b.Property<decimal>("UsddAmount")
-                        .HasColumnType("decimal(18,2)");
+                        .HasColumnType("decimal(18, 8)");
 
                     b.Property<decimal>("UsdtAmount")
                         .HasColumnType("decimal(18, 8)");
@@ -291,9 +290,7 @@ namespace TronWalletApi.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("WalletAddressETH")
-                        .IsRequired()
-                        .HasMaxLength(4000)
-                        .HasColumnType("nvarchar(4000)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("WalletAddressTron")
                         .IsRequired()
@@ -411,9 +408,9 @@ namespace TronWalletApi.Migrations
                         new
                         {
                             Id = 1,
-                            CreatedAt = new DateTime(2024, 8, 22, 9, 46, 19, 509, DateTimeKind.Utc).AddTicks(3096),
+                            CreatedAt = new DateTime(2024, 8, 26, 11, 22, 32, 914, DateTimeKind.Utc).AddTicks(5536),
                             Email = "user@example.com",
-                            LastTransactionAt = new DateTime(2024, 8, 22, 9, 46, 19, 509, DateTimeKind.Utc).AddTicks(3098),
+                            LastTransactionAt = new DateTime(2024, 8, 26, 11, 22, 32, 914, DateTimeKind.Utc).AddTicks(5539),
                             Name = "TRXAdminAdress",
                             Network = "Testnet(Nile)",
                             Password = "Password",
@@ -426,9 +423,9 @@ namespace TronWalletApi.Migrations
                         new
                         {
                             Id = 2,
-                            CreatedAt = new DateTime(2024, 8, 22, 9, 46, 19, 509, DateTimeKind.Utc).AddTicks(3102),
+                            CreatedAt = new DateTime(2024, 8, 26, 11, 22, 32, 914, DateTimeKind.Utc).AddTicks(5544),
                             Email = "user@example.com",
-                            LastTransactionAt = new DateTime(2024, 8, 22, 9, 46, 19, 509, DateTimeKind.Utc).AddTicks(3102),
+                            LastTransactionAt = new DateTime(2024, 8, 26, 11, 22, 32, 914, DateTimeKind.Utc).AddTicks(5544),
                             Name = "ETHAdminAdress",
                             Network = "TestNet(Sepolia)",
                             Password = "Password",

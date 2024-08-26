@@ -1,6 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
-
 namespace Entities.Models.UserModel
 {
     public class UserSignUpModel
