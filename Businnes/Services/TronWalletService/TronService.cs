@@ -341,8 +341,8 @@ public class TronService : ITronService
             {
                 if (wallet.UsdcAmount != 0)
                 {
-                    await WalletTokenAdminComission(request);
                     await WalletSaveHistoryToken(request);
+                    await WalletTokenAdminComission(request);
                 }
                 else
                 {
@@ -356,8 +356,8 @@ public class TronService : ITronService
             {
                 if (wallet.UsdtAmount != 0)
                 {
-                    await WalletTokenAdminComission(request);
                     await WalletSaveHistoryToken(request);
+                    await WalletTokenAdminComission(request);
                 }
                 else
                 {
@@ -372,12 +372,28 @@ public class TronService : ITronService
             {
                 if (wallet.UsddAmount != 0)
                 {
-                    await WalletTokenAdminComission(request);
                     await WalletSaveHistoryToken(request);
+                    await WalletTokenAdminComission(request);
                 }
                 else
                 {
                     throw new ApplicationException("Cüzdanınızın USDD Bakiyesi 0");
+                }
+            }
+        }
+        else if (request.CoinName == "BTT")
+        {
+
+            if (wallet.TrxAmount >= commission)
+            {
+                if (wallet.BttAmount != 0)
+                {
+                    await WalletSaveHistoryToken(request);
+                    await WalletTokenAdminComission(request);
+                }
+                else
+                {
+                    throw new ApplicationException("Cüzdanınızın BTT Bakiyesi 0");
                 }
             }
         }
@@ -486,6 +502,20 @@ public class TronService : ITronService
         if (usddbalance != null)
         {
             return usddbalance;
+        }
+        else
+        {
+            throw new ApplicationException("API ile iletişim sırasında bir hata oluştu.");
+        }
+    }
+    public async Task<decimal> GetBalanceAsyncBttBackgroundService(string UsdcBalance, string privatekey)
+    {
+        var acount = _walletClient.GetAccount(privatekey);
+        var protocol = _contractClientFactory.CreateClient(ContractProtocol.TRC20);
+        var bttbalance = await protocol.BalanceOfAsync(_configuration.GetValue<string>("TRONNetworkContract:Btt"), acount);
+        if (bttbalance != null)
+        {
+            return bttbalance;
         }
         else
         {

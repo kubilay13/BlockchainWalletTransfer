@@ -127,6 +127,18 @@ namespace TronWalletApi.Migrations
                             Name = "USDD",
                             Networks = "TRON",
                             Type = 0
+                        },
+                        new
+                        {
+                            Id = 5,
+                            AdminWallet = "TEWJWLwFL3dbMjXtj2smNfto9sXdWquF4N",
+                            AdminWalletPrivateKey = "0107932b30922231adff71b4b7c0b05bc948632f56c2b62f98bd18fefeae8a9e",
+                            Commission = 10m,
+                            Contract = "TNuoKL1ni8aoshfFL1ASca1Gou9RXwAzfn",
+                            Decimal = 18,
+                            Name = "BTT",
+                            Networks = "TRON",
+                            Type = 0
                         });
                 });
 
@@ -261,6 +273,9 @@ namespace TronWalletApi.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<decimal>("BttAmount")
+                        .HasColumnType("decimal(18,2)");
+
                     b.Property<decimal>("ETHAmount")
                         .HasColumnType("decimal(18, 8)");
 
@@ -311,6 +326,7 @@ namespace TronWalletApi.Migrations
                         new
                         {
                             Id = 1,
+                            BttAmount = 0m,
                             ETHAmount = 0m,
                             PrivateKeyEth = "0107932b30922231adff71b4b7c0b05bc948632f56c2b62f98bd18fefeae8a9e",
                             PrivateKeyTron = "0107932b30922231adff71b4b7c0b05bc948632f56c2b62f98bd18fefeae8a9e",
@@ -327,6 +343,7 @@ namespace TronWalletApi.Migrations
                         new
                         {
                             Id = 2,
+                            BttAmount = 0m,
                             ETHAmount = 0m,
                             PrivateKeyEth = "f7753fbb6a94a3f5758acfd83e2c568899220f2ba782b831b14ea5bfc95bc422",
                             PrivateKeyTron = "0107932b30922231adff71b4b7c0b05bc948632f56c2b62f98bd18fefeae8a9e",
@@ -405,9 +422,9 @@ namespace TronWalletApi.Migrations
                         new
                         {
                             Id = 1,
-                            CreatedAt = new DateTime(2024, 8, 26, 14, 10, 9, 709, DateTimeKind.Utc).AddTicks(2208),
+                            CreatedAt = new DateTime(2024, 8, 27, 8, 45, 52, 216, DateTimeKind.Utc).AddTicks(2986),
                             Email = "user@example.com",
-                            LastTransactionAt = new DateTime(2024, 8, 26, 14, 10, 9, 709, DateTimeKind.Utc).AddTicks(2210),
+                            LastTransactionAt = new DateTime(2024, 8, 27, 8, 45, 52, 216, DateTimeKind.Utc).AddTicks(2988),
                             Name = "TRXAdminAdress",
                             Network = "Testnet(Nile)",
                             Password = "Password",
@@ -420,9 +437,9 @@ namespace TronWalletApi.Migrations
                         new
                         {
                             Id = 2,
-                            CreatedAt = new DateTime(2024, 8, 26, 14, 10, 9, 709, DateTimeKind.Utc).AddTicks(2212),
+                            CreatedAt = new DateTime(2024, 8, 27, 8, 45, 52, 216, DateTimeKind.Utc).AddTicks(2991),
                             Email = "user@example.com",
-                            LastTransactionAt = new DateTime(2024, 8, 26, 14, 10, 9, 709, DateTimeKind.Utc).AddTicks(2213),
+                            LastTransactionAt = new DateTime(2024, 8, 27, 8, 45, 52, 216, DateTimeKind.Utc).AddTicks(2992),
                             Name = "ETHAdminAdress",
                             Network = "TestNet(Sepolia)",
                             Password = "Password",

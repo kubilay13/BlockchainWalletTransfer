@@ -10,6 +10,7 @@
         public decimal UsdtAmount { get; set; }
         public decimal UsdcAmount { get; set; }
         public decimal UsddAmount { get; set; }
+        public decimal BttAmount { get; set; }
         public string? PrivateKeyEth { get; set; }
         public string? WalletAddressETH { get; set; }
         public decimal ETHAmount { get; set; }

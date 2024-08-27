@@ -143,8 +143,20 @@ namespace DataAccessLayer.AppDbContext
                      Commission = 10,
                      AdminWallet = "TEWJWLwFL3dbMjXtj2smNfto9sXdWquF4N",
                      AdminWalletPrivateKey = "0107932b30922231adff71b4b7c0b05bc948632f56c2b62f98bd18fefeae8a9e",
-                 }
-                );
+                 },
+                 new Network
+                 {
+                     Id= 5,
+                     Type = 0,
+                     Networks="TRON",
+                     Name ="BTT",
+                     Contract= "TNuoKL1ni8aoshfFL1ASca1Gou9RXwAzfn",
+                     Decimal = 18,
+                     Commission = 10,
+                     AdminWallet = "TEWJWLwFL3dbMjXtj2smNfto9sXdWquF4N",
+                     AdminWalletPrivateKey = "0107932b30922231adff71b4b7c0b05bc948632f56c2b62f98bd18fefeae8a9e",
+                 });
+
             //TronWalletModel--
 
             modelBuilder.Entity<WalletDetailModel>()

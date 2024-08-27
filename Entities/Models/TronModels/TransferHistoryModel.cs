@@ -13,11 +13,10 @@ namespace Entities.Models.TronModels
         public string? TransactionHash { get; set; }
         public string? CoinType { get; set; }
         public string? TransactionNetwork { get; set; }
+        public string? Network { get; set; }
         public decimal TransactionAmount { get; set; }
         public DateTime TransactionDate { get; set; }
-
         [Column(TypeName = "decimal(18,8)")]
-
         public decimal Commission { get; set; }
         [Column(TypeName = "decimal(18,8)")]
         public decimal NetworkFee { get; set; }
@@ -25,15 +24,5 @@ namespace Entities.Models.TronModels
         public bool TransactionStatus { get; set; }
         public TransactionType TransactionType { get; set; }
         public string TransactionTypeString => TransactionType.ToString();
-        public string? Network { get; set; }
-
-
-        //public TransferHistoryModel()
-        //{
-        //    TransactionDate = DateTime.UtcNow;
-        //    TransactionDateTime = DateTime.Now.ToString("HH:mm:ss");
-        //    Network = "Testnet(Nile)";
-        //}
-
     }
 }

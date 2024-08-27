@@ -59,14 +59,14 @@ namespace TronWalletApi.Migrations
                     TransactionHash = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
                     CoinType = table.Column<string>(type: "nvarchar(10)", maxLength: 10, nullable: true),
                     TransactionNetwork = table.Column<string>(type: "nvarchar(10)", maxLength: 10, nullable: true),
+                    Network = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     TransactionAmount = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     TransactionDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Commission = table.Column<decimal>(type: "decimal(18,8)", nullable: false),
                     NetworkFee = table.Column<decimal>(type: "decimal(18,8)", nullable: false),
                     TransactionUrl = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     TransactionStatus = table.Column<bool>(type: "bit", nullable: false),
-                    TransactionType = table.Column<int>(type: "int", nullable: false),
-                    Network = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    TransactionType = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -143,6 +143,7 @@ namespace TronWalletApi.Migrations
                     UsdtAmount = table.Column<decimal>(type: "decimal(18,8)", nullable: false),
                     UsdcAmount = table.Column<decimal>(type: "decimal(18,8)", nullable: false),
                     UsddAmount = table.Column<decimal>(type: "decimal(18,8)", nullable: false),
+                    BttAmount = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     PrivateKeyEth = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     WalletAddressETH = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     ETHAmount = table.Column<decimal>(type: "decimal(18,8)", nullable: false),
@@ -168,7 +169,8 @@ namespace TronWalletApi.Migrations
                     { 1, "TEWJWLwFL3dbMjXtj2smNfto9sXdWquF4N", "0107932b30922231adff71b4b7c0b05bc948632f56c2b62f98bd18fefeae8a9e", 10m, null, 6, "TRX", null, "TRON", 0 },
                     { 2, "TEWJWLwFL3dbMjXtj2smNfto9sXdWquF4N", "0107932b30922231adff71b4b7c0b05bc948632f56c2b62f98bd18fefeae8a9e", 10m, "TXYZopYRdj2D9XRtbG411XZZ3kM5VkAeBf", 6, "USDT", null, "TRON", 0 },
                     { 3, "TEWJWLwFL3dbMjXtj2smNfto9sXdWquF4N", "0107932b30922231adff71b4b7c0b05bc948632f56c2b62f98bd18fefeae8a9e", 10m, "TEMVynQpntMqkPxP6wXTW2K7e4sM3cRmWz", 6, "USDC", null, "TRON", 0 },
-                    { 4, "TEWJWLwFL3dbMjXtj2smNfto9sXdWquF4N", "0107932b30922231adff71b4b7c0b05bc948632f56c2b62f98bd18fefeae8a9e", 10m, "TFT7sNiNDGZcqL7z7dwXUPpxrx1Ewk8iGL", 18, "USDD", null, "TRON", 0 }
+                    { 4, "TEWJWLwFL3dbMjXtj2smNfto9sXdWquF4N", "0107932b30922231adff71b4b7c0b05bc948632f56c2b62f98bd18fefeae8a9e", 10m, "TFT7sNiNDGZcqL7z7dwXUPpxrx1Ewk8iGL", 18, "USDD", null, "TRON", 0 },
+                    { 5, "TEWJWLwFL3dbMjXtj2smNfto9sXdWquF4N", "0107932b30922231adff71b4b7c0b05bc948632f56c2b62f98bd18fefeae8a9e", 10m, "TNuoKL1ni8aoshfFL1ASca1Gou9RXwAzfn", 18, "BTT", null, "TRON", 0 }
                 });
 
             migrationBuilder.InsertData(
@@ -176,17 +178,17 @@ namespace TronWalletApi.Migrations
                 columns: new[] { "Id", "AccountName", "CreatedAt", "Email", "LastTransactionAt", "Name", "Network", "Password", "Surname", "TelNo", "TransactionLimit", "UserId", "WalletName" },
                 values: new object[,]
                 {
-                    { 1, null, new DateTime(2024, 8, 26, 14, 10, 9, 709, DateTimeKind.Utc).AddTicks(2208), "user@example.com", new DateTime(2024, 8, 26, 14, 10, 9, 709, DateTimeKind.Utc).AddTicks(2210), "TRXAdminAdress", "Testnet(Nile)", "Password", "SurnameAdminTRX", "stringstri", true, 0, "TRXAdminAdress" },
-                    { 2, null, new DateTime(2024, 8, 26, 14, 10, 9, 709, DateTimeKind.Utc).AddTicks(2212), "user@example.com", new DateTime(2024, 8, 26, 14, 10, 9, 709, DateTimeKind.Utc).AddTicks(2213), "ETHAdminAdress", "TestNet(Sepolia)", "Password", "SurnameAdminTETH", "stringstri", true, 0, "ETHAdminAdress" }
+                    { 1, null, new DateTime(2024, 8, 27, 8, 45, 52, 216, DateTimeKind.Utc).AddTicks(2986), "user@example.com", new DateTime(2024, 8, 27, 8, 45, 52, 216, DateTimeKind.Utc).AddTicks(2988), "TRXAdminAdress", "Testnet(Nile)", "Password", "SurnameAdminTRX", "stringstri", true, 0, "TRXAdminAdress" },
+                    { 2, null, new DateTime(2024, 8, 27, 8, 45, 52, 216, DateTimeKind.Utc).AddTicks(2991), "user@example.com", new DateTime(2024, 8, 27, 8, 45, 52, 216, DateTimeKind.Utc).AddTicks(2992), "ETHAdminAdress", "TestNet(Sepolia)", "Password", "SurnameAdminTETH", "stringstri", true, 0, "ETHAdminAdress" }
                 });
 
             migrationBuilder.InsertData(
                 table: "WalletDetailModels",
-                columns: new[] { "Id", "ETHAmount", "PrivateKeyEth", "PrivateKeyTron", "TrxAmount", "UsdcAmount", "UsddAmount", "UsdtAmount", "UserId", "WalletAddressETH", "WalletAddressTron", "WalletId", "WalletScanURL" },
+                columns: new[] { "Id", "BttAmount", "ETHAmount", "PrivateKeyEth", "PrivateKeyTron", "TrxAmount", "UsdcAmount", "UsddAmount", "UsdtAmount", "UserId", "WalletAddressETH", "WalletAddressTron", "WalletId", "WalletScanURL" },
                 values: new object[,]
                 {
-                    { 1, 0m, "0107932b30922231adff71b4b7c0b05bc948632f56c2b62f98bd18fefeae8a9e", "0107932b30922231adff71b4b7c0b05bc948632f56c2b62f98bd18fefeae8a9e", 0m, 0m, 0m, 0m, 1, "0x31c1fe443E54d007FD1c8c5E7ae7C2356b374616", "TEWJWLwFL3dbMjXtj2smNfto9sXdWquF4N", 1, "" },
-                    { 2, 0m, "f7753fbb6a94a3f5758acfd83e2c568899220f2ba782b831b14ea5bfc95bc422", "0107932b30922231adff71b4b7c0b05bc948632f56c2b62f98bd18fefeae8a9e", 0m, 0m, 0m, 0m, 2, "0x09Dd4927885EdbC5Ad820Fe489d7409A58ebe6DA", "TEWJWLwFL3dbMjXtj2smNfto9sXdWquF4N", 2, "" }
+                    { 1, 0m, 0m, "0107932b30922231adff71b4b7c0b05bc948632f56c2b62f98bd18fefeae8a9e", "0107932b30922231adff71b4b7c0b05bc948632f56c2b62f98bd18fefeae8a9e", 0m, 0m, 0m, 0m, 1, "0x31c1fe443E54d007FD1c8c5E7ae7C2356b374616", "TEWJWLwFL3dbMjXtj2smNfto9sXdWquF4N", 1, "" },
+                    { 2, 0m, 0m, "f7753fbb6a94a3f5758acfd83e2c568899220f2ba782b831b14ea5bfc95bc422", "0107932b30922231adff71b4b7c0b05bc948632f56c2b62f98bd18fefeae8a9e", 0m, 0m, 0m, 0m, 2, "0x09Dd4927885EdbC5Ad820Fe489d7409A58ebe6DA", "TEWJWLwFL3dbMjXtj2smNfto9sXdWquF4N", 2, "" }
                 });
 
             migrationBuilder.CreateIndex(
