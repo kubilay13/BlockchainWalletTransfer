@@ -193,6 +193,10 @@ namespace DataAccessLayer.AppDbContext
                .HasColumnType("decimal(18, 8)");
 
             modelBuilder.Entity<WalletDetailModel>()
+               .Property(t => t.BttAmount)
+               .HasColumnType("decimal(18, 8)");
+
+            modelBuilder.Entity<WalletDetailModel>()
              .Property(t => t.ETHAmount)
              .HasColumnType("decimal(18, 8)");
 

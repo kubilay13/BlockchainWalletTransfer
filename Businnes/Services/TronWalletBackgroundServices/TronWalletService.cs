@@ -83,7 +83,7 @@ namespace TronWalletApi.Services.TronWalletService
                             var UsddBalance = await _tronService.GetBalanceAsyncUsddBackgroundService(wallet.WalletAddressTron, wallet.PrivateKeyTron);
                             wallet.UsddAmount = UsddBalance;
 
-                            var BttBalance = await _tronService.GetBalanceAsyncUsddBackgroundService(wallet.WalletAddressTron, wallet.PrivateKeyTron);
+                            var BttBalance = await _tronService.GetBalanceAsyncBttBackgroundService(wallet.WalletAddressTron, wallet.PrivateKeyTron);
                             wallet.BttAmount = BttBalance;
 
                             var transferHistories = await _applicationDbContext.TransferHistoryModels

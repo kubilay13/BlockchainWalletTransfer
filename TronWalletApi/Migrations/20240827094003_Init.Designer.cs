@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace TronWalletApi.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240827084552_Init")]
+    [Migration("20240827094003_Init")]
     partial class Init
     {
         /// <inheritdoc />
@@ -277,7 +277,7 @@ namespace TronWalletApi.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<decimal>("BttAmount")
-                        .HasColumnType("decimal(18,2)");
+                        .HasColumnType("decimal(18, 8)");
 
                     b.Property<decimal>("ETHAmount")
                         .HasColumnType("decimal(18, 8)");
@@ -425,9 +425,9 @@ namespace TronWalletApi.Migrations
                         new
                         {
                             Id = 1,
-                            CreatedAt = new DateTime(2024, 8, 27, 8, 45, 52, 216, DateTimeKind.Utc).AddTicks(2986),
+                            CreatedAt = new DateTime(2024, 8, 27, 9, 40, 3, 28, DateTimeKind.Utc).AddTicks(8709),
                             Email = "user@example.com",
-                            LastTransactionAt = new DateTime(2024, 8, 27, 8, 45, 52, 216, DateTimeKind.Utc).AddTicks(2988),
+                            LastTransactionAt = new DateTime(2024, 8, 27, 9, 40, 3, 28, DateTimeKind.Utc).AddTicks(8712),
                             Name = "TRXAdminAdress",
                             Network = "Testnet(Nile)",
                             Password = "Password",
@@ -440,9 +440,9 @@ namespace TronWalletApi.Migrations
                         new
                         {
                             Id = 2,
-                            CreatedAt = new DateTime(2024, 8, 27, 8, 45, 52, 216, DateTimeKind.Utc).AddTicks(2991),
+                            CreatedAt = new DateTime(2024, 8, 27, 9, 40, 3, 28, DateTimeKind.Utc).AddTicks(8780),
                             Email = "user@example.com",
-                            LastTransactionAt = new DateTime(2024, 8, 27, 8, 45, 52, 216, DateTimeKind.Utc).AddTicks(2992),
+                            LastTransactionAt = new DateTime(2024, 8, 27, 9, 40, 3, 28, DateTimeKind.Utc).AddTicks(8780),
                             Name = "ETHAdminAdress",
                             Network = "TestNet(Sepolia)",
                             Password = "Password",

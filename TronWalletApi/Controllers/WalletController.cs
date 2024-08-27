@@ -28,7 +28,7 @@ public class WalletController : ControllerBase
             {
                 Success = true,
                 Message = "Cüzdan başarıyla oluşturuldu.",
-                WalletInfo = walletResponse
+                WalletInfo = userSignUpModel.WalletName
             });
         }
         catch (Exception ex)
@@ -41,7 +41,7 @@ public class WalletController : ControllerBase
             });
         }
     }
-    [HttpPost("Transfer(TRX,USDT,USDC,USDD)")]
+    [HttpPost("Transfer(TRX,USDT,USDC,USDD,BTT)")]
     public async Task<IActionResult> Transfer([FromBody] TransferRequest request)
     {
         if (request == null ||
