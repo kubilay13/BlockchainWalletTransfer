@@ -9,10 +9,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
-namespace TronWalletApi.Migrations
+namespace ETHWalletApi.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240827094003_Init")]
+    [Migration("20240828104006_Init")]
     partial class Init
     {
         /// <inheritdoc />
@@ -425,9 +425,9 @@ namespace TronWalletApi.Migrations
                         new
                         {
                             Id = 1,
-                            CreatedAt = new DateTime(2024, 8, 27, 9, 40, 3, 28, DateTimeKind.Utc).AddTicks(8709),
+                            CreatedAt = new DateTime(2024, 8, 28, 10, 40, 6, 541, DateTimeKind.Utc).AddTicks(1150),
                             Email = "user@example.com",
-                            LastTransactionAt = new DateTime(2024, 8, 27, 9, 40, 3, 28, DateTimeKind.Utc).AddTicks(8712),
+                            LastTransactionAt = new DateTime(2024, 8, 28, 10, 40, 6, 541, DateTimeKind.Utc).AddTicks(1151),
                             Name = "TRXAdminAdress",
                             Network = "Testnet(Nile)",
                             Password = "Password",
@@ -440,9 +440,9 @@ namespace TronWalletApi.Migrations
                         new
                         {
                             Id = 2,
-                            CreatedAt = new DateTime(2024, 8, 27, 9, 40, 3, 28, DateTimeKind.Utc).AddTicks(8780),
+                            CreatedAt = new DateTime(2024, 8, 28, 10, 40, 6, 541, DateTimeKind.Utc).AddTicks(1153),
                             Email = "user@example.com",
-                            LastTransactionAt = new DateTime(2024, 8, 27, 9, 40, 3, 28, DateTimeKind.Utc).AddTicks(8780),
+                            LastTransactionAt = new DateTime(2024, 8, 28, 10, 40, 6, 541, DateTimeKind.Utc).AddTicks(1154),
                             Name = "ETHAdminAdress",
                             Network = "TestNet(Sepolia)",
                             Password = "Password",

@@ -55,27 +55,27 @@ namespace ETHWalletApi.Controllers
                 return StatusCode(500, $"Internal server error: {ex.Message}");
             }
         }
-        [HttpPost("ETH-USDT-TRANSFER")]
-        public async Task<IActionResult> SendUSDTTransaction([FromBody] EthUsdtDto request)
-        {
-            if (request == null || string.IsNullOrEmpty(request.From) || string.IsNullOrEmpty(request.To) || request.Amount == null)
-            {
-                return BadRequest("Geçersiz işlem isteği.");
-            }
+        //[HttpPost("ETH-USDT-TRANSFER")]
+        //public async Task<IActionResult> SendUSDTTransaction([FromBody] EthUsdtDto request)
+        //{
+        //    if (request == null || string.IsNullOrEmpty(request.SenderAdress) || string.IsNullOrEmpty(request.ReceiverAdress) || request.Amount == null)
+        //    {
+        //        return BadRequest("Geçersiz işlem isteği.");
+        //    }
 
-            try
-            {
-                var transactionHash = await _ethService.SendTransactionAsyncUSDT(request);
-                return Ok(new { TransactionHash = transactionHash });
-            }
-            catch (InvalidOperationException ex)
-            {
-                return StatusCode(500, $"İşlem sırasında bir hata oluştu: {ex.Message}");
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, $"Beklenmeyen bir hata oluştu: {ex.Message}");
-            }
-        }
+        //    try
+        //    {
+        //        var transactionHash = await _ethService.SendTransactionAsyncUSDT(request);
+        //        return Ok(new { TransactionHash = transactionHash });
+        //    }
+        //    catch (InvalidOperationException ex)
+        //    {
+        //        return StatusCode(500, $"İşlem sırasında bir hata oluştu: {ex.Message}");
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return StatusCode(500, $"Beklenmeyen bir hata oluştu: {ex.Message}");
+        //    }
+        //}
     }
 }

@@ -2,8 +2,8 @@
 {
     public class EthUsdtDto
     {
-        public string? From { get; set; }
-        public string? To { get; set; }
+        public string? SenderAdress { get; set; }
+        public string? ReceiverAdress { get; set; }
         public decimal Amount { get; set; }
     }
 }

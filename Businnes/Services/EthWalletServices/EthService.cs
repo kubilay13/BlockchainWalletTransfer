@@ -16,8 +16,6 @@ using Nethereum.RPC.Eth.DTOs;
 using Nethereum.Signer;
 using Nethereum.Web3;
 
-
-
 namespace ETHWalletApi.Services
 {
     public class EthService : IEthService
@@ -26,6 +24,7 @@ namespace ETHWalletApi.Services
         private readonly ApplicationDbContext _applicationDbContext;
         private readonly HttpClient _httpClient;
         private readonly IWalletPrivatekeyToPassword _walletPrivatekeyToPassword;
+
         public EthService(ApplicationDbContext applicationDbContext, HttpClient httpClient, IWalletPrivatekeyToPassword walletPrivatekeyToPassword)
         {
             _applicationDbContext = applicationDbContext;
@@ -45,8 +44,8 @@ namespace ETHWalletApi.Services
             }
             else
             {
-                //byte[] encryptedPrivateKey = _walletPrivatekeyToPassword.EncryptPrivateKey(Convert.ToString(privateKey));
-                //string base64PrivateKey = Convert.ToBase64String(encryptedPrivateKey);
+                byte[] encryptedPrivateKey = _walletPrivatekeyToPassword.EncryptPrivateKey(Convert.ToString(privateKey));
+                string base64PrivateKey = Convert.ToBase64String(encryptedPrivateKey);
                 var walletDetails = new WalletModel
                 {
                     Name = userSignUpModel.Name,
@@ -74,7 +73,7 @@ namespace ETHWalletApi.Services
                     UserId = wallet.Id,
                     PrivateKeyTron = "null",
                     WalletAddressTron = "null",
-                    PrivateKeyEth = privateKey,
+                    PrivateKeyEth = base64PrivateKey,
                     WalletAddressETH = address,
                     TrxAmount = 0,
                     UsdcAmount = 0,
@@ -102,30 +101,24 @@ namespace ETHWalletApi.Services
                 return walletDetails;
             }
         }
-
-        //public async Task TransferTRXorToken(TransferRequest request, string transactiontype)
-        //{
-        //    switch (request!.CoinName!.ToUpper())
-        //    {
-        //        case "TRX":
-        //            await SendTransactionAsyncETH(request);
-        //            break;
-
-        //        default:
-        //            await SendTransactionAsyncUSDT(request);
-        //            break;
-        //    }
-        //}
         public async Task<string> SendTransactionAsyncETH(TransferRequest request)
         {
             var senderAddress = await _applicationDbContext.WalletDetailModels.FirstOrDefaultAsync(w => w.WalletAddressETH == request.SenderAddress);
+
+            if (senderAddress == null)
+            {
+                throw new InvalidOperationException("Gönderen adresi bulunamadı.");
+            }
+
             byte[] encryptedPrivateKeyBytes = Convert.FromBase64String(senderAddress.PrivateKeyEth);
             string decryptedPrivateKey = _walletPrivatekeyToPassword.DecryptPrivateKey(encryptedPrivateKeyBytes);
-            var privateKey = await GetPrivateKeyByAddressAsync(request.SenderAddress);
+
             var account = new Nethereum.Web3.Accounts.Account(decryptedPrivateKey);
             var web3 = new Web3(account, _web3.Client);
+
             var amountInWei = Web3.Convert.ToWei(request.Amount);
             var currentNonce = await web3.Eth.Transactions.GetTransactionCount.SendRequestAsync(account.Address);
+
             try
             {
                 var transaction = new TransactionInput
@@ -136,8 +129,10 @@ namespace ETHWalletApi.Services
                     Nonce = currentNonce,
                     GasPrice = await web3.Eth.GasPrice.SendRequestAsync()
                 };
-                var _gas = await web3.Eth.Transactions.EstimateGas.SendRequestAsync(transaction);
-                transaction.Gas = _gas;
+
+                var gasEstimate = await web3.Eth.Transactions.EstimateGas.SendRequestAsync(transaction);
+                transaction.Gas = gasEstimate;
+
                 var signature = await web3.TransactionManager.SignTransactionAsync(transaction);
                 var txnHash = await web3.Eth.Transactions.SendRawTransaction.SendRequestAsync(signature);
 
@@ -151,14 +146,16 @@ namespace ETHWalletApi.Services
                     TransactionAmount = request.Amount,
                     TransactionDate = DateTime.UtcNow,
                     Commission = 0,
-                    NetworkFee = Convert.ToDecimal(_gas.ToString()),
+                    NetworkFee = Convert.ToDecimal(gasEstimate.ToString()),
                     TransactionUrl = $"https://sepolia.etherscan.io/tx/{txnHash}",
                     TransactionStatus = true,
                     TransactionType = 0,
                     Network = "TestNet(Sepolia)"
                 };
+
                 _applicationDbContext.TransferHistoryModels.Add(EthTransaction);
                 await _applicationDbContext.SaveChangesAsync();
+
                 var transactionUrl = $"https://sepolia.etherscan.io/tx/{txnHash}";
                 return ("ETH Transfer İşleminiz Başarılı:  " + transactionUrl);
             }
@@ -171,50 +168,39 @@ namespace ETHWalletApi.Services
                 throw new InvalidOperationException("ETH Transfer İşleminde Beklenmeyen Bir Hata Oluştu. ", ex);
             }
         }
-        public async Task<string> SendTransactionAsyncUSDT(EthUsdtDto request)
-        {
-            var usdtcontract = "0x2DCe21ca7F38D7Fbb6Bbf86AC11ec7867A510f24";
-            byte[] privateKey = Convert.FromBase64String(await GetPrivateKeyByAddressAsync(request!.From!));
-            string _privateKey = _walletPrivatekeyToPassword.DecryptPrivateKey(privateKey);
 
-            var account = new Nethereum.Web3.Accounts.Account(_privateKey, Chain.Sepolia);
-            var web3 = new Web3(account, "https://sepolia.infura.io/v3/3fcb68529b9e4288a4eb599f266bbb50");
-            var amountInWei = Web3.Convert.ToWei(request.Amount, 6);
-            var currentNonce = await web3.Eth.Transactions.GetTransactionCount.SendRequestAsync(account.Address);
-            var gasPrice = await web3.Eth.GasPrice.SendRequestAsync();
-            try
-            {
-                var transferHandler = web3.Eth.GetContractTransactionHandler<TransferFunction>();
+        //    public async Task<string> SendTransactionAsyncUSDT(EthUsdtDto request)
+        //    {
+        //        var usdtcontract = "0x2DCe21ca7F38D7Fbb6Bbf86AC11ec7867A510f24";
+        //        var account = new Nethereum.Web3.Accounts.Account(privateKey, Chain.Sepolia);
+        //        var web3 = new Web3(account, "https://sepolia.infura.io/v3/3fcb68529b9e4288a4eb599f266bbb50");
+        //        var amountInWei = Web3.Convert.ToWei(request.Amount, 6);
+        //        var currentNonce = await web3.Eth.Transactions.GetTransactionCount.SendRequestAsync(account.Address);
+        //        var gasPrice = await web3.Eth.GasPrice.SendRequestAsync();
+        //        try
+        //        {
+        //            var transferHandler = web3.Eth.GetContractTransactionHandler<TransferFunction>();
 
-                var transferFunction = new TransferFunction
-                {
-                    FromAddress = request.From,
-                    To = request.To,
-                    Value = amountInWei,
-                    Nonce = currentNonce,
-                    GasPrice = gasPrice,
-                };
-                var transferReceipt = await transferHandler.SendRequestAsync(usdtcontract, transferFunction);
-                return transferReceipt;
-            }
-            catch (RpcResponseException ex)
-            {
-                throw new InvalidOperationException($"ETH Transfer İşlemi Başarısız: {ex.Message}", ex);
-            }
-            catch (Exception ex)
-            {
-                throw new InvalidOperationException("ETH Transfer İşleminde Beklenmeyen Bir Hata Oluştu.", ex);
-            }
-        }
-        public async Task<string> GetPrivateKeyByAddressAsync(string walletAddress)
-        {
-            var wallet = await _applicationDbContext.WalletDetailModels.FirstOrDefaultAsync(w => w.WalletAddressETH == walletAddress);
-            if (wallet == null || wallet.PrivateKeyEth == null)
-            {
-                throw new ApplicationException("Cüzdan bulunamadı veya privateKey mevcut değil.");
-            }
-            return wallet.PrivateKeyEth;
-        }
+        //            var transferFunction = new TransferFunction
+        //            {
+        //                FromAddress = request.SenderAdress,
+        //                To = request.ReceiverAdress,
+        //                Value = amountInWei,
+        //                Nonce = currentNonce,
+        //                GasPrice = gasPrice,
+        //            };
+        //            var transferReceipt = await transferHandler.SendRequestAsync(usdtcontract, transferFunction);
+        //            return transferReceipt;
+        //        }
+        //        catch (RpcResponseException ex)
+        //        {
+        //            throw new InvalidOperationException($"ETH Transfer İşlemi Başarısız: {ex.Message}", ex);
+        //        }
+        //        catch (Exception ex)
+        //        {
+        //            throw new InvalidOperationException("ETH Transfer İşleminde Beklenmeyen Bir Hata Oluştu.", ex);
+        //        }
+        //    }
         public async Task<string> AdminLogin(AdminLoginModel adminLoginModel)
         {
             var admin = await _applicationDbContext.AdminLoginModels.SingleOrDefaultAsync(a => a.Username == adminLoginModel.Username);
@@ -246,3 +232,4 @@ namespace ETHWalletApi.Services
         }
     }
 }
+
