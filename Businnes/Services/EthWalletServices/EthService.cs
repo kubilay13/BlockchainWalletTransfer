@@ -170,7 +170,7 @@ namespace ETHWalletApi.Services
         }
         public async Task<string> SendTransactionAsyncUSDT(EthUsdtDto request)
         {
-            var usdtcontract = "0x2DCe21ca7F38D7Fbb6Bbf86AC11ec7867A510f24";
+            var usdtcontractadress = "0x2DCe21ca7F38D7Fbb6Bbf86AC11ec7867A510f24";
             var senderAddress = await _applicationDbContext.WalletDetailModels.FirstOrDefaultAsync(w => w.WalletAddressETH == request.SenderAdress);
 
             byte[] encryptedPrivateKeyBytes = Convert.FromBase64String(senderAddress.PrivateKeyEth);
@@ -196,7 +196,47 @@ namespace ETHWalletApi.Services
                     GasPrice = gasPrice,
                 };
 
-                var transferReceipt = await transferHandler.SendRequestAsync(usdtcontract, transferFunction);
+                var transferReceipt = await transferHandler.SendRequestAsync(usdtcontractadress, transferFunction);
+                return transferReceipt;
+            }
+            catch (RpcResponseException ex)
+            {
+                throw new InvalidOperationException($"ETH Transfer İşlemi Başarısız: {ex.Message}", ex);
+            }
+            catch (Exception ex)
+            {
+                throw new InvalidOperationException("ETH Transfer İşleminde Beklenmeyen Bir Hata Oluştu.", ex);
+            }
+        }
+        public async Task<string> SendTransactionAsyncBnb(EthUsdtDto request)
+        {
+            var BnbContractAdress = "0x17c3fD32E71b97Ae7EA1B5dCa135846461a8F6B6";
+            var senderAddress = await _applicationDbContext.WalletDetailModels.FirstOrDefaultAsync(w => w.WalletAddressETH == request.SenderAdress);
+
+            byte[] encryptedPrivateKeyBytes = Convert.FromBase64String(senderAddress.PrivateKeyEth);
+            string decryptedPrivateKey= _walletPrivatekeyToPassword.DecryptPrivateKey(encryptedPrivateKeyBytes);
+
+            var account = new Nethereum.Web3.Accounts.Account(decryptedPrivateKey, Chain.Sepolia);
+
+            var web3=new Web3(account, "https://sepolia.infura.io/v3/3fcb68529b9e4288a4eb599f266bbb50");
+            var amountInWei = Web3.Convert.ToWei(request.Amount, 18);
+            var currentNonce = await web3.Eth.Transactions.GetTransactionCount.SendRequestAsync(account.Address);
+            var gasPrice = await web3.Eth.GasPrice.SendRequestAsync();
+
+            try
+            {
+                var transferHandler = web3.Eth.GetContractTransactionHandler<TransferFunction>();
+
+                var transferFunction = new TransferFunction
+                {
+                    FromAddress = request.SenderAdress,
+                    To = request.ReceiverAdress,
+                    Value = amountInWei,
+                    Nonce = currentNonce,
+                    GasPrice = gasPrice,
+                };
+
+                var transferReceipt = await transferHandler.SendRequestAsync(BnbContractAdress, transferFunction);
                 return transferReceipt;
             }
             catch (RpcResponseException ex)
