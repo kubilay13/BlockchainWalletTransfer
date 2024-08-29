@@ -146,7 +146,6 @@ namespace Business.Services.EthWalletServices.EthTransferService
             try
             {
                 var transferHandler = web3.Eth.GetContractTransactionHandler<TransferFunction>();
-
                 var transferFunction = new TransferFunction
                 {
                     FromAddress = request.SenderAddress,
@@ -168,11 +167,9 @@ namespace Business.Services.EthWalletServices.EthTransferService
                 throw new InvalidOperationException("ETH Transfer İşleminde Beklenmeyen Bir Hata Oluştu.", ex);
             }
         }
-
-        public async Task<string>SendTransactionAsyncBnb_Bnb(TransferRequest request)
+        public async Task<string>SendTransactionAsyncBnbBnb(TransferRequest request)
         {
-            var senderAddress = await _applicationDbContext.WalletDetailModels
-                .FirstOrDefaultAsync(w => w.WalletAddressETH == request.SenderAddress);
+            var senderAddress = await _applicationDbContext.WalletDetailModels.FirstOrDefaultAsync(w => w.WalletAddressETH == request.SenderAddress);
 
             byte[] encryptedPrivateKeyBytes = Convert.FromBase64String(senderAddress.PrivateKeyEth);
             string decryptedPrivateKey = _walletPrivatekeyToPassword.DecryptPrivateKey(encryptedPrivateKeyBytes);
@@ -204,5 +201,40 @@ namespace Business.Services.EthWalletServices.EthTransferService
             }
 
         }
+        public async Task<string>SendTransactionAsyncBnbUSDT(TransferRequest request)
+        {
+            var usdtcontract = "0x42c388CD5670A7FEC40CF2866991628751c33A37";
+            var senderAddress = await _applicationDbContext.WalletDetailModels.FirstOrDefaultAsync(w => w.WalletAddressETH == request.SenderAddress);
+
+            byte[] encryptedPrivateKeyBytes = Convert.FromBase64String(senderAddress.PrivateKeyEth);
+            string decryptedPrivateKey = _walletPrivatekeyToPassword.DecryptPrivateKey(encryptedPrivateKeyBytes);
+
+            var account = new Nethereum.Web3.Accounts.Account(decryptedPrivateKey);
+
+            var _web3 = new Web3(account,"https://data-seed-prebsc-1-s1.binance.org:8545/");
+            var currentNonce = await _web3.Eth.Transactions.GetTransactionCount.SendRequestAsync(account.Address);
+            var amountInWei = Web3.Convert.ToWei(request.Amount);
+            var gasPrice = await _web3.Eth.GasPrice.SendRequestAsync();
+            var transferHandler = _web3.Eth.GetContractTransactionHandler<TransferFunction>();
+            var transferFunction = new TransferFunction
+            {
+                FromAddress = request.SenderAddress,
+                To = request.ReceiverAddress,
+                Value = amountInWei,
+                Nonce = currentNonce,
+                GasPrice = gasPrice,
+            };
+            try
+            {
+                var transferReceipt = await transferHandler.SignTransactionAsync("0x42c388CD5670A7FEC40CF2866991628751c33A37", transferFunction);
+                var txnHash = await _web3.Eth.Transactions.SendRawTransaction.SendRequestAsync(transferReceipt);
+                return txnHash;
+            }
+            catch (Exception ex)
+            {
+                throw new InvalidOperationException("BNB Testnet Transfer İşleminde Beklenmeyen Bir Hata Oluştu.", ex);
+            }
+        }
+
     }
 }

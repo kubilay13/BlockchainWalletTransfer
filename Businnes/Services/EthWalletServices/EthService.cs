@@ -122,14 +122,19 @@ namespace ETHWalletApi.Services
                 await _ethTransferService.SendTransactionAsyncUSDT(request);
                 return "USDT Transfer İşleminiz Başarılı.";
             }
-            else if (request.Network == "ETHEREUM" && request.CoinName == "Bnb")
+            else if (request.Network == "ETHEREUM" && request.CoinName == "BNB")
             {
                 await _ethTransferService.SendTransactionAsyncBnb(request);
                 return "Bnb Transfer İşleminiz Başarılı.";
             }
             else if (request.Network=="BİNANCE" && request.CoinName=="BNB")
             {
-                await _ethTransferService.SendTransactionAsyncBnb_Bnb(request);
+                await _ethTransferService.SendTransactionAsyncBnbBnb(request);
+                return "Bnb Transfer İşleminiz Başarılı.";
+            }
+            else if (request.Network=="BİNANCE" && request.CoinName=="USDT")
+            {
+                await _ethTransferService.SendTransactionAsyncBnbUSDT(request);
                 return "Bnb Transfer İşleminiz Başarılı.";
             }
             else

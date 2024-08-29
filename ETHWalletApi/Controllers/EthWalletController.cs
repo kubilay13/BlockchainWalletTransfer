@@ -64,11 +64,12 @@ namespace ETHWalletApi.Controllers
                     var transactionHash = await _ethTransferService.SendTransactionAsyncBnb(request);
                     return Ok(new { TransactionHash = transactionHash });
                 }
-                else if (request.Network == "BİNANCE" && request.CoinName == "BNB")
+                else if (request.Network == "BİNANCE" && request.CoinName == "USDT")
                 {
-                    var transactionHash = await _ethTransferService.SendTransactionAsyncBnb_Bnb(request);
+                    var transactionHash = await _ethTransferService.SendTransactionAsyncBnbUSDT(request);
                     return Ok(new { TransactionHash = transactionHash });
                 }
+
                 return BadRequest("Transfer İşlemi Başarısız.");
             }
             catch (Exception ex)
