@@ -127,6 +127,11 @@ namespace ETHWalletApi.Services
                 await _ethTransferService.SendTransactionAsyncBnb(request);
                 return "Bnb Transfer İşleminiz Başarılı.";
             }
+            else if (request.Network=="BİNANCE" && request.CoinName=="BNB")
+            {
+                await _ethTransferService.SendTransactionAsyncBnb_Bnb(request);
+                return "Bnb Transfer İşleminiz Başarılı.";
+            }
             else
             {
                 return "Lütfen Geçerli Transfer İşlemini Girin.";
