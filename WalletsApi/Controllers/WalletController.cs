@@ -1,5 +1,5 @@
-﻿using DataAccessLayer.AppDbContext;
-using Entities.Dto.TronDto;
+﻿using Business.Services.EthWalletServices.EthTransferService;
+using DataAccessLayer.AppDbContext;
 using Entities.Dto.WalletApiDto;
 using Entities.Models.AdminModel;
 using Entities.Models.EthModels;
@@ -25,14 +25,16 @@ namespace WalletsApi.Controllers
         private readonly IEthService _ethService;
         private readonly ApplicationDbContext _applicationDbContext;
         private readonly HttpClient _httpClient;
+        private readonly IEthTransferService _ethTransferService;
     
-        public WalletController(ApplicationDbContext applicationDbContext, IWalletService walletService, ITronService tronService, HttpClient httpClient, IEthService ethService)
+        public WalletController(ApplicationDbContext applicationDbContext, IWalletService walletService, ITronService tronService, HttpClient httpClient, IEthService ethService,IEthTransferService ethTransferService)
         {
             _ethService = ethService;
             _walletService = walletService;
             _applicationDbContext = applicationDbContext;
             _tronService = tronService;
             _httpClient = httpClient;
+            _ethTransferService = ethTransferService;
         }
         [HttpPost("CreateWallet-UserSignUp(ETH,TRX)")]
         public async Task<string> CreateWallet(UserSignUpModel userSignUpModel)
@@ -85,7 +87,7 @@ namespace WalletsApi.Controllers
             {
                 if (request.CoinName == "ETH")
                 {
-                    await _ethService.SendTransactionAsyncETH(request);
+                    await _ethTransferService.SendTransactionAsyncETH(request);
                     return Ok($" Transfer İşlemi Başarılı. \n{request.CoinName}");
                 }
                 else if ( request.CoinName == "USDT")

@@ -1,5 +1,4 @@
 ﻿using DataAccessLayer.AppDbContext;
-using Entities.Dto.TronDto;
 using Entities.Dto.WalletApiDto;
 using Entities.Enums;
 using Entities.Models.UserModel;

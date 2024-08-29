@@ -15,7 +15,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Entities", "Entities\Entiti
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DataAccessLayer", "DataAccessLayer\DataAccessLayer.csproj", "{D246AF4A-2E98-47A3-9959-3589947EEC3B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WalletsApi", "WalletsApi\WalletsApi.csproj", "{37B895AB-C569-4CFA-AB79-780FA67E9EBB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WalletsApi", "WalletsApi\WalletsApi.csproj", "{37B895AB-C569-4CFA-AB79-780FA67E9EBB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -1,5 +1,5 @@
-﻿using DataAccessLayer.AppDbContext;
-using Entities.Dto.TronDto;
+﻿using Business.Services.EthWalletServices.EthTransferService;
+using DataAccessLayer.AppDbContext;
 using Entities.Dto.WalletApiDto;
 using Entities.Models.AdminModel;
 using Entities.Models.UserModel;
@@ -23,12 +23,14 @@ namespace WalletsApi.Services
         private readonly string _tronApiUrl = "https://api.trongrid.io";
         private readonly ITronService _tronService;
         private readonly IEthService _ethService;
-        public WalletServices(ApplicationDbContext applicationDbContext, HttpClient httpClient,ITronService tronService, IEthService ethService)
+        private readonly IEthTransferService _ethTransferService;
+        public WalletServices(ApplicationDbContext applicationDbContext, HttpClient httpClient,ITronService tronService, IEthService ethService,IEthTransferService ethTransferService)
         {
             _applicationDbContext = applicationDbContext;
             _httpClient = httpClient;
             _tronService= tronService;
             _ethService= ethService;
+            _ethTransferService= ethTransferService;
         }
         public async Task<string> CreateWallet(UserSignUpModel userSignUpModel)
         {
@@ -104,7 +106,7 @@ namespace WalletsApi.Services
             {
                 if( request.CoinName == "ETH")
                 {
-                    await _ethService.SendTransactionAsyncETH(request);
+                    await _ethTransferService.SendTransactionAsyncETH(request);
                 }
                 else if(request.CoinName == "USDT")
                 {

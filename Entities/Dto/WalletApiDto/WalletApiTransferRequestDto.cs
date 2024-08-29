@@ -1,5 +1,4 @@
 ﻿using Entities.Dto.EthereumDto;
-using Entities.Dto.TronDto;
 
 namespace Entities.Dto.WalletApiDto
 {

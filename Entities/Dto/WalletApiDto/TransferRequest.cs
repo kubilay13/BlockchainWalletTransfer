@@ -1,7 +1,7 @@
 ﻿using Entities.Enums;
 using System.Text.Json.Serialization;
 
-namespace Entities.Dto.TronDto
+namespace Entities.Dto.WalletApiDto
 {
     public class TransferRequest
     {

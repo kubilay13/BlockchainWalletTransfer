@@ -1,8 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using ETHWalletApi.Services;
 using Entities.Models.UserModel;
-using Entities.Dto.TronDto;
 using Entities.Dto.EthereumDto;
+using Entities.Dto.WalletApiDto;
+using Business.Services.EthWalletServices.EthTransferService;
 
 namespace ETHWalletApi.Controllers
 {
@@ -11,9 +12,10 @@ namespace ETHWalletApi.Controllers
     public class EthController : ControllerBase
     {
         private readonly IEthService _ethService;
-
-        public EthController(IEthService ethService)
+        private readonly IEthTransferService _ethTransferService;
+        public EthController(IEthService ethService,IEthTransferService ethTransferService)
         {
+            _ethTransferService = ethTransferService;
             _ethService = ethService;
         }
 
@@ -39,7 +41,7 @@ namespace ETHWalletApi.Controllers
         }
 
         [HttpPost("ETHTransfer")]
-        public async Task<IActionResult> SendTransactionAsync([FromBody] TransferRequest request)
+        public async Task<IActionResult> SendEthTransactionAsync([FromBody] TransferRequest request)
         {
             if (request == null)
             {
@@ -47,57 +49,28 @@ namespace ETHWalletApi.Controllers
             }
             try
             {
-                var transactionHash = await _ethService.SendTransactionAsyncETH(request);
-                return Ok(new { TransactionHash = transactionHash });
+                if(request.Network=="ETHEREUM" && request.CoinName=="ETH")
+                {
+                    var transactionHash = await _ethTransferService.SendTransactionAsyncETH(request);
+                    return Ok(new { TransactionHash = transactionHash });
+                }
+                else if(request.Network== "ETHEREUM" && request.CoinName=="USDT")
+                {
+                    var transactionHash = await _ethTransferService.SendTransactionAsyncUSDT(request);
+                    return Ok(new { TransactionHash = transactionHash });
+                }
+                else if(request.Network == "ETHEREUM" && request.CoinName == "BNB")
+                {
+                    var transactionHash = await _ethTransferService.SendTransactionAsyncBnb(request);
+                    return Ok(new { TransactionHash = transactionHash });
+                }
+                return BadRequest("Transfer İşlemi Başarısız.");
             }
             catch (Exception ex)
             {
                 return StatusCode(500, $"Internal server error: {ex.Message}");
             }
         }
-        [HttpPost("ETH-USDTransfer")]
-        public async Task<IActionResult> SendUSDTTransaction([FromBody] EthUsdtDto request)
-        {
-            if (request == null || string.IsNullOrEmpty(request.SenderAdress) || string.IsNullOrEmpty(request.ReceiverAdress) || request.Amount == null)
-            {
-                return BadRequest("Geçersiz işlem isteği.");
-            }
-
-            try
-            {
-                var transactionHash = await _ethService.SendTransactionAsyncUSDT(request);
-                return Ok(new { TransactionHash = transactionHash });
-            }
-            catch (InvalidOperationException ex)
-            {
-                return StatusCode(500, $"İşlem sırasında bir hata oluştu: {ex.Message}");
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, $"Beklenmeyen bir hata oluştu: {ex.Message}");
-            }
-        }
-        [HttpPost("ETH-BNBTransfer")]
-        public async Task<IActionResult> SendBnbTransaction([FromBody] EthUsdtDto request)
-        {
-            if (request == null || string.IsNullOrEmpty(request.SenderAdress) || string.IsNullOrEmpty(request.ReceiverAdress) || request.Amount == null)
-            {
-                return BadRequest("Geçersiz işlem isteği.");
-            }
-
-            try
-            {
-                var transactionHash = await _ethService.SendTransactionAsyncBnb(request);
-                return Ok(new { TransactionHash = transactionHash });
-            }
-            catch (InvalidOperationException ex)
-            {
-                return StatusCode(500, $"İşlem sırasında bir hata oluştu: {ex.Message}");
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, $"Beklenmeyen bir hata oluştu: {ex.Message}");
-            }
-        }
+       
     }
 }
