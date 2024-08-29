@@ -147,6 +147,8 @@ namespace ETHWalletApi.Migrations
                     PrivateKeyEth = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     WalletAddressETH = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     ETHAmount = table.Column<decimal>(type: "decimal(18,8)", nullable: false),
+                    ETHUsdtAmount = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    ETHBnbAmount = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     WalletScanURL = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: true),
                     WalletId = table.Column<int>(type: "int", nullable: false)
                 },
@@ -178,17 +180,17 @@ namespace ETHWalletApi.Migrations
                 columns: new[] { "Id", "AccountName", "CreatedAt", "Email", "LastTransactionAt", "Name", "Network", "Password", "Surname", "TelNo", "TransactionLimit", "UserId", "WalletName" },
                 values: new object[,]
                 {
-                    { 1, null, new DateTime(2024, 8, 28, 10, 40, 6, 541, DateTimeKind.Utc).AddTicks(1150), "user@example.com", new DateTime(2024, 8, 28, 10, 40, 6, 541, DateTimeKind.Utc).AddTicks(1151), "TRXAdminAdress", "Testnet(Nile)", "Password", "SurnameAdminTRX", "stringstri", true, 0, "TRXAdminAdress" },
-                    { 2, null, new DateTime(2024, 8, 28, 10, 40, 6, 541, DateTimeKind.Utc).AddTicks(1153), "user@example.com", new DateTime(2024, 8, 28, 10, 40, 6, 541, DateTimeKind.Utc).AddTicks(1154), "ETHAdminAdress", "TestNet(Sepolia)", "Password", "SurnameAdminTETH", "stringstri", true, 0, "ETHAdminAdress" }
+                    { 1, null, new DateTime(2024, 8, 29, 8, 1, 52, 611, DateTimeKind.Utc).AddTicks(4589), "user@example.com", new DateTime(2024, 8, 29, 8, 1, 52, 611, DateTimeKind.Utc).AddTicks(4591), "TRXAdminAdress", "Testnet(Nile)", "Password", "SurnameAdminTRX", "stringstri", true, 0, "TRXAdminAdress" },
+                    { 2, null, new DateTime(2024, 8, 29, 8, 1, 52, 611, DateTimeKind.Utc).AddTicks(4594), "user@example.com", new DateTime(2024, 8, 29, 8, 1, 52, 611, DateTimeKind.Utc).AddTicks(4594), "ETHAdminAdress", "TestNet(Sepolia)", "Password", "SurnameAdminTETH", "stringstri", true, 0, "ETHAdminAdress" }
                 });
 
             migrationBuilder.InsertData(
                 table: "WalletDetailModels",
-                columns: new[] { "Id", "BttAmount", "ETHAmount", "PrivateKeyEth", "PrivateKeyTron", "TrxAmount", "UsdcAmount", "UsddAmount", "UsdtAmount", "UserId", "WalletAddressETH", "WalletAddressTron", "WalletId", "WalletScanURL" },
+                columns: new[] { "Id", "BttAmount", "ETHAmount", "ETHBnbAmount", "ETHUsdtAmount", "PrivateKeyEth", "PrivateKeyTron", "TrxAmount", "UsdcAmount", "UsddAmount", "UsdtAmount", "UserId", "WalletAddressETH", "WalletAddressTron", "WalletId", "WalletScanURL" },
                 values: new object[,]
                 {
-                    { 1, 0m, 0m, "0107932b30922231adff71b4b7c0b05bc948632f56c2b62f98bd18fefeae8a9e", "0107932b30922231adff71b4b7c0b05bc948632f56c2b62f98bd18fefeae8a9e", 0m, 0m, 0m, 0m, 1, "0x31c1fe443E54d007FD1c8c5E7ae7C2356b374616", "TEWJWLwFL3dbMjXtj2smNfto9sXdWquF4N", 1, "" },
-                    { 2, 0m, 0m, "f7753fbb6a94a3f5758acfd83e2c568899220f2ba782b831b14ea5bfc95bc422", "0107932b30922231adff71b4b7c0b05bc948632f56c2b62f98bd18fefeae8a9e", 0m, 0m, 0m, 0m, 2, "0x09Dd4927885EdbC5Ad820Fe489d7409A58ebe6DA", "TEWJWLwFL3dbMjXtj2smNfto9sXdWquF4N", 2, "" }
+                    { 1, 0m, 0m, 0m, 0m, "0107932b30922231adff71b4b7c0b05bc948632f56c2b62f98bd18fefeae8a9e", "0107932b30922231adff71b4b7c0b05bc948632f56c2b62f98bd18fefeae8a9e", 0m, 0m, 0m, 0m, 1, "0x31c1fe443E54d007FD1c8c5E7ae7C2356b374616", "TEWJWLwFL3dbMjXtj2smNfto9sXdWquF4N", 1, "" },
+                    { 2, 0m, 0m, 0m, 0m, "f7753fbb6a94a3f5758acfd83e2c568899220f2ba782b831b14ea5bfc95bc422", "0107932b30922231adff71b4b7c0b05bc948632f56c2b62f98bd18fefeae8a9e", 0m, 0m, 0m, 0m, 2, "0x09Dd4927885EdbC5Ad820Fe489d7409A58ebe6DA", "TEWJWLwFL3dbMjXtj2smNfto9sXdWquF4N", 2, "" }
                 });
 
             migrationBuilder.CreateIndex(

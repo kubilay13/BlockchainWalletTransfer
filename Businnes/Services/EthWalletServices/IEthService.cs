@@ -10,7 +10,7 @@ namespace ETHWalletApi.Services
     {
         Task<WalletModel> CreateAccountETHWalletAsync(UserSignUpModel userSignUpModel);
         Task<string> SendTransactionAsyncETH(TransferRequest request);
-        //Task<string> SendTransactionAsyncUSDT(EthUsdtDto request);
+        Task<string> SendTransactionAsyncUSDT(EthUsdtDto request);
         Task<string> UserLogin(UserLoginRequestDto userLoginRequestDto);
 
         Task<string> AdminLogin(AdminLoginModel adminLoginModel);

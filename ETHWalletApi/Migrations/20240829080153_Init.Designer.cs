@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ETHWalletApi.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240828104006_Init")]
+    [Migration("20240829080153_Init")]
     partial class Init
     {
         /// <inheritdoc />
@@ -282,6 +282,12 @@ namespace ETHWalletApi.Migrations
                     b.Property<decimal>("ETHAmount")
                         .HasColumnType("decimal(18, 8)");
 
+                    b.Property<decimal>("ETHBnbAmount")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<decimal>("ETHUsdtAmount")
+                        .HasColumnType("decimal(18,2)");
+
                     b.Property<string>("PrivateKeyEth")
                         .HasColumnType("nvarchar(max)");
 
@@ -331,6 +337,8 @@ namespace ETHWalletApi.Migrations
                             Id = 1,
                             BttAmount = 0m,
                             ETHAmount = 0m,
+                            ETHBnbAmount = 0m,
+                            ETHUsdtAmount = 0m,
                             PrivateKeyEth = "0107932b30922231adff71b4b7c0b05bc948632f56c2b62f98bd18fefeae8a9e",
                             PrivateKeyTron = "0107932b30922231adff71b4b7c0b05bc948632f56c2b62f98bd18fefeae8a9e",
                             TrxAmount = 0m,
@@ -348,6 +356,8 @@ namespace ETHWalletApi.Migrations
                             Id = 2,
                             BttAmount = 0m,
                             ETHAmount = 0m,
+                            ETHBnbAmount = 0m,
+                            ETHUsdtAmount = 0m,
                             PrivateKeyEth = "f7753fbb6a94a3f5758acfd83e2c568899220f2ba782b831b14ea5bfc95bc422",
                             PrivateKeyTron = "0107932b30922231adff71b4b7c0b05bc948632f56c2b62f98bd18fefeae8a9e",
                             TrxAmount = 0m,
@@ -425,9 +435,9 @@ namespace ETHWalletApi.Migrations
                         new
                         {
                             Id = 1,
-                            CreatedAt = new DateTime(2024, 8, 28, 10, 40, 6, 541, DateTimeKind.Utc).AddTicks(1150),
+                            CreatedAt = new DateTime(2024, 8, 29, 8, 1, 52, 611, DateTimeKind.Utc).AddTicks(4589),
                             Email = "user@example.com",
-                            LastTransactionAt = new DateTime(2024, 8, 28, 10, 40, 6, 541, DateTimeKind.Utc).AddTicks(1151),
+                            LastTransactionAt = new DateTime(2024, 8, 29, 8, 1, 52, 611, DateTimeKind.Utc).AddTicks(4591),
                             Name = "TRXAdminAdress",
                             Network = "Testnet(Nile)",
                             Password = "Password",
@@ -440,9 +450,9 @@ namespace ETHWalletApi.Migrations
                         new
                         {
                             Id = 2,
-                            CreatedAt = new DateTime(2024, 8, 28, 10, 40, 6, 541, DateTimeKind.Utc).AddTicks(1153),
+                            CreatedAt = new DateTime(2024, 8, 29, 8, 1, 52, 611, DateTimeKind.Utc).AddTicks(4594),
                             Email = "user@example.com",
-                            LastTransactionAt = new DateTime(2024, 8, 28, 10, 40, 6, 541, DateTimeKind.Utc).AddTicks(1154),
+                            LastTransactionAt = new DateTime(2024, 8, 29, 8, 1, 52, 611, DateTimeKind.Utc).AddTicks(4594),
                             Name = "ETHAdminAdress",
                             Network = "TestNet(Sepolia)",
                             Password = "Password",

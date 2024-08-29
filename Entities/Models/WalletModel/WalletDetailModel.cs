@@ -14,6 +14,8 @@
         public string? PrivateKeyEth { get; set; }
         public string? WalletAddressETH { get; set; }
         public decimal ETHAmount { get; set; }
+        public decimal ETHUsdtAmount { get; set; }
+        public decimal ETHBnbAmount { get; set; }
         public string? WalletScanURL { get; set; }
         public int WalletId { get; set; }
         public virtual WalletModel Wallet { get; set; }

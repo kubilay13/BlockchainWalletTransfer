@@ -168,39 +168,46 @@ namespace ETHWalletApi.Services
                 throw new InvalidOperationException("ETH Transfer İşleminde Beklenmeyen Bir Hata Oluştu. ", ex);
             }
         }
+        public async Task<string> SendTransactionAsyncUSDT(EthUsdtDto request)
+        {
+            var usdtcontract = "0x2DCe21ca7F38D7Fbb6Bbf86AC11ec7867A510f24";
+            var senderAddress = await _applicationDbContext.WalletDetailModels.FirstOrDefaultAsync(w => w.WalletAddressETH == request.SenderAdress);
 
-        //    public async Task<string> SendTransactionAsyncUSDT(EthUsdtDto request)
-        //    {
-        //        var usdtcontract = "0x2DCe21ca7F38D7Fbb6Bbf86AC11ec7867A510f24";
-        //        var account = new Nethereum.Web3.Accounts.Account(privateKey, Chain.Sepolia);
-        //        var web3 = new Web3(account, "https://sepolia.infura.io/v3/3fcb68529b9e4288a4eb599f266bbb50");
-        //        var amountInWei = Web3.Convert.ToWei(request.Amount, 6);
-        //        var currentNonce = await web3.Eth.Transactions.GetTransactionCount.SendRequestAsync(account.Address);
-        //        var gasPrice = await web3.Eth.GasPrice.SendRequestAsync();
-        //        try
-        //        {
-        //            var transferHandler = web3.Eth.GetContractTransactionHandler<TransferFunction>();
+            byte[] encryptedPrivateKeyBytes = Convert.FromBase64String(senderAddress.PrivateKeyEth);
+            string decryptedPrivateKey = _walletPrivatekeyToPassword.DecryptPrivateKey(encryptedPrivateKeyBytes);
 
-        //            var transferFunction = new TransferFunction
-        //            {
-        //                FromAddress = request.SenderAdress,
-        //                To = request.ReceiverAdress,
-        //                Value = amountInWei,
-        //                Nonce = currentNonce,
-        //                GasPrice = gasPrice,
-        //            };
-        //            var transferReceipt = await transferHandler.SendRequestAsync(usdtcontract, transferFunction);
-        //            return transferReceipt;
-        //        }
-        //        catch (RpcResponseException ex)
-        //        {
-        //            throw new InvalidOperationException($"ETH Transfer İşlemi Başarısız: {ex.Message}", ex);
-        //        }
-        //        catch (Exception ex)
-        //        {
-        //            throw new InvalidOperationException("ETH Transfer İşleminde Beklenmeyen Bir Hata Oluştu.", ex);
-        //        }
-        //    }
+            var account = new Nethereum.Web3.Accounts.Account(decryptedPrivateKey, Chain.Sepolia);
+
+            var web3 = new Web3(account, "https://sepolia.infura.io/v3/3fcb68529b9e4288a4eb599f266bbb50");
+            var amountInWei = Web3.Convert.ToWei(request.Amount, 6);
+            var currentNonce = await web3.Eth.Transactions.GetTransactionCount.SendRequestAsync(account.Address);
+            var gasPrice = await web3.Eth.GasPrice.SendRequestAsync();
+
+            try
+            {
+                var transferHandler = web3.Eth.GetContractTransactionHandler<TransferFunction>();
+
+                var transferFunction = new TransferFunction
+                {
+                    FromAddress = request.SenderAdress,
+                    To = request.ReceiverAdress,
+                    Value = amountInWei,
+                    Nonce = currentNonce,
+                    GasPrice = gasPrice,
+                };
+
+                var transferReceipt = await transferHandler.SendRequestAsync(usdtcontract, transferFunction);
+                return transferReceipt;
+            }
+            catch (RpcResponseException ex)
+            {
+                throw new InvalidOperationException($"ETH Transfer İşlemi Başarısız: {ex.Message}", ex);
+            }
+            catch (Exception ex)
+            {
+                throw new InvalidOperationException("ETH Transfer İşleminde Beklenmeyen Bir Hata Oluştu.", ex);
+            }
+        }
         public async Task<string> AdminLogin(AdminLoginModel adminLoginModel)
         {
             var admin = await _applicationDbContext.AdminLoginModels.SingleOrDefaultAsync(a => a.Username == adminLoginModel.Username);
