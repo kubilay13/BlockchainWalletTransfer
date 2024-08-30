@@ -1,4 +1,5 @@
 ﻿using Business.Services.EthWalletServices.EthTransferService;
+using Business.Services.TronService;
 using DataAccessLayer.AppDbContext;
 using Entities.Dto.WalletApiDto;
 using Entities.Models.AdminModel;
@@ -26,8 +27,9 @@ namespace WalletsApi.Controllers
         private readonly ApplicationDbContext _applicationDbContext;
         private readonly HttpClient _httpClient;
         private readonly IEthTransferService _ethTransferService;
+        private readonly ITronWalletService _tronWalletService;
     
-        public WalletController(ApplicationDbContext applicationDbContext, IWalletService walletService, ITronService tronService, HttpClient httpClient, IEthService ethService,IEthTransferService ethTransferService)
+        public WalletController(ApplicationDbContext applicationDbContext, IWalletService walletService, ITronService tronService, HttpClient httpClient, IEthService ethService,IEthTransferService ethTransferService,ITronWalletService tronWalletService)
         {
             _ethService = ethService;
             _walletService = walletService;
@@ -35,6 +37,7 @@ namespace WalletsApi.Controllers
             _tronService = tronService;
             _httpClient = httpClient;
             _ethTransferService = ethTransferService;
+            _tronWalletService = tronWalletService;
         }
         [HttpPost("CreateWallet-UserSignUp(ETH,TRX)")]
         public async Task<string> CreateWallet(UserSignUpModel userSignUpModel)
@@ -56,7 +59,7 @@ namespace WalletsApi.Controllers
             {
                 if (WalletAdress.StartsWith("T"))
                 {
-                    var balance = await _tronService.GetBalanceAsyncTron(WalletAdress);
+                    var balance = await _tronWalletService.GetBalanceAsyncTron(WalletAdress);
                     return balance;
                 };
             }
@@ -117,6 +120,7 @@ namespace WalletsApi.Controllers
             }
             return Ok("Giriş başarılı.");
         }
+
         [HttpPost("UserLogin")]
         public async Task<IActionResult> UserLogin(UserLoginRequestDto userLoginRequestDto)
         {

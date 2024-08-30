@@ -1,4 +1,5 @@
-﻿using DataAccessLayer.AppDbContext;
+﻿using Business.Services.TronService;
+using DataAccessLayer.AppDbContext;
 using Entities.Dto.WalletApiDto;
 using Entities.Enums;
 using Entities.Models.UserModel;
@@ -11,11 +12,13 @@ public class WalletController : ControllerBase
 {
     private readonly ITronService _tronService;
     private readonly ApplicationDbContext _applicationDbContext;
+    private readonly ITronWalletService _tronWalletService;
 
-    public WalletController(ITronService tronService, ApplicationDbContext applicationDbContext)
+    public WalletController(ITronService tronService, ApplicationDbContext applicationDbContext,ITronWalletService tronWalletService)
     {
         _tronService = tronService;
         _applicationDbContext = applicationDbContext;
+        _tronWalletService = tronWalletService; 
     }
     [HttpPost("CreateWallet-SignUp(TRX Network)")]
     public async Task<IActionResult> CreateWallet( UserSignUpModel userSignUpModel)
@@ -105,7 +108,7 @@ public class WalletController : ControllerBase
         }
         try
         {
-            var balance = await _tronService.GetBalanceAsyncTron(address);
+            var balance = await _tronWalletService.GetBalanceAsyncTron(address);
             var trxUsdPrice = await _tronService.GetTronUsdApiPriceAsync();
             var balanceInUsd = balance * trxUsdPrice;
 

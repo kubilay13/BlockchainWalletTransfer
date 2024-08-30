@@ -6,6 +6,8 @@ using TronNet;
 using Google.Api;
 using ETHWalletApi.Services;
 using Business.Services.EthWalletServices.EthTransferService;
+using Business.Services.TronService;
+using TronWalletApi.Services.TronWalletService;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -15,6 +17,7 @@ builder.Services.AddScoped<IWalletService, WalletServices>();
 builder.Services.AddTransient<ITronService, TronService>();
 builder.Services.AddTransient<IEthService, EthService>();
 builder.Services.AddTransient<IEthTransferService, EthTransferService>();
+builder.Services.AddScoped<ITronWalletService,TronWalletService>();
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();

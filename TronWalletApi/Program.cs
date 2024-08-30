@@ -8,7 +8,6 @@ using Serilog.Sinks.SystemConsole.Themes;
 using Business.Services.TronService;
 using DataAccessLayer.AppDbContext;
 using Business.Services.WalletPrivatekeyToPasswords;
-using Google.Api;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -43,6 +42,7 @@ builder.Services.AddTronNet(x =>
 builder.Services.AddHttpClient();
 builder.Services.AddScoped<ITronService, TronService>();
 builder.Services.AddHostedService<TronWalletAmountUpdateService>();
+builder.Services.AddTransient<ITronWalletService, TronWalletService>();
 
 var app = builder.Build();
 app.UseSerilogRequestLogging();

@@ -10,7 +10,6 @@ namespace Entities.Dto.WalletApiDto
         public decimal Amount { get; set; }
         public string? Network { get; set; }
         public string? CoinName { get; set; }
-
         [JsonIgnore]
         public TransactionType TransactionType { get; set; }
     }
