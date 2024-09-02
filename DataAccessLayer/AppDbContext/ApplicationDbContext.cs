@@ -16,9 +16,7 @@ namespace DataAccessLayer.AppDbContext
         public DbSet<Network> Networks { get; set; }
         public DbSet<WalletDetailModel> WalletDetailModels { get; set; }
         public DbSet<AdminLoginModel> AdminLoginModels { get; set; }
-
         public DbSet<UserSignUpModel> UserSignUpModels { get; set; }
-
         public DbSet<UserLoginModel> userLoginModels { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
