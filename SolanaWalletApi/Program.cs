@@ -1,7 +1,9 @@
+using CrypticWizard.RandomWordGenerator;
 using SolanaWalletApi.Services.SolanaWalletService;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddScoped<ISolanaWalletService, SolanaWalletService>();
+builder.Services.AddScoped<WordGenerator>();
 
 // Add services to the container.
 

@@ -2,6 +2,6 @@
 {
     public interface ISolanaPrivateKeyRandom
     {
-        Task<string> SolanaPrivateKeyRandom();
+        //Task<string> SolanaPrivateKeyRandom();
     }
 }

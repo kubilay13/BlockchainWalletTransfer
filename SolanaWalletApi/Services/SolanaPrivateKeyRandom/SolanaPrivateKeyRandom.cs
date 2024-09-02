@@ -7,9 +7,9 @@
 
         }
 
-        public async Task<string> SolanaPrivateKeyRandom ()
-        {
-
-        }
+        //public async Task<string> SolanaPrivateKeyRandom()
+        //{
+          
+        //}
     }
 }
