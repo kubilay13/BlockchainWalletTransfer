@@ -432,9 +432,9 @@ namespace TronWalletApi.Migrations
                         new
                         {
                             Id = 1,
-                            CreatedAt = new DateTime(2024, 8, 30, 20, 10, 42, 191, DateTimeKind.Utc).AddTicks(1100),
+                            CreatedAt = new DateTime(2024, 9, 7, 14, 23, 12, 449, DateTimeKind.Utc).AddTicks(4726),
                             Email = "user@example.com",
-                            LastTransactionAt = new DateTime(2024, 8, 30, 20, 10, 42, 191, DateTimeKind.Utc).AddTicks(1104),
+                            LastTransactionAt = new DateTime(2024, 9, 7, 14, 23, 12, 449, DateTimeKind.Utc).AddTicks(4728),
                             Name = "TRXAdminAdress",
                             Network = "Testnet(Nile)",
                             Password = "Password",
@@ -447,9 +447,9 @@ namespace TronWalletApi.Migrations
                         new
                         {
                             Id = 2,
-                            CreatedAt = new DateTime(2024, 8, 30, 20, 10, 42, 191, DateTimeKind.Utc).AddTicks(1107),
+                            CreatedAt = new DateTime(2024, 9, 7, 14, 23, 12, 449, DateTimeKind.Utc).AddTicks(4731),
                             Email = "user@example.com",
-                            LastTransactionAt = new DateTime(2024, 8, 30, 20, 10, 42, 191, DateTimeKind.Utc).AddTicks(1107),
+                            LastTransactionAt = new DateTime(2024, 9, 7, 14, 23, 12, 449, DateTimeKind.Utc).AddTicks(4731),
                             Name = "ETHAdminAdress",
                             Network = "TestNet(Sepolia)",
                             Password = "Password",

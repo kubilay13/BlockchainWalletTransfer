@@ -1,4 +1,5 @@
-﻿using Business.Services.TronService;
+﻿using Business.BackgroundService.TronWalletBackgroundServices;
+using Business.Services.TronWalletService.CreateWalletTron;
 using DataAccessLayer.AppDbContext;
 using Entities.Dto.WalletApiDto;
 using Entities.Enums;
@@ -13,19 +14,21 @@ public class WalletController : ControllerBase
     private readonly ITronService _tronService;
     private readonly ApplicationDbContext _applicationDbContext;
     private readonly ITronWalletService _tronWalletService;
+    private readonly ICreateWalletTron _createWalletTron;
 
-    public WalletController(ITronService tronService, ApplicationDbContext applicationDbContext,ITronWalletService tronWalletService)
+    public WalletController(ITronService tronService, ApplicationDbContext applicationDbContext, ITronWalletService tronWalletService, ICreateWalletTron createWalletTron)
     {
         _tronService = tronService;
         _applicationDbContext = applicationDbContext;
-        _tronWalletService = tronWalletService; 
+        _tronWalletService = tronWalletService;
+        _createWalletTron = createWalletTron;
     }
     [HttpPost("CreateWallet-SignUp(TRX Network)")]
     public async Task<IActionResult> CreateWallet( UserSignUpModel userSignUpModel)
     {
         try
         {
-            string walletResponse = await _tronService.CreateWalletTRON(userSignUpModel);
+            string walletResponse = await _createWalletTron.CreateWalletTRON(userSignUpModel);
             return Ok(new
             {
                 Success = true,

@@ -1,4 +1,4 @@
-﻿using Business.Services.TronService;
+﻿using Business.BackgroundService.TronWalletBackgroundServices;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;

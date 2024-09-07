@@ -1,4 +1,4 @@
-﻿namespace Business.Services.TronService
+﻿namespace Business.BackgroundService.TronWalletBackgroundServices
 {
     public interface ITronWalletService
     {

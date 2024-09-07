@@ -6,8 +6,7 @@ using TronNet;
 using Google.Api;
 using ETHWalletApi.Services;
 using Business.Services.EthWalletServices.EthTransferService;
-using Business.Services.TronService;
-using TronWalletApi.Services.TronWalletService;
+using Business.BackgroundService.TronWalletBackgroundServices;
 
 var builder = WebApplication.CreateBuilder(args);
 

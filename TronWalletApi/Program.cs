@@ -2,12 +2,12 @@ using Microsoft.EntityFrameworkCore;
 using System.Reflection;
 using TronNet;
 using TronWalletApi.BackgroundServices;
-using TronWalletApi.Services.TronWalletService;
 using Serilog;
 using Serilog.Sinks.SystemConsole.Themes;
-using Business.Services.TronService;
 using DataAccessLayer.AppDbContext;
 using Business.Services.WalletPrivatekeyToPasswords;
+using Business.BackgroundService.TronWalletBackgroundServices;
+using Business.Services.TronWalletService.CreateWalletTron;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -27,10 +27,11 @@ builder.Services.AddDbContext<ApplicationDbContext>(option =>
     option.UseSqlServer(builder.Configuration["ConnectionStrings:DefaultConnection"],
         s => s.MigrationsAssembly(typeof(Program).GetTypeInfo().Assembly.GetName().Name));
 });
-
+builder.Services.AddTransient<ITronWalletService, TronWalletService>();
 builder.Services.AddTransient<IWalletPrivatekeyToPassword, WalletPrivatekeyToPassword>();
 builder.Services.AddScoped<ITronWalletService, TronWalletService>();
-
+builder.Services.AddScoped<ITronService, TronService>();
+builder.Services.AddScoped<ICreateWalletTron,CreateWalletTron>();
 var tronNetOptions = builder.Configuration.GetSection("TronNet").Get<TronNetOptions>();
 builder.Services.AddTronNet(x =>
 {
@@ -40,9 +41,9 @@ builder.Services.AddTronNet(x =>
     x.ApiKey = "bbf6d1c9-daf4-49d9-a088-df29f664bac9";
 });
 builder.Services.AddHttpClient();
-builder.Services.AddScoped<ITronService, TronService>();
+
 builder.Services.AddHostedService<TronWalletAmountUpdateService>();
-builder.Services.AddTransient<ITronWalletService, TronWalletService>();
+
 
 var app = builder.Build();
 app.UseSerilogRequestLogging();

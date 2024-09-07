@@ -1,5 +1,5 @@
-﻿using Business.Services.EthWalletServices.EthTransferService;
-using Business.Services.TronService;
+﻿using Business.BackgroundService.TronWalletBackgroundServices;
+using Business.Services.EthWalletServices.EthTransferService;
 using DataAccessLayer.AppDbContext;
 using Entities.Dto.WalletApiDto;
 using Entities.Models.AdminModel;

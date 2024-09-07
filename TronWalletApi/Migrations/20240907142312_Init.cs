@@ -180,8 +180,8 @@ namespace TronWalletApi.Migrations
                 columns: new[] { "Id", "AccountName", "CreatedAt", "Email", "LastTransactionAt", "Name", "Network", "Password", "Surname", "TelNo", "TransactionLimit", "UserId", "WalletName" },
                 values: new object[,]
                 {
-                    { 1, null, new DateTime(2024, 8, 30, 20, 10, 42, 191, DateTimeKind.Utc).AddTicks(1100), "user@example.com", new DateTime(2024, 8, 30, 20, 10, 42, 191, DateTimeKind.Utc).AddTicks(1104), "TRXAdminAdress", "Testnet(Nile)", "Password", "SurnameAdminTRX", "stringstri", true, 0, "TRXAdminAdress" },
-                    { 2, null, new DateTime(2024, 8, 30, 20, 10, 42, 191, DateTimeKind.Utc).AddTicks(1107), "user@example.com", new DateTime(2024, 8, 30, 20, 10, 42, 191, DateTimeKind.Utc).AddTicks(1107), "ETHAdminAdress", "TestNet(Sepolia)", "Password", "SurnameAdminTETH", "stringstri", true, 0, "ETHAdminAdress" }
+                    { 1, null, new DateTime(2024, 9, 7, 14, 23, 12, 449, DateTimeKind.Utc).AddTicks(4726), "user@example.com", new DateTime(2024, 9, 7, 14, 23, 12, 449, DateTimeKind.Utc).AddTicks(4728), "TRXAdminAdress", "Testnet(Nile)", "Password", "SurnameAdminTRX", "stringstri", true, 0, "TRXAdminAdress" },
+                    { 2, null, new DateTime(2024, 9, 7, 14, 23, 12, 449, DateTimeKind.Utc).AddTicks(4731), "user@example.com", new DateTime(2024, 9, 7, 14, 23, 12, 449, DateTimeKind.Utc).AddTicks(4731), "ETHAdminAdress", "TestNet(Sepolia)", "Password", "SurnameAdminTETH", "stringstri", true, 0, "ETHAdminAdress" }
                 });
 
             migrationBuilder.InsertData(

@@ -1,5 +1,4 @@
-﻿using Business.Services.TronService;
-using DataAccessLayer.AppDbContext;
+﻿using DataAccessLayer.AppDbContext;
 using HDWallet.Core;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -8,7 +7,7 @@ using Newtonsoft.Json.Linq;
 using TronNet;
 using TronNet.Contracts;
 using TronNet.Crypto;
-namespace TronWalletApi.Services.TronWalletService
+namespace Business.BackgroundService.TronWalletBackgroundServices
 {
     public class TronWalletService : ITronWalletService
     {
@@ -19,7 +18,7 @@ namespace TronWalletApi.Services.TronWalletService
         private readonly IContractClientFactory _contractClientFactory;
         private readonly IConfiguration _configuration;
         private readonly HttpClient _client;
-        public TronWalletService(ITronService tronService, ApplicationDbContext applicationDbContext, ILogger<TronWalletService> logger,IWalletClient walletClient, IContractClientFactory contractClientFactory,IConfiguration configuration,HttpClient client)
+        public TronWalletService(ITronService tronService, ApplicationDbContext applicationDbContext, ILogger<TronWalletService> logger, IWalletClient walletClient, IContractClientFactory contractClientFactory, IConfiguration configuration, HttpClient client)
         {
             _tronService = tronService;
             _applicationDbContext = applicationDbContext;
@@ -28,7 +27,7 @@ namespace TronWalletApi.Services.TronWalletService
             _contractClientFactory = contractClientFactory;
             _configuration = configuration;
             _client = client;
-          
+
         }
         public async Task GetNetworkFee()
         {
@@ -86,7 +85,7 @@ namespace TronWalletApi.Services.TronWalletService
                         try
                         {
                             var balance = await GetBalanceAsyncTron(wallet.WalletAddressTron!);
-                            wallet.TrxAmount =Convert.ToDecimal(balance);
+                            wallet.TrxAmount = Convert.ToDecimal(balance);
 
                             var UsdtBalance = await GetBalanceAsyncUsdtBackgroundService(wallet.WalletAddressTron, wallet.PrivateKeyTron);
                             wallet.UsdtAmount = UsdtBalance;
