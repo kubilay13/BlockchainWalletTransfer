@@ -7,15 +7,12 @@ using Newtonsoft.Json;
 using Google.Protobuf;
 using TronNet.Contracts;
 using Transaction = TronNet.Protocol.Transaction;
-using Nethereum.Util;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Entities.Models.TronModels;
 using Entities.Enums;
 using DataAccessLayer.AppDbContext;
-using System.Text;
 using Entities.Models.WalletModel;
-using Entities.Models.UserModel;
 using Entities.Dto.TronDto;
 using Entities.Dto.WalletApiDto;
 using Business.Services.WalletPrivatekeyToPasswords;
@@ -91,10 +88,11 @@ public class TronService : ITronService
         decimal balance = json["data"][0]["balance"].Value<decimal>() / 1000000m;
         return balance;
     }
-    public async Task<List<AssetBalance>> GetAllWalletBalanceAsyncTron(string address)
+    public async Task<List<AssetBalance>> GetAllWalletBalanceAsyncTron(string address, byte[] encryptedPrivateKey)
     {
         try
         {
+            var decryptedPrivateKey = _walletPrivatekeyToPassword.DecryptPrivateKey(encryptedPrivateKey);
             var hexAddress = Base58Encoder.DecodeFromBase58Check(address).ToHexString();
             string apiUrl = $"/v1/accounts/{hexAddress}";
             var response = await _client.GetAsync(apiUrl);
@@ -102,6 +100,7 @@ public class TronService : ITronService
             var responseBody = await response.Content.ReadAsStringAsync();
             var jsonObject = JObject.Parse(responseBody);
             var assetsList = new List<AssetBalance>();
+
             if (jsonObject["data"] != null && jsonObject["data"].HasValues)
             {
                 var data = jsonObject["data"][0];
@@ -109,8 +108,8 @@ public class TronService : ITronService
                 {
                     decimal trxBalance = decimal.Parse(data["balance"].ToString()) / 1000000m;
                     assetsList.Add(new AssetBalance { AssetName = "TRX", Balance = trxBalance });
-
                 }
+
                 // TRC10 tokenlerini ekle
                 if (data["assetV2"] != null)
                 {
@@ -121,6 +120,7 @@ public class TronService : ITronService
                         assetsList.Add(new AssetBalance { AssetName = assetName, Balance = assetBalance });
                     }
                 }
+
                 // TRC20 tokenlerini ekle
                 if (data["trc20"] != null)
                 {
@@ -147,182 +147,7 @@ public class TronService : ITronService
             throw new ApplicationException("API ile iletişim sırasında bir hata oluştu.", ex);
         }
     }
-    public async Task TransferTRXorToken(TransferRequest request, string transactiontype)
-    {
-        switch (request!.CoinName!.ToUpper())
-        {
-            case "TRX":
-                await TrxTransfer(request);
-                break;
-
-            default:
-                await TokenTransfer(request);
-                break;
-        }
-    }
-    public async Task TrxTransfer(TransferRequest request)
-    {
-        //var _transferLimit = await TransferControl(request);
-
-        //if (!_transferLimit)
-        //{
-        //    throw new ApplicationException("Transfer işlemi başarısız oldu.");
-        //}
-        try
-        {
-            if (request != null)
-            {
-                if (request.SenderAddress == request.ReceiverAddress)
-                {
-                    throw new ApplicationException("Alıcı Cüzdan Adresiyle Gönderici Adres Aynılar.");
-                }
-                var _network = await _applicationDbContext.Networks.FirstOrDefaultAsync(w => w.Name == request.CoinName);
-                var network = await _applicationDbContext.Networks.FirstOrDefaultAsync(n => n.Type == NetworkType.Network && n.Name == request.CoinName);
-                var _comission = _network!.Commission;
-                var _amount = UnitConversion.Convert.ToWei(request.Amount, (int)_network.Decimal);
-                var senderAddress = await _applicationDbContext.WalletDetailModels.FirstOrDefaultAsync(w => w.WalletAddressTron == request.SenderAddress);
-                if (senderAddress == null)
-                {
-                    throw new ApplicationException("Gönderici cüzdan adresi bulunamadı.");
-                }
-                byte[] encryptedPrivateKeyBytes = Convert.FromBase64String(senderAddress.PrivateKeyTron);
-                string decryptedPrivateKey = _walletPrivatekeyToPassword.DecryptPrivateKey(encryptedPrivateKeyBytes);
-                if (_amount > 0)
-                {
-                    var transactionClient = _tronClient.GetTransaction();
-                    var signedTransaction = await transactionClient.CreateTransactionAsync(request.SenderAddress, request.ReceiverAddress, (long)_amount);
-                    var transactionSigned = _transactionClient.GetTransactionSign(signedTransaction.Transaction, decryptedPrivateKey);
-                    var result = await _transactionClient.BroadcastTransactionAsync(transactionSigned);
-                    if (!result.Result)
-                    {
-                        throw new ApplicationException($"Trx transfer işlemi başarısız oldu. Hata mesajı: {result.Message}");
-                    }
-                    var transactionHash = GetTransactionHash(transactionSigned);
-                    var transferHistory = new TransferHistoryModel
-                    {
-                        SendingAddress = request.SenderAddress,
-                        ReceivedAddress = request.ReceiverAddress,
-                        CoinType = request.CoinName!.ToUpper(),
-                        TransactionNetwork = "TRON",
-                        TransactionAmount = request.Amount,
-                        TransactionDate = DateTime.UtcNow,
-                        Commission = _comission,
-                        NetworkFee = 0,
-                        TransactionUrl = $"https://nile.tronscan.org/#/transaction/{transactionHash}",
-                        TransactionStatus = result.Result,
-                        TransactionType = request.TransactionType,
-                        TransactionHash = transactionHash,
-                        Network = request.Network
-                    };
-                    _applicationDbContext.TransferHistoryModels.Add(transferHistory);
-                    await _applicationDbContext.SaveChangesAsync();
-                    if (transactionHash != null)
-                    {
-                        senderAddress.TrxAmount -= request.Amount;
-                        _applicationDbContext.WalletDetailModels.Update(senderAddress);
-                        var receiverAddress = await _applicationDbContext.WalletDetailModels.FirstOrDefaultAsync(w => w.WalletAddressTron == request.ReceiverAddress);
-                        if (receiverAddress != null)
-                        {
-                            receiverAddress.TrxAmount += request.Amount;
-                            _applicationDbContext.WalletDetailModels.Update(receiverAddress);
-                        }
-                        await _applicationDbContext.SaveChangesAsync();
-                    }
-                    await WalletTokenAdminComission(request);
-                }
-                else
-                {
-
-                }
-            }
-        }
-        catch (ApplicationException ex)
-        {
-            _logger.LogError($"Transfer işlemi başarısız oldu. Hata mesajı: {ex.Message}");
-            throw;
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError($"Transfer işlemi başarısız oldu. Hata mesajı: {ex.Message}");
-            throw new ApplicationException("Bilinmeyen bir hata oluştu.");
-        }
-    }
-    public async Task TokenTransfer(TransferRequest request)
-    {
-        var network = await _applicationDbContext.Networks.FirstOrDefaultAsync(n => n.Type == NetworkType.Network && n.Name == request.CoinName);
-        var senderprivatekey = await GetPrivateKeyFromDatabase(request.SenderAddress);
-        var wallet = await _applicationDbContext.WalletDetailModels.FirstOrDefaultAsync(q => q.WalletAddressTron == request.SenderAddress);
-        decimal commissionPercentage = network.Commission;
-        decimal commission = request.Amount - commissionPercentage;
-        if (request.CoinName == "USDC")
-        {
-
-            if (wallet.TrxAmount >= commission)
-            {
-                if (wallet.UsdcAmount != 0)
-                {
-                    await WalletSaveHistoryToken(request);
-                    await WalletTokenAdminComission(request);
-                }
-                else
-                {
-                    throw new ApplicationException("Cüzdanınızın USDC Bakiyesi 0");
-                }
-            }
-        }
-        else if (request.CoinName == "USDT")
-        {
-            if (wallet.TrxAmount >= commission)
-            {
-                if (wallet.UsdtAmount != 0)
-                {
-                    await WalletSaveHistoryToken(request);
-                    await WalletTokenAdminComission(request);
-                }
-                else
-                {
-                    throw new ApplicationException("Cüzdanınızın USDT Bakiyesi 0");
-                }
-            }
-        }
-        else if (request.CoinName == "USDD")
-        {
-
-            if (wallet.TrxAmount >= commission)
-            {
-                if (wallet.UsddAmount != 0)
-                {
-                    await WalletSaveHistoryToken(request);
-                    await WalletTokenAdminComission(request);
-                }
-                else
-                {
-                    throw new ApplicationException("Cüzdanınızın USDD Bakiyesi 0");
-                }
-            }
-        }
-        else if (request.CoinName == "BTT")
-        {
-
-            if (wallet.TrxAmount >= commission)
-            {
-                if (wallet.BttAmount != 0)
-                {
-                    await WalletSaveHistoryToken(request);
-                    await WalletTokenAdminComission(request);
-                }
-                else
-                {
-                    throw new ApplicationException("Cüzdanınızın BTT Bakiyesi 0");
-                }
-            }
-        }
-        else
-        {
-            throw new ApplicationException("Coin İsimlerini Düzgün Griniz.");
-        }
-    }
-    private async Task WalletSaveHistoryToken(TransferRequest request)
+    public async Task WalletSaveHistoryToken(TransferRequest request)
     {
         var senderAddress = await _applicationDbContext.WalletDetailModels.FirstOrDefaultAsync(w => w.WalletAddressTron == request.SenderAddress);
         var network = await _applicationDbContext.Networks.FirstOrDefaultAsync(n => n.Type == NetworkType.Network && n.Name == request.CoinName);
@@ -387,7 +212,7 @@ public class TronService : ITronService
         decimal tronPriceInUsd = json["tron"]["usd"].Value<decimal>();
         return tronPriceInUsd;
     }
-    private async Task WalletTokenAdminComission(TransferRequest request)
+    public async Task WalletTokenAdminComission(TransferRequest request)
     {
         var network = await _applicationDbContext.Networks.FirstOrDefaultAsync(n => n.Type == NetworkType.Network && n.Name == request.CoinName);
         if (network == null)
@@ -434,7 +259,7 @@ public class TronService : ITronService
         }
         await Task.CompletedTask;
     }
-    private async Task<string> GetPrivateKeyFromDatabase(string senderadress)
+    public async Task<string> GetPrivateKeyFromDatabase(string senderadress)
     {
         var wallet = await _applicationDbContext.WalletDetailModels.FirstOrDefaultAsync(q => q.WalletAddressTron == senderadress);
         return wallet?.PrivateKeyTron!;
@@ -477,7 +302,7 @@ public class TronService : ITronService
     //    //var receiverWallet = await _applicationDbContext.WalletDetailModels.FirstOrDefaultAsync(w => w.WalletAddressTron == request.ReceiverAddress);
     //    //return true;
     //}
-    private string GetTransactionHash(Transaction signedTransaction)
+    public string GetTransactionHash(Transaction signedTransaction)
     {
         using (var sha256 = System.Security.Cryptography.SHA256.Create())
         {

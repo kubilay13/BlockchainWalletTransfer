@@ -1,11 +1,11 @@
 ﻿using Business.Services.EthWalletServices.EthTransferService;
+using Business.Services.TronWalletService.TransferTron;
 using DataAccessLayer.AppDbContext;
 using Entities.Dto.WalletApiDto;
 using Entities.Models.AdminModel;
 using Entities.Models.UserModel;
 using Entities.Models.WalletModel;
 using ETHWalletApi.Services;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Nethereum.Signer;
 using Newtonsoft.Json.Linq;
@@ -24,13 +24,15 @@ namespace WalletsApi.Services
         private readonly ITronService _tronService;
         private readonly IEthService _ethService;
         private readonly IEthTransferService _ethTransferService;
-        public WalletServices(ApplicationDbContext applicationDbContext, HttpClient httpClient,ITronService tronService, IEthService ethService,IEthTransferService ethTransferService)
+        private readonly ITransferTron _transferTron;
+        public WalletServices(ApplicationDbContext applicationDbContext, HttpClient httpClient, ITronService tronService, IEthService ethService, IEthTransferService ethTransferService, ITransferTron transferTron = null)
         {
             _applicationDbContext = applicationDbContext;
             _httpClient = httpClient;
-            _tronService= tronService;
-            _ethService= ethService;
-            _ethTransferService= ethTransferService;
+            _tronService = tronService;
+            _ethService = ethService;
+            _ethTransferService = ethTransferService;
+            _transferTron = transferTron;
         }
         public async Task<string> CreateWallet(UserSignUpModel userSignUpModel)
         {
@@ -95,11 +97,11 @@ namespace WalletsApi.Services
             {
                 if (request.CoinName == "TRX")
                 {
-                    await _tronService.TrxTransfer(request);
+                    await _transferTron.TrxTransfer(request);
                 }
                 else if(request.CoinName=="USDT" || request.CoinName=="USDC" || request.CoinName=="USDD")
                 {
-                   await _tronService.TokenTransfer(request);
+                   await _transferTron.TokenTransfer(request);
                 }
             }
             else if (request.Network == "ETHEREUM")

@@ -1,5 +1,6 @@
 ﻿using Business.BackgroundService.TronWalletBackgroundServices;
 using Business.Services.EthWalletServices.EthTransferService;
+using Business.Services.TronWalletService.TransferTron;
 using DataAccessLayer.AppDbContext;
 using Entities.Dto.WalletApiDto;
 using Entities.Models.AdminModel;
@@ -28,8 +29,9 @@ namespace WalletsApi.Controllers
         private readonly HttpClient _httpClient;
         private readonly IEthTransferService _ethTransferService;
         private readonly ITronWalletService _tronWalletService;
-    
-        public WalletController(ApplicationDbContext applicationDbContext, IWalletService walletService, ITronService tronService, HttpClient httpClient, IEthService ethService,IEthTransferService ethTransferService,ITronWalletService tronWalletService)
+        private readonly ITransferTron _transferTron;
+
+        public WalletController(ApplicationDbContext applicationDbContext, IWalletService walletService, ITronService tronService, HttpClient httpClient, IEthService ethService, IEthTransferService ethTransferService, ITronWalletService tronWalletService, ITransferTron transferTron)
         {
             _ethService = ethService;
             _walletService = walletService;
@@ -38,6 +40,7 @@ namespace WalletsApi.Controllers
             _httpClient = httpClient;
             _ethTransferService = ethTransferService;
             _tronWalletService = tronWalletService;
+            _transferTron = transferTron;
         }
         [HttpPost("CreateWallet-UserSignUp(ETH,TRX)")]
         public async Task<string> CreateWallet(UserSignUpModel userSignUpModel)
@@ -77,12 +80,12 @@ namespace WalletsApi.Controllers
             {
                 if(request.CoinName == "TRX" )
                 {
-                    await _tronService.TrxTransfer(request);
+                    await _transferTron.TrxTransfer(request);
                     return Ok($" Transfer İşlemi Başarılı. \n{request.CoinName}");
                 }
                 else if ( request.CoinName == "USDT" || request.CoinName == "USDC" || request.CoinName == "USDD")
                 {
-                    await _tronService.TokenTransfer(request);
+                    await _transferTron.TokenTransfer(request);
                     return Ok($" Transfer İşlemi Başarılı. \n{request.CoinName}");
                 }
             }

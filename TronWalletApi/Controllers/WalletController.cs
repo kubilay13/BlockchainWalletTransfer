@@ -1,5 +1,6 @@
 ﻿using Business.BackgroundService.TronWalletBackgroundServices;
 using Business.Services.TronWalletService.CreateWalletTron;
+using Business.Services.TronWalletService.TransferTron;
 using DataAccessLayer.AppDbContext;
 using Entities.Dto.WalletApiDto;
 using Entities.Enums;
@@ -15,13 +16,15 @@ public class WalletController : ControllerBase
     private readonly ApplicationDbContext _applicationDbContext;
     private readonly ITronWalletService _tronWalletService;
     private readonly ICreateWalletTron _createWalletTron;
+    private readonly ITransferTron _transferTron;
 
-    public WalletController(ITronService tronService, ApplicationDbContext applicationDbContext, ITronWalletService tronWalletService, ICreateWalletTron createWalletTron)
+    public WalletController(ITronService tronService, ApplicationDbContext applicationDbContext, ITronWalletService tronWalletService, ICreateWalletTron createWalletTron, ITransferTron transferTron = null)
     {
         _tronService = tronService;
         _applicationDbContext = applicationDbContext;
         _tronWalletService = tronWalletService;
         _createWalletTron = createWalletTron;
+        _transferTron = transferTron;
     }
     [HttpPost("CreateWallet-SignUp(TRX Network)")]
     public async Task<IActionResult> CreateWallet( UserSignUpModel userSignUpModel)
@@ -64,7 +67,7 @@ public class WalletController : ControllerBase
                 ? TransactionType.Deposit
                 : TransactionType.Withdraw;
 
-            await _tronService.TransferTRXorToken(request, transactionType.ToString());
+            await _transferTron.TransferTRXorToken(request, transactionType.ToString());
 
             return Ok("Transfer işlemi başarılı.");
         }
@@ -90,7 +93,14 @@ public class WalletController : ControllerBase
         }
         try
         {
-            var assetsList = await _tronService.GetAllWalletBalanceAsyncTron(address);
+            var encryptedPrivateKeyString = await _tronService.GetPrivateKeyFromDatabase(address);
+            if (string.IsNullOrEmpty(encryptedPrivateKeyString))
+            {
+                return BadRequest("Private key bulunamadı.");
+            }
+            var encryptedPrivateKey = Convert.FromBase64String(encryptedPrivateKeyString);
+            var assetsList = await _tronService.GetAllWalletBalanceAsyncTron(address, encryptedPrivateKey);
+
             return Ok(assetsList);
         }
         catch (ApplicationException ex)
